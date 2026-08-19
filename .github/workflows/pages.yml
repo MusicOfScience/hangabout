@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: '22'
       - run: python scripts/validate_data_v3.py
+      - run: python scripts/validate_sources.py
       - run: node --check app.js && node --check enhance-v2.js && node --check lib/time.js
       - run: node scripts/test_time.mjs
 
