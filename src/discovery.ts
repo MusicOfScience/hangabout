@@ -3,14 +3,15 @@ import type { Point } from './geo';
 export type WebDiscoveryKind = 'galleries' | 'exhibitions' | 'openings' | 'everything';
 
 const terms: Record<WebDiscoveryKind, string> = {
-  galleries: '("art gallery" OR gallery OR "art space" OR "artist run" OR "artist-run" OR "project space")',
-  exhibitions: '(exhibition OR exhibitions OR "art exhibition" OR "current exhibition" OR "group show" OR "solo show")',
-  openings: '("gallery opening" OR "opening night" OR "art opening" OR "exhibition opening")',
-  everything: '(gallery OR exhibition OR "art space" OR "artist run" OR "project space" OR "gallery opening")',
+  galleries: '("art gallery" OR gallery OR "contemporary gallery" OR "art space" OR "artist run" OR "artist-run" OR "project space" OR exhibition)',
+  exhibitions: '(exhibition OR exhibitions OR "art exhibition" OR "current exhibition" OR "what’s on" art OR "on now" exhibition OR "group show" OR "solo show")',
+  openings: '("gallery opening" OR "opening night" OR "art opening" OR "exhibition opening" OR "opens today")',
+  everything: '(gallery OR "art gallery" OR exhibition OR exhibitions OR "art space" OR "artist run" OR "project space" OR "gallery opening" OR "opening night")',
 };
 
-export function googleSearchUrl(kind: WebDiscoveryKind, suburb: string): string {
-  const query = `${terms[kind]} "${suburb}" Melbourne`;
+export function googleSearchUrl(kind: WebDiscoveryKind, area: string): string {
+  const place = area.trim() || 'Melbourne';
+  const query = `${terms[kind]} "${place}" Australia`;
   return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 }
 
