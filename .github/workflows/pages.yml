@@ -35,14 +35,34 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: checkout live prototype
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: prototype
+      - name: checkout v2 candidate
+        uses: actions/checkout@v4
+        with:
+          ref: agent/v2-rebuild
+          path: v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: build v2 candidate
+        working-directory: v2
+        run: |
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npx vite build --base=/hangabout/v2/
       - uses: actions/configure-pages@v5
-      - name: stage static site
+      - name: stage live root plus v2 preview
         run: |
           mkdir _site
-          cp index.html styles.css enhancements.css app.js enhance-v2.js coordinates.js _site/
-          cp -R data _site/data
-          cp -R lib _site/lib
+          cp prototype/index.html prototype/styles.css prototype/enhancements.css prototype/app.js prototype/enhance-v2.js prototype/coordinates.js _site/
+          cp -R prototype/data _site/data
+          cp -R prototype/lib _site/lib
+          mkdir -p _site/v2
+          cp -R v2/dist/. _site/v2/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
