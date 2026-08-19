@@ -1,9 +1,18 @@
 import L, { Map as LeafletMap, LayerGroup, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Dataset, Event, MakeResource, Venue } from './types';
-import { exactVenuePoint, MELBOURNE, resourcePoint, type Point } from './geo';
+import { exactVenuePoint, haversine, MELBOURNE, resourcePoint, type Point } from './geo';
 
 const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+export interface DiscoveredPlace {
+  id: string;
+  name: string;
+  point: Point;
+  category: string;
+  website?: string;
+  address?: string;
+}
 
 function divIcon(label: string, className: string) {
   return L.divIcon({
@@ -17,8 +26,10 @@ function divIcon(label: string, className: string) {
 export class SeeMap {
   private map: LeafletMap;
   private layer: LayerGroup;
+  private discoveryLayer: LayerGroup;
   private locationMarker: Marker | null = null;
   private onMoved: () => void;
+  private canonicalVenues: Array<{ name: string; point: Point }> = [];
 
   constructor(element: HTMLElement, onMoved: () => void) {
     this.onMoved = onMoved;
@@ -28,7 +39,14 @@ export class SeeMap {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
     this.layer = L.layerGroup().addTo(this.map);
-    this.map.on('moveend', () => this.onMoved());
+    this.discoveryLayer = L.layerGroup().addTo(this.map);
+    this.map.on('moveend', () => {
+      this.onMoved();
+      window.dispatchEvent(new CustomEvent('hangabout:see-map-moved', {
+        detail: { bounds: this.bounds(), center: this.center() },
+      }));
+    });
+    window.hangaboutSeeMap = this;
   }
 
   render(events: Event[], dataset: Dataset, focus = false) {
@@ -39,6 +57,11 @@ export class SeeMap {
       const venue = venueById.get(event.venueId);
       if (venue) venues.set(venue.id, venue);
     }
+
+    this.canonicalVenues = dataset.venues
+      .map(venue => ({ venue, point: exactVenuePoint(venue) }))
+      .filter((item): item is { venue: Venue; point: Point } => Boolean(item.point))
+      .map(item => ({ name: item.venue.name, point: item.point }));
 
     const markers: Marker[] = [];
     for (const venue of venues.values()) {
@@ -57,6 +80,45 @@ export class SeeMap {
       const bounds = L.featureGroup(markers).getBounds();
       if (bounds.isValid()) this.map.fitBounds(bounds.pad(.12), { maxZoom: 15 });
     }
+  }
+
+  setDiscoveries(places: DiscoveredPlace[]): number {
+    this.discoveryLayer.clearLayers();
+    const rendered = places.filter(place => !this.matchesCanonical(place));
+
+    for (const place of rendered) {
+      const marker = L.circleMarker(place.point, {
+        radius: 7,
+        color: '#111',
+        weight: 2,
+        fillColor: '#d7ff32',
+        fillOpacity: .72,
+        opacity: 1,
+        className: 'discovery-marker',
+      }).addTo(this.discoveryLayer);
+
+      const website = safeExternalUrl(place.website);
+      marker.bindPopup([
+        `<strong>${escapeHtml(place.name)}</strong>`,
+        `<span>possible art place · ${escapeHtml(place.category)}</span>`,
+        place.address ? `<span>${escapeHtml(place.address)}</span>` : '',
+        website ? `<a href="${escapeHtml(website)}" target="_blank" rel="noopener">website ↗</a>` : '',
+        '<small>OpenStreetMap discovery · not yet a verified hangabout listing</small>',
+      ].filter(Boolean).join('<br>'));
+    }
+
+    return rendered.length;
+  }
+
+  clearDiscoveries() {
+    this.discoveryLayer.clearLayers();
+  }
+
+  private matchesCanonical(place: DiscoveredPlace): boolean {
+    const name = normaliseName(place.name);
+    return this.canonicalVenues.some(venue =>
+      normaliseName(venue.name) === name || haversine(venue.point, place.point) < 0.06
+    );
   }
 
   bounds() {
@@ -145,9 +207,29 @@ export class MakeMap {
   }
 }
 
+function normaliseName(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function safeExternalUrl(value?: string): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return ['http:', 'https:'].includes(url.protocol) ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
 function escapeHtml(value: string): string {
   const entities: Record<string, string> = {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
   };
   return value.replace(/[&<>"']/g, char => entities[char] ?? char);
+}
+
+declare global {
+  interface Window {
+    hangaboutSeeMap?: SeeMap;
+  }
 }
