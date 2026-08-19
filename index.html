@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="./styles.css" />
-  <style>#map{position:relative;overflow:hidden}</style>
+  <style>#map{position:relative;overflow:hidden}[hidden]{display:none!important}</style>
 </head>
 <body>
   <a class="skip-link" href="#results">Skip to listings</a>
@@ -119,19 +119,24 @@
       <div class="make-intro">
         <span class="eyebrow">for artists</span>
         <h2 id="make-title">the ecology, not just the exhibition.</h2>
-        <p>Find spaces, verified artist pathways, access notes and official links. Unknowns stay unknown rather than being filled with guesswork.</p>
+        <p>Find studios, shared workspaces, artist pathways, organisations and places to make. Availability-based listings are dated and source-labelled because they change quickly.</p>
       </div>
 
-      <div class="make-controls" aria-label="Filter artist-facing spaces">
+      <div class="make-controls" aria-label="Filter artist-facing resources">
         <label class="make-search">
-          <span class="sr-only">Search artist-facing spaces</span>
-          <input id="makeSearchInput" type="search" autocomplete="off" placeholder="space, suburb, focus, pathway…" />
+          <span class="sr-only">Search artist-facing resources</span>
+          <input id="makeSearchInput" type="search" autocomplete="off" placeholder="studio, suburb, printmaking, open call…" />
         </label>
         <label>
-          <span>space</span>
-          <select id="makeKindSelect"><option value="all">all spaces</option></select>
+          <span>show</span>
+          <select id="makeKindSelect">
+            <option value="all">everything for artists</option>
+            <option value="resource:studio">studios available</option>
+            <option value="resource:workspace">shared workspaces</option>
+            <option value="pathways">open calls + pathways</option>
+            <option value="places">organisations + galleries</option>
+          </select>
         </label>
-        <label class="check-label"><input id="pathwaysOnlyInput" type="checkbox" /> verified artist pathway</label>
         <span id="makeCount" class="make-count" aria-live="polite"></span>
       </div>
       <div id="venueDirectory" class="venue-directory"></div>
@@ -149,6 +154,6 @@
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script defer src="./app.js?v=3"></script>
+  <script defer src="./app.js?v=4"></script>
 </body>
 </html>
