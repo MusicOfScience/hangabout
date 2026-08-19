@@ -86,10 +86,24 @@ export interface CoordinateOverlay {
   lastVerified: string;
 }
 
+export interface KnownArtPlace {
+  id: string;
+  name: string;
+  locality: string;
+  lat: number;
+  lng: number;
+  placeType: string;
+  precision: 'locality' | 'exact' | 'building';
+  sourceName: string;
+  sourceUrl: string;
+  lastVerified: string;
+}
+
 export interface Dataset {
   venues: Venue[];
   events: Event[];
   resources: MakeResource[];
+  knownPlaces: KnownArtPlace[];
 }
 
 export type Mode = 'see' | 'make';
