@@ -113,6 +113,7 @@
     const originalFitMap = fitMap;
     const searchButton = $('#searchAreaButton');
     const clearButton = $('#clearAreaButton');
+    const fitButton = $('#fitMapButton');
 
     filteredEvents = function filteredEventsWithArea() {
       const rows = originalFilteredEvents();
@@ -133,6 +134,8 @@
       setTimeout(() => { suppressMovePrompt = false; }, 250);
       renderResults();
     };
+
+    if (fitButton) fitButton.onclick = fitMap;
 
     state.map.on('moveend', () => {
       if (suppressMovePrompt) return;
