@@ -72,7 +72,7 @@ export class SeeMap {
         icon: divIcon(String(count), 'venue-pin'),
         title: venue.name,
       }).addTo(this.layer);
-      marker.bindPopup(`<strong>${escapeHtml(venue.name)}</strong><br>${escapeHtml(venue.suburb)}<br>${count} ${count === 1 ? 'show' : 'shows'}`);
+      marker.bindPopup(`<strong>${escapeHtml(venue.name)}</strong><br>${escapeHtml(venue.suburb)}<br>${count} ${count === 1 ? 'show' : 'shows'}<br><small>verified hangabout venue</small>`);
       markers.push(marker);
     }
 
@@ -85,14 +85,15 @@ export class SeeMap {
   setDiscoveries(places: DiscoveredPlace[]): number {
     this.discoveryLayer.clearLayers();
     const rendered = places.filter(place => !this.matchesCanonical(place));
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#b8ff2c';
 
     for (const place of rendered) {
       const marker = L.circleMarker(place.point, {
-        radius: 7,
-        color: '#111',
-        weight: 2,
-        fillColor: '#d7ff32',
-        fillOpacity: .72,
+        radius: 8,
+        color: accent,
+        weight: 5,
+        fillColor: '#f2efe7',
+        fillOpacity: .18,
         opacity: 1,
         className: 'discovery-marker',
       }).addTo(this.discoveryLayer);
