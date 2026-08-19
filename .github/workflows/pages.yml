@@ -25,8 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: python scripts/validate_data_v2.py
-      - run: node --check app.js && node --check enhance.js && node --check lib/time.js
+      - run: python scripts/validate_data_v3.py
+      - run: node --check app.js && node --check enhance-v2.js && node --check lib/time.js
       - run: node scripts/test_time.mjs
 
   build:
@@ -38,7 +38,7 @@ jobs:
       - name: stage static site
         run: |
           mkdir _site
-          cp index.html styles.css enhancements.css app.js enhance.js _site/
+          cp index.html styles.css enhancements.css app.js enhance-v2.js _site/
           cp -R data _site/data
           cp -R lib _site/lib
       - uses: actions/upload-pages-artifact@v3
