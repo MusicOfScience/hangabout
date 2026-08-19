@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./enhancements.css?v=5" />
-  <style>#map{position:relative;overflow:hidden}[hidden]{display:none!important}</style>
+  <link rel="stylesheet" href="./enhancements.css?v=6" />
+  <style>#map,#makeMap{position:relative;overflow:hidden}[hidden]{display:none!important}</style>
 </head>
 <body>
   <a class="skip-link" href="#results">Skip to listings</a>
@@ -130,7 +130,16 @@
       <div class="make-intro">
         <span class="eyebrow">for artists</span>
         <h2 id="make-title">the ecology, not just the exhibition.</h2>
-        <p>Find studios, shared workspaces, artist pathways and organisations. Galleries are a separate choice rather than the default.</p>
+        <p>Find studios, shared workspaces, artist opportunities and pathways. Commercial galleries are available as a separate choice rather than filling the default feed.</p>
+      </div>
+
+      <div class="make-map-shell" aria-label="Map of artist resources by area">
+        <div id="makeMap"></div>
+        <div class="make-map-tools">
+          <button id="makeMapResetButton" class="map-button" hidden>show all resources</button>
+          <button id="makeLocateButton" class="map-button">locate me</button>
+        </div>
+        <p id="makeMapStatus" class="make-map-status">Map markers group make-art resources by suburb unless an exact point is verified.</p>
       </div>
 
       <div class="make-controls" aria-label="Filter artist-facing resources">
@@ -144,7 +153,8 @@
             <option value="resources">studios + making resources</option>
             <option value="studio">studios available</option>
             <option value="workspace">shared workspaces + finders</option>
-            <option value="pathways">open calls + pathways</option>
+            <option value="opportunity">opportunities + development</option>
+            <option value="pathways">open calls + venue pathways</option>
             <option value="organisations">artist-run + organisations</option>
             <option value="commercial">commercial galleries</option>
           </select>
@@ -166,7 +176,7 @@
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script defer src="./app.js?v=5"></script>
-  <script defer src="./enhance.js?v=5"></script>
+  <script defer src="./app.js?v=6"></script>
+  <script defer src="./enhance-v2.js?v=6"></script>
 </body>
 </html>
