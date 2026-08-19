@@ -1,0 +1,50 @@
+name: validate data
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: validate JSON and references
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import date
+
+          venues = json.loads(Path('data/venues.json').read_text())
+          events = json.loads(Path('data/events.json').read_text())
+
+          venue_ids = [v['id'] for v in venues]
+          event_ids = [e['id'] for e in events]
+          assert len(venue_ids) == len(set(venue_ids)), 'duplicate venue id'
+          assert len(event_ids) == len(set(event_ids)), 'duplicate event id'
+          known = set(venue_ids)
+
+          for venue in venues:
+              assert venue['name'].strip()
+              assert -90 <= venue['lat'] <= 90
+              assert -180 <= venue['lng'] <= 180
+              date.fromisoformat(venue['lastVerified'])
+
+          for event in events:
+              assert event['venueId'] in known, f"unknown venue: {event['venueId']}"
+              start = date.fromisoformat(event['startDate'])
+              end = date.fromisoformat(event['endDate'])
+              assert start <= end, f"bad date range: {event['id']}"
+              date.fromisoformat(event['lastVerified'])
+
+          print(f'validated {len(venues)} venues and {len(events)} events')
+          PY
