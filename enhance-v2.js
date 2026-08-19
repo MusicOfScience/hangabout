@@ -180,8 +180,8 @@
       if (clearButton) clearButton.hidden = true;
       if (searchButton) searchButton.hidden = true;
       suppressMovePrompt = true;
-      baseFitMap();
       renderResults();
+      baseFitMap();
       setTimeout(() => { suppressMovePrompt = false; }, 300);
       $('#explorerStatus').textContent = '';
     };
@@ -411,6 +411,7 @@
     const summary = $('#mappedSummary');
     const exact = state.venues.filter(v => v.lat != null && v.lng != null).length;
     if (summary) summary.title = `${exact} exact venue pins; list-only venues can still participate in area search by suburb.`;
+    document.documentElement.dataset.hangaboutV6Ready = 'true';
   }
 
   main().catch(err => {
