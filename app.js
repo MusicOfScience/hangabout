@@ -4,6 +4,8 @@ const MELBOURNE = [-37.8136, 144.9631];
 const MELBOURNE_TZ = 'Australia/Melbourne';
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const DAY_MS = 86400000;
+const FIRESTATION_FALLBACK = 'https://www.stonnington.vic.gov.au/Community/Find-a-community-group/Firestation-Print-Studio';
+const ART_ALMANAC_MELBOURNE = 'https://www.art-almanac.com.au/whats-on/melbourne/';
 const KIND_LABELS = {
   'artist-run': 'artist-run initiative',
   commercial: 'commercial gallery',
@@ -15,6 +17,7 @@ const KIND_LABELS = {
   university: 'university / art-school gallery',
 };
 const KIND_ORDER = ['first-nations-led','artist-run','independent','specialist','contemporary-org','university','municipal','commercial'];
+const RESOURCE_LABELS = { studio:'studio space', workspace:'shared workspace', finder:'live finder' };
 const WEEKDAY_NUMBER = { Sun:0, Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6 };
 
 const $ = s => document.querySelector(s);
@@ -31,6 +34,8 @@ function readSet(key){
 }
 function writeSet(key,set){ try { if (window.localStorage) window.localStorage.setItem(key, JSON.stringify([...set])); } catch {} }
 function safeUrl(value){ try { const u = new URL(value); return /^https?:$/.test(u.protocol) ? u.href : '#'; } catch { return '#'; } }
+function stableVenueUrl(v){ return v?.id==='firestation-print-studio' ? FIRESTATION_FALLBACK : safeUrl(v?.website); }
+function stablePathwayUrl(v,pathway){ return v?.id==='firestation-print-studio' ? FIRESTATION_FALLBACK : safeUrl(pathway?.url); }
 
 function isoUtc(s){ return new Date(`${s}T00:00:00Z`); }
 function dateAdd(s,days){ return new Date(isoUtc(s).getTime()+days*DAY_MS).toISOString().slice(0,10); }
@@ -50,7 +55,7 @@ function melbourneClock(date=new Date()){
 function formatDate(s,opts={day:'numeric',month:'short'}){ return new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',...opts}).format(isoUtc(s)); }
 function formatMinutes(m){ const h=Math.floor(m/60), min=m%60, suffix=h>=12?'pm':'am'; return `${h%12||12}${min?`:${String(min).padStart(2,'0')}`:''}${suffix}`; }
 
-const state={venues:[],events:[],mode:'see',quick:'all',venueType:'all',sort:'closing',query:'',userLocation:null,savedOnly:false,saved:readSet('hangabout:saved'),crawl:readSet('hangabout:crawl'),map:null,mapAvailable:false,markers:new Map(),markerLayer:null,locationLayer:null,makeQuery:'',makeKind:'all',pathwaysOnly:false};
+const state={venues:[],events:[],resources:[],mode:'see',quick:'all',venueType:'all',sort:'closing',query:'',userLocation:null,savedOnly:false,saved:readSet('hangabout:saved'),crawl:readSet('hangabout:crawl'),map:null,mapAvailable:false,markers:new Map(),markerLayer:null,locationLayer:null,makeQuery:'',makeKind:'all'};
 const venueById=id=>state.venues.find(v=>v.id===id);
 const verifiedHours=(v,weekday)=>v?.hoursVerified ? (v.hours?.[String(weekday)]||null) : null;
 const eventCurrent=(e,today)=>e.startDate<=today&&e.endDate>=today;
@@ -132,8 +137,9 @@ function renderResults(){
   $$('.js-detail').forEach(b=>b.onclick=()=>showDetail(b.dataset.id)); $$('.js-save').forEach(b=>b.onclick=()=>toggleSaved(b.dataset.id)); $$('.js-crawl').forEach(b=>b.onclick=()=>toggleCrawl(b.dataset.id));
 }
 function showDetail(id){
-  const e=state.events.find(x=>x.id===id),v=e&&venueById(e.venueId); if(!e||!v)return; const n=navLinks(v), source=safeUrl(e.sourceUrl), web=safeUrl(v.website);
-  $('#detailContent').innerHTML=`<div class="detail-body"><span class="eyebrow">${esc(e.eventType)} · ${esc(KIND_LABELS[v.kind]||v.kind)}</span><h2 id="detailTitle">${esc(e.title)}</h2><p>${esc(e.artists?.join(' · ')||'')}</p><div class="detail-meta"><div><strong>when</strong><br>${formatDate(e.startDate,{day:'numeric',month:'long'})} – ${formatDate(e.endDate,{day:'numeric',month:'long',year:'numeric'})}${e.opening?`<br>opening ${formatDate(e.opening.date)}, ${esc(e.opening.start)}–${esc(e.opening.end)}`:''}</div><div><strong>where</strong><br>${esc(v.name)}<br>${esc(v.address)}</div><div><strong>source</strong><br>${esc(e.sourceName||e.sourceType)} · checked ${esc(e.lastVerified)}</div></div><div class="detail-links"><a href="${source}" target="_blank" rel="noopener">listing source</a><a href="${web}" target="_blank" rel="noopener">venue website</a><a href="${n.google}" target="_blank" rel="noopener">google maps</a><a href="${n.apple}" target="_blank" rel="noopener">apple maps</a><a href="${n.waze}" target="_blank" rel="noopener">waze</a></div></div>`;
+  const e=state.events.find(x=>x.id===id),v=e&&venueById(e.venueId); if(!e||!v)return;
+  const n=navLinks(v), firestation=e.id==='ruth-stanton-undercurrents', source=firestation?ART_ALMANAC_MELBOURNE:safeUrl(e.sourceUrl), web=stableVenueUrl(v), sourceLabel=firestation?'Art Almanac fallback · Firestation source currently unavailable':`${e.sourceName||e.sourceType} · checked ${e.lastVerified}`;
+  $('#detailContent').innerHTML=`<div class="detail-body"><span class="eyebrow">${esc(e.eventType)} · ${esc(KIND_LABELS[v.kind]||v.kind)}</span><h2 id="detailTitle">${esc(e.title)}</h2><p>${esc(e.artists?.join(' · ')||'')}</p><div class="detail-meta"><div><strong>when</strong><br>${formatDate(e.startDate,{day:'numeric',month:'long'})} – ${formatDate(e.endDate,{day:'numeric',month:'long',year:'numeric'})}${e.opening?`<br>opening ${formatDate(e.opening.date)}, ${esc(e.opening.start)}–${esc(e.opening.end)}`:''}</div><div><strong>where</strong><br>${esc(v.name)}<br>${esc(v.address)}</div><div><strong>source</strong><br>${esc(sourceLabel)}</div></div><div class="detail-links"><a href="${source}" target="_blank" rel="noopener">listing source</a><a href="${web}" target="_blank" rel="noopener">venue information</a><a href="${n.google}" target="_blank" rel="noopener">google maps</a><a href="${n.apple}" target="_blank" rel="noopener">apple maps</a><a href="${n.waze}" target="_blank" rel="noopener">waze</a></div></div>`;
   $('#detailDialog').showModal();
 }
 function toggleSaved(id){state.saved.has(id)?state.saved.delete(id):state.saved.add(id);writeSet('hangabout:saved',state.saved);$('#savedCount').textContent=state.saved.size;renderResults();}
@@ -144,22 +150,65 @@ function renderCrawl(){
   const venues=events.map(e=>venueById(e.venueId)).filter(Boolean), destination=venues.at(-1), waypoints=venues.slice(0,-1).map(v=>v.address).join('|'), mode=$('#routeModeSelect')?.value||'walking';
   const p=new URLSearchParams({api:'1',destination:destination.address,travelmode:mode}); if(state.userLocation)p.set('origin',state.userLocation.join(',')); if(waypoints)p.set('waypoints',waypoints); $('#googleRouteLink').href=`https://www.google.com/maps/dir/?${p}`;
 }
-function renderMake(){
-  const q=norm(state.makeQuery), rows=state.venues.filter(v=>(state.makeKind==='all'||v.kind===state.makeKind)&&(!state.pathwaysOnly||v.artistPathways?.length)&&(!q||norm([v.name,v.suburb,v.focus?.join(' '),v.artistPathways?.map(x=>x.label).join(' ')].join(' ')).includes(q))).sort((a,b)=>(KIND_ORDER.indexOf(a.kind)-KIND_ORDER.indexOf(b.kind))||a.name.localeCompare(b.name));
-  $('#makeCount').textContent=`${rows.length} spaces`; $('#venueDirectory').innerHTML=rows.map(v=>`<article class="venue-card"><h3>${esc(v.name)}</h3><p>${esc(v.suburb)} · ${esc(v.address)}</p><p>${esc(v.focus?.join(' · ')||'')}</p>${v.artistPathways?.length?`<p>${v.artistPathways.map(x=>`<a href="${safeUrl(x.url)}" target="_blank" rel="noopener">${esc(x.label)} ↗</a>`).join('<br>')}</p>`:'<p>artist pathway not yet verified</p>'}<div class="venue-kind">${esc(KIND_LABELS[v.kind]||v.kind)}</div><a href="${safeUrl(v.website)}" target="_blank" rel="noopener">visit website ↗</a></article>`).join('');
+function venueMakeCard(v){
+  const pathways=v.artistPathways||[];
+  return `<article class="venue-card"><div class="venue-kind">${esc(KIND_LABELS[v.kind]||v.kind)}</div><h3>${esc(v.name)}</h3><p>${esc(v.suburb)} · ${esc(v.address)}</p><div class="venue-focus">${(v.focus||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="venue-pathways"><strong>${pathways.length?'verified artist pathways':'artist pathway not yet verified'}</strong>${pathways.map(x=>`<a href="${stablePathwayUrl(v,x)}" target="_blank" rel="noopener">${esc(x.label)} ↗</a>`).join('')}<a href="${stableVenueUrl(v)}" target="_blank" rel="noopener">visit / source ↗</a></div></article>`;
 }
-function renderMode(){const see=state.mode==='see';$('.controls').hidden=!see;$('.explorer').hidden=!see;$('#makePanel').hidden=see;$$('.mode-button').forEach(b=>{const on=b.dataset.mode===state.mode;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on));});if(!see)renderMake();setTimeout(()=>state.map?.invalidateSize(),0);}
-function populateKinds(select){for(const k of [...new Set(state.venues.map(v=>v.kind))].sort((a,b)=>KIND_ORDER.indexOf(a)-KIND_ORDER.indexOf(b))){const o=document.createElement('option');o.value=k;o.textContent=KIND_LABELS[k]||k;select.append(o);}}
+function resourceMakeCard(r){
+  return `<article class="venue-card resource-card"><div class="venue-kind">${esc(RESOURCE_LABELS[r.resourceType]||r.resourceType)} · ${esc(r.sourceType)} source</div><h3>${esc(r.name)}</h3><p>${esc(r.suburb)} · ${esc(r.address)}</p><p>${esc(r.summary)}</p>${r.price||r.size?`<p><strong>${esc(r.price||'')}</strong>${r.price&&r.size?' · ':''}${esc(r.size||'')}</p>`:''}<div class="venue-focus"><span>${esc(r.availability)}</span>${(r.tags||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="venue-pathways"><strong>checked ${esc(r.lastVerified)}</strong><a href="${safeUrl(r.website)}" target="_blank" rel="noopener">open ${esc(r.sourceName)} ↗</a></div></article>`;
+}
+function renderMake(){
+  const q=norm(state.makeQuery.trim()), mode=state.makeKind;
+  let venues=state.venues.filter(v=>!q||norm([v.name,v.suburb,v.focus?.join(' '),v.artistPathways?.map(x=>x.label).join(' ')].join(' ')).includes(q));
+  let resources=state.resources.filter(r=>!q||norm([r.name,r.suburb,r.summary,r.tags?.join(' '),r.availability,r.price,r.size].join(' ')).includes(q));
+  if(mode==='resource:studio'){ resources=resources.filter(r=>r.resourceType==='studio'); venues=[]; }
+  else if(mode==='resource:workspace'){ resources=resources.filter(r=>r.resourceType==='workspace'); venues=[]; }
+  else if(mode==='pathways'){ resources=[]; venues=venues.filter(v=>v.artistPathways?.length); }
+  else if(mode==='places'){ resources=[]; }
+  venues.sort((a,b)=>(KIND_ORDER.indexOf(a.kind)-KIND_ORDER.indexOf(b.kind))||a.name.localeCompare(b.name));
+  resources.sort((a,b)=>a.resourceType.localeCompare(b.resourceType)||a.name.localeCompare(b.name));
+  const total=venues.length+resources.length;
+  $('#makeCount').textContent=`${total} ${total===1?'resource':'resources'}`;
+  $('#venueDirectory').innerHTML=[...resources.map(resourceMakeCard),...venues.map(venueMakeCard)].join('') || '<div class="empty-state"><h3>nothing there.</h3><p>Try a wider search or another make-art filter.</p></div>';
+}
+function renderMode(){
+  const see=state.mode==='see';
+  $('.controls').hidden=!see; $('.explorer').hidden=!see; $('#makePanel').hidden=see;
+  $$('.mode-button').forEach(b=>{const on=b.dataset.mode===state.mode;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on));});
+  if(!see) renderMake();
+  setTimeout(()=>state.map?.invalidateSize(),0);
+}
+function populateKinds(select){for(const k of [...new Set(state.events.map(e=>venueById(e.venueId)?.kind).filter(Boolean))].sort((a,b)=>KIND_ORDER.indexOf(a)-KIND_ORDER.indexOf(b))){const o=document.createElement('option');o.value=k;o.textContent=KIND_LABELS[k]||k;select.append(o);}}
 function setQuick(value){state.quick=value;$$('#quickFilters .chip').forEach(b=>{const on=b.dataset.quick===value;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on));});renderResults();}
 function locate({nearby=false,sort=false}={}){ if(!navigator.geolocation){$('#explorerStatus').textContent='Location is not available in this browser.';return;} $('#explorerStatus').textContent='Finding your location…'; navigator.geolocation.getCurrentPosition(pos=>{state.userLocation=[pos.coords.latitude,pos.coords.longitude];$('#explorerStatus').textContent='Location found.'; if(state.mapAvailable){if(state.locationLayer)state.locationLayer.remove();state.locationLayer=L.circleMarker(state.userLocation,{radius:7,weight:2}).addTo(state.map).bindTooltip('you are here');state.map.setView(state.userLocation,13);} if(sort){state.sort='distance';$('#sortSelect').value='distance';} if(nearby)setQuick('nearby'); else renderResults();renderCrawl();},()=>{$('#explorerStatus').textContent='Location permission was not available.';}); }
 function wire(){
-  $$('.mode-button').forEach(b=>b.onclick=()=>{state.mode=b.dataset.mode;renderMode();}); $('#searchInput').oninput=e=>{state.query=e.target.value;renderResults();}; $$('#quickFilters .chip').forEach(b=>b.onclick=()=>b.dataset.quick==='nearby'&&!state.userLocation?locate({nearby:true}):setQuick(b.dataset.quick)); $('#venueTypeSelect').onchange=e=>{state.venueType=e.target.value;renderResults();}; $('#sortSelect').onchange=e=>{if(e.target.value==='distance'&&!state.userLocation){locate({sort:true});return;}state.sort=e.target.value;renderResults();}; $('#savedOnlyButton').onclick=()=>{state.savedOnly=!state.savedOnly;$('#savedOnlyButton').setAttribute('aria-pressed',String(state.savedOnly));renderResults();}; $('#fitMapButton').onclick=fitMap; $('#locateButton').onclick=()=>locate(); $('#toggleMapButton').onclick=()=>{const hidden=$('.explorer').classList.toggle('map-hidden');$('#toggleMapButton').textContent=hidden?'show map':'hide map';$('#toggleMapButton').setAttribute('aria-expanded',String(!hidden));if(!hidden)state.map?.invalidateSize();}; $('#clearCrawlButton').onclick=()=>{state.crawl.clear();writeSet('hangabout:crawl',state.crawl);renderCrawl();renderResults();}; $('#routeModeSelect').onchange=renderCrawl; $('#closeDialogButton').onclick=()=>$('#detailDialog').close(); $('#makeSearchInput').oninput=e=>{state.makeQuery=e.target.value;renderMake();}; $('#makeKindSelect').onchange=e=>{state.makeKind=e.target.value;renderMake();}; $('#pathwaysOnlyInput').onchange=e=>{state.pathwaysOnly=e.target.checked;renderMake();};
+  $$('.mode-button').forEach(b=>b.onclick=()=>{state.mode=b.dataset.mode;renderMode();});
+  $('#searchInput').oninput=e=>{state.query=e.target.value;renderResults();};
+  $$('#quickFilters .chip').forEach(b=>b.onclick=()=>b.dataset.quick==='nearby'&&!state.userLocation?locate({nearby:true}):setQuick(b.dataset.quick));
+  $('#venueTypeSelect').onchange=e=>{state.venueType=e.target.value;renderResults();};
+  $('#sortSelect').onchange=e=>{if(e.target.value==='distance'&&!state.userLocation){locate({sort:true});return;}state.sort=e.target.value;renderResults();};
+  $('#savedOnlyButton').onclick=()=>{state.savedOnly=!state.savedOnly;$('#savedOnlyButton').setAttribute('aria-pressed',String(state.savedOnly));renderResults();};
+  $('#fitMapButton').onclick=fitMap; $('#locateButton').onclick=()=>locate();
+  $('#toggleMapButton').onclick=()=>{const hidden=$('.explorer').classList.toggle('map-hidden');$('#toggleMapButton').textContent=hidden?'show map':'hide map';$('#toggleMapButton').setAttribute('aria-expanded',String(!hidden));if(!hidden)state.map?.invalidateSize();};
+  $('#clearCrawlButton').onclick=()=>{state.crawl.clear();writeSet('hangabout:crawl',state.crawl);renderCrawl();renderResults();};
+  $('#routeModeSelect').onchange=renderCrawl; $('#closeDialogButton').onclick=()=>$('#detailDialog').close();
+  $('#makeSearchInput').oninput=e=>{state.makeQuery=e.target.value;renderMake();};
+  $('#makeKindSelect').onchange=e=>{state.makeKind=e.target.value;renderMake();};
 }
 function fatal(err){console.error(err); const msg='hangabout could not start. Please reload; if this persists, send us this screen.'; if($('#explorerStatus'))$('#explorerStatus').textContent=msg; if($('#resultsList'))$('#resultsList').innerHTML=`<div class="empty-state"><h3>the listings didn’t load.</h3><p>${esc(err?.message||msg)}</p></div>`; if($('#mapFallback')){$('#map').hidden=true;$('#mapFallback').hidden=false;} }
 async function boot(){
   $('#dateLabel').textContent=new Intl.DateTimeFormat('en-AU',{timeZone:MELBOURNE_TZ,weekday:'short',day:'numeric',month:'short'}).format(new Date()).toLowerCase();
-  const [vr,er]=await Promise.all([fetch('./data/venues.json?v=3',{cache:'no-store'}),fetch('./data/events.json?v=3',{cache:'no-store'})]); if(!vr.ok||!er.ok)throw new Error(`data request failed (${vr.status}/${er.status})`); [state.venues,state.events]=await Promise.all([vr.json(),er.json()]);
-  populateKinds($('#venueTypeSelect'));populateKinds($('#makeKindSelect'));wire();initMap();$('#savedCount').textContent=state.saved.size;const latest=[...state.venues,...state.events].map(x=>x.lastVerified).filter(Boolean).sort().at(-1);$('#dataStamp').textContent=`${state.events.length} listings · ${state.venues.length} spaces · last checked ${latest}`;renderMode();renderResults();renderCrawl();requestAnimationFrame(fitMap);document.documentElement.dataset.hangaboutReady='true';
+  const [vr,er,rr]=await Promise.all([
+    fetch('./data/venues.json?v=4',{cache:'no-store'}),
+    fetch('./data/events.json?v=4',{cache:'no-store'}),
+    fetch('./data/make-resources.json?v=4',{cache:'no-store'})
+  ]);
+  if(!vr.ok||!er.ok||!rr.ok) throw new Error(`data request failed (${vr.status}/${er.status}/${rr.status})`);
+  [state.venues,state.events,state.resources]=await Promise.all([vr.json(),er.json(),rr.json()]);
+  populateKinds($('#venueTypeSelect')); wire(); initMap(); $('#savedCount').textContent=state.saved.size;
+  const latest=[...state.venues,...state.events,...state.resources].map(x=>x.lastVerified).filter(Boolean).sort().at(-1);
+  $('#dataStamp').textContent=`${state.events.length} listings · ${state.venues.length} art spaces · ${state.resources.length} make-art resources · last checked ${latest}`;
+  renderMode(); renderResults(); renderCrawl(); requestAnimationFrame(fitMap); document.documentElement.dataset.hangaboutReady='true';
 }
 
 boot().catch(fatal);
