@@ -26,7 +26,8 @@ jobs:
         with:
           node-version: '22'
       - run: python scripts/validate_data.py
-      - run: node --check app.js
+      - run: node --check app.js && node --check lib/time.js
+      - run: node scripts/test_time.mjs
 
   build:
     needs: verify
@@ -39,6 +40,7 @@ jobs:
           mkdir _site
           cp index.html styles.css app.js _site/
           cp -R data _site/data
+          cp -R lib _site/lib
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

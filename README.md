@@ -15,7 +15,7 @@ The first release candidate includes:
 - filters for **open now**, **open today**, **this weekend**, opening events, closing soon, free entry and within 5 km
 - Melbourne-time opening logic using only hours that have been checked against a first-party source
 - saved shows stored locally in the browser
-- a multi-stop **your crawl** route handed off to Google Maps, with walking, public transport, cycling and driving modes
+- a multi-stop **your crawl** route handed off to Google Maps for walking, cycling and driving; public transport remains a single-destination navigation choice rather than a falsely supported multi-stop optimiser
 - per-venue Google Maps, Apple Maps and Waze links using canonical street addresses
 - a separate **make art** directory with focus areas, access notes and verified artist pathways where known
 - explicit listing provenance: official source vs directory source, source URL and last-checked date
@@ -32,16 +32,19 @@ The seed dataset is deliberately finite and editorially checked. It is a product
 5. **Melbourne is a scope, not the architecture.** City-specific data is separate from application behaviour.
 6. **No account required.** Saves and crawl choices are local-first until a backend solves a real problem.
 7. **No maturity theatre.** No PWA/offline claims, recommendation AI or account system until those features are genuinely useful and supported.
+8. **Infrastructure is provisional at prototype scale.** The standard OpenStreetMap raster tile service is used only for low-volume prototyping under its usage policy. Before meaningful traffic, offline use or a production launch, `hangabout` should move to an appropriate tile provider or self-hosted strategy.
 
 ## structure
 
 ```text
 index.html                       # semantic application shell
 styles.css                       # editorial visual system + responsive layout
-app.js                           # filters, time logic, map, saves, crawl, artist directory
+app.js                           # filters, map, saves, crawl, artist directory
+lib/time.js                      # pure/tested calendar semantics
 data/venues.json                 # canonical venue registry
 data/events.json                 # event records + provenance
 scripts/validate_data.py         # data-contract validation
+scripts/test_time.mjs            # calendar edge-case tests
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
 docs/hostile-review.md           # decisions from the adversarial v0 review
@@ -53,7 +56,8 @@ There is deliberately no build step for this prototype.
 
 ```bash
 python3 scripts/validate_data.py
-node --check app.js
+node --check app.js && node --check lib/time.js
+node scripts/test_time.mjs
 python3 -m http.server 8080
 ```
 

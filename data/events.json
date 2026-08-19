@@ -1,20 +1,428 @@
 [
-{"id":"margaret-ackland-reflections","venueId":"flinders-lane-gallery","title":"Reflections","artists":["Margaret Ackland"],"startDate":"2026-08-18","endDate":"2026-09-12","eventType":"exhibition","tags":["painting","watercolour"],"admission":"free","opening":{"date":"2026-08-22","start":"13:00","end":"15:00"},"sourceName":"Flinders Lane Gallery","sourceType":"official","sourceUrl":"https://www.flg.com.au/exhibition/reflections26","lastVerified":"2026-08-19"},
-{"id":"sal-cooper-trudy-clutterbok","venueId":"fortyfivedownstairs","title":"Sometimes you want to lift peoples up. And shake them. And kiss them","artists":["Sal Cooper","Trudy Clutterbok"],"startDate":"2026-08-11","endDate":"2026-08-22","eventType":"exhibition","tags":["monotype","mixed media"],"admission":"free","sourceName":"fortyfivedownstairs","sourceType":"official","sourceUrl":"https://fortyfivedownstairs.com/","lastVerified":"2026-08-19"},
-{"id":"acca-lonely-tonight","venueId":"acca","title":"Are you lonely tonight? I’m so lonesome I could cry","artists":["Gideon Appah","Polly Borland","Seth Brown","Lucy Liu","Natasha Matila-Smith","Kayla Mattes","Callum McGrath","Nick Mullaly","Melissa Nguyen","Patrick Pound","Kelly Yu"],"startDate":"2026-07-03","endDate":"2026-08-30","eventType":"exhibition","tags":["contemporary","group exhibition","art and emotion"],"admission":"free","sourceName":"ACCA","sourceType":"official","sourceUrl":"https://acca.melbourne/exhibition/are-you-lonely-tonight-im-so-lonesome-i-could-cry/","lastVerified":"2026-08-19"},
-{"id":"majlis-travelling-fellowship-2026","venueId":"fiona-sidney-myer-gallery","title":"2026 Majlis Travelling Fellowship Exhibition","artists":["VCA shortlisted students"],"startDate":"2026-08-07","endDate":"2026-08-22","eventType":"graduate / student exhibition","tags":["emerging artists","student work","VCA"],"admission":"free","opening":{"date":"2026-08-13","start":"17:30","end":"19:30"},"sourceName":"University of Melbourne","sourceType":"official","sourceUrl":"https://finearts-music.unimelb.edu.au/events/fsmg/2026-majlis-travelling-fellowship-exhibition","lastVerified":"2026-08-19"},
-{"id":"jenny-bell-paddock-poems","venueId":"australian-galleries","title":"Paddock Poems","artists":["Jenny Bell"],"startDate":"2026-08-18","endDate":"2026-09-05","eventType":"exhibition","tags":["contemporary"],"admission":"free","sourceName":"Art Almanac","sourceType":"directory","sourceUrl":"https://www.art-almanac.com.au/whats-on/melbourne/","lastVerified":"2026-08-19"},
-{"id":"naminapu-maymuru-white","venueId":"sullivan-strumpf","title":"Miḻŋthun ŋayi yukurra ŋilimurruŋgala (They are shining on us)","artists":["Naminapu Maymuru-White"],"startDate":"2026-07-25","endDate":"2026-08-22","eventType":"exhibition","tags":["First Nations","painting"],"admission":"free","sourceName":"Art Almanac","sourceType":"directory","sourceUrl":"https://www.art-almanac.com.au/whats-on/melbourne/","lastVerified":"2026-08-19"},
-{"id":"rick-amor-2026","venueId":"niagara-galleries","title":"Rick Amor","artists":["Rick Amor"],"startDate":"2026-08-19","endDate":"2026-09-12","eventType":"exhibition","tags":["painting","works on paper"],"admission":"free","sourceName":"Niagara Galleries","sourceType":"official","sourceUrl":"https://niagaragalleries.com.au/category/exhibition/page/2/","lastVerified":"2026-08-19"},
-{"id":"mirka-mora-state-of-pink","venueId":"william-mora-galleries","title":"The State of Pink","artists":["Mirka Mora"],"startDate":"2026-08-06","endDate":"2026-09-04","eventType":"exhibition","tags":["painting","Melbourne"],"admission":"free","sourceName":"Art Almanac","sourceType":"directory","sourceUrl":"https://www.art-almanac.com.au/whats-on/melbourne/","lastVerified":"2026-08-19"},
-{"id":"stefan-dunlop-strange-taxidermy","venueId":"scott-livesey-galleries","title":"Strange Taxidermy of Time","artists":["Stefan Dunlop"],"startDate":"2026-08-01","endDate":"2026-08-22","eventType":"exhibition","tags":["painting"],"admission":"free","sourceName":"Art Almanac","sourceType":"directory","sourceUrl":"https://www.art-almanac.com.au/whats-on/melbourne/","lastVerified":"2026-08-19"},
-{"id":"dupain-adams-perfection","venueId":"bayside-gallery","title":"Max Dupain and Ansel Adams: In search of perfection","artists":["Max Dupain","Ansel Adams"],"startDate":"2026-06-27","endDate":"2026-08-30","eventType":"touring exhibition","tags":["photography","modernism"],"admission":"free","sourceName":"Art Almanac","sourceType":"directory","sourceUrl":"https://www.art-almanac.com.au/whats-on/melbourne/","lastVerified":"2026-08-19"},
-{"id":"water-bodies","venueId":"kingston-arts-centre","title":"Water bodies","artists":["Nici Cumpston","Mandy Quadrio","Auntie Netty Shaw","Aunty Dyan Summers","Judy Watson","Lisa Waup"],"startDate":"2026-07-03","endDate":"2026-08-29","eventType":"exhibition","tags":["First Peoples","water","climate","Country"],"admission":"free","sourceName":"Kingston Arts","sourceType":"official","sourceUrl":"https://www.kingstonarts.com.au/whats-on/water-bodies-exhibition","lastVerified":"2026-08-19"},
-{"id":"anthea-kemp-found-behind","venueId":"linden-new-art","title":"What’s found behind and stays attached","artists":["Anthea Kemp"],"startDate":"2026-08-20","endDate":"2026-09-27","eventType":"exhibition","tags":["contemporary"],"admission":"free","sourceName":"Art Almanac","sourceType":"directory","sourceUrl":"https://www.art-almanac.com.au/whats-on/melbourne/","lastVerified":"2026-08-19"},
-{"id":"juncture-art-prize-2026","venueId":"linden-new-art","title":"Juncture Art Prize","artists":["Gian Manik","Sarah CrowEST"],"startDate":"2026-08-20","endDate":"2026-11-09","eventType":"art prize","tags":["art prize","contemporary"],"admission":"free","sourceName":"Linden New Art","sourceType":"official","sourceUrl":"https://www.lindenarts.org/juncture-art-prize/","lastVerified":"2026-08-19"},
-{"id":"nathanael-edwards-weight-of-silence","venueId":"vivien-anderson-gallery","title":"The Weight of Silence","artists":["Nathanael Edwards"],"startDate":"2026-08-19","endDate":"2026-09-19","eventType":"exhibition","tags":["contemporary"],"admission":"free","sourceName":"Vivien Anderson Gallery","sourceType":"official","sourceUrl":"https://vivienandersongallery.com/exhibition/","lastVerified":"2026-08-19"},
-{"id":"gertrude-waiho-i-te-toipoto","venueId":"gertrude-glasshouse","title":"Waiho i te toipoto (keep close together)","artists":["Renee Cosgrave","Maia Kreisler"],"startDate":"2026-08-08","endDate":"2026-09-05","eventType":"exhibition","tags":["painting","whakapapa","contemporary"],"admission":"free","opening":{"date":"2026-08-15","start":"15:00","end":"17:00"},"sourceName":"Gertrude","sourceType":"official","sourceUrl":"https://gertrude.org.au/exhibition/waiho-i-te-toipoto-keep-close-together/","lastVerified":"2026-08-19"},
-{"id":"blak-dot-after-spectacle","venueId":"blak-dot-gallery","title":"After Spectacle: Photography, Authority and the Archive","artists":["Kirsten Garner Lyttle"],"startDate":"2026-08-01","endDate":"2026-08-23","eventType":"exhibition","tags":["photography","archive","First Nations-led space"],"admission":"free","sourceName":"Blak Dot Gallery","sourceType":"official","sourceUrl":"https://blakdot.com.au/exhibitions/","lastVerified":"2026-08-19"},
-{"id":"blak-dot-reassociate","venueId":"blak-dot-gallery","title":"Reassociate","artists":["Yasuko Toda"],"startDate":"2026-08-01","endDate":"2026-08-23","eventType":"exhibition","tags":["animation","archive","hariko"],"admission":"free","sourceName":"Blak Dot Gallery","sourceType":"official","sourceUrl":"https://blakdot.com.au/exhibitions/","lastVerified":"2026-08-19"},
-{"id":"west-space-language-to-reach-with","venueId":"west-space","title":"language to reach with","artists":["Moorina Bonini","Chi Tran","Nithya Iyer","Tahmina Maskinyar"],"startDate":"2026-08-22","endDate":"2026-10-24","eventType":"exhibition","tags":["contemporary","group exhibition"],"admission":"free","sourceName":"West Space","sourceType":"official","sourceUrl":"https://westspace.org.au/whats-on/","lastVerified":"2026-08-19"}
+  {
+    "id": "margaret-ackland-reflections",
+    "venueId": "flinders-lane-gallery",
+    "title": "Reflections",
+    "artists": [
+      "Margaret Ackland"
+    ],
+    "startDate": "2026-08-18",
+    "endDate": "2026-09-12",
+    "eventType": "exhibition",
+    "tags": [
+      "painting",
+      "watercolour"
+    ],
+    "admission": "unknown",
+    "opening": {
+      "date": "2026-08-22",
+      "start": "13:00",
+      "end": "15:00"
+    },
+    "sourceName": "Flinders Lane Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://www.flg.com.au/exhibition/reflections26",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "sal-cooper-trudy-clutterbok",
+    "venueId": "fortyfivedownstairs",
+    "title": "Sometimes you want to lift peoples up. And shake them. And kiss them",
+    "artists": [
+      "Sal Cooper",
+      "Trudy Clutterbok"
+    ],
+    "startDate": "2026-08-11",
+    "endDate": "2026-08-22",
+    "eventType": "exhibition",
+    "tags": [
+      "monotype",
+      "mixed media"
+    ],
+    "admission": "unknown",
+    "sourceName": "fortyfivedownstairs",
+    "sourceType": "official",
+    "sourceUrl": "https://fortyfivedownstairs.com/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "acca-lonely-tonight",
+    "venueId": "acca",
+    "title": "Are you lonely tonight? I’m so lonesome I could cry",
+    "artists": [
+      "Gideon Appah",
+      "Polly Borland",
+      "Seth Brown",
+      "Lucy Liu",
+      "Natasha Matila-Smith",
+      "Kayla Mattes",
+      "Callum McGrath",
+      "Nick Mullaly",
+      "Melissa Nguyen",
+      "Patrick Pound",
+      "Kelly Yu"
+    ],
+    "startDate": "2026-07-03",
+    "endDate": "2026-08-30",
+    "eventType": "exhibition",
+    "tags": [
+      "contemporary",
+      "group exhibition",
+      "art and emotion"
+    ],
+    "admission": "free",
+    "sourceName": "ACCA",
+    "sourceType": "official",
+    "sourceUrl": "https://acca.melbourne/exhibition/are-you-lonely-tonight-im-so-lonesome-i-could-cry/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "majlis-travelling-fellowship-2026",
+    "venueId": "fiona-sidney-myer-gallery",
+    "title": "2026 Majlis Travelling Fellowship Exhibition",
+    "artists": [
+      "VCA shortlisted students"
+    ],
+    "startDate": "2026-08-07",
+    "endDate": "2026-08-22",
+    "eventType": "graduate / student exhibition",
+    "tags": [
+      "emerging artists",
+      "student work",
+      "VCA"
+    ],
+    "admission": "unknown",
+    "opening": {
+      "date": "2026-08-13",
+      "start": "17:30",
+      "end": "19:30"
+    },
+    "sourceName": "University of Melbourne",
+    "sourceType": "official",
+    "sourceUrl": "https://finearts-music.unimelb.edu.au/events/fsmg/2026-majlis-travelling-fellowship-exhibition",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "jenny-bell-paddock-poems",
+    "venueId": "australian-galleries",
+    "title": "Paddock Poems",
+    "artists": [
+      "Jenny Bell"
+    ],
+    "startDate": "2026-08-18",
+    "endDate": "2026-09-05",
+    "eventType": "exhibition",
+    "tags": [
+      "contemporary"
+    ],
+    "admission": "unknown",
+    "sourceName": "Art Almanac",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.art-almanac.com.au/whats-on/melbourne/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "naminapu-maymuru-white",
+    "venueId": "sullivan-strumpf",
+    "title": "Miḻŋthun ŋayi yukurra ŋilimurruŋgala (They are shining on us)",
+    "artists": [
+      "Naminapu Maymuru-White"
+    ],
+    "startDate": "2026-07-25",
+    "endDate": "2026-08-22",
+    "eventType": "exhibition",
+    "tags": [
+      "First Nations",
+      "painting"
+    ],
+    "admission": "unknown",
+    "sourceName": "Art Almanac",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.art-almanac.com.au/whats-on/melbourne/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "rick-amor-2026",
+    "venueId": "niagara-galleries",
+    "title": "Rick Amor",
+    "artists": [
+      "Rick Amor"
+    ],
+    "startDate": "2026-08-19",
+    "endDate": "2026-09-12",
+    "eventType": "exhibition",
+    "tags": [
+      "painting",
+      "works on paper"
+    ],
+    "admission": "unknown",
+    "sourceName": "Niagara Galleries",
+    "sourceType": "official",
+    "sourceUrl": "https://niagaragalleries.com.au/category/exhibition/page/2/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "mirka-mora-state-of-pink",
+    "venueId": "william-mora-galleries",
+    "title": "The State of Pink",
+    "artists": [
+      "Mirka Mora"
+    ],
+    "startDate": "2026-08-06",
+    "endDate": "2026-09-04",
+    "eventType": "exhibition",
+    "tags": [
+      "painting",
+      "Melbourne"
+    ],
+    "admission": "unknown",
+    "sourceName": "Art Almanac",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.art-almanac.com.au/whats-on/melbourne/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "stefan-dunlop-strange-taxidermy",
+    "venueId": "scott-livesey-galleries",
+    "title": "Strange Taxidermy of Time",
+    "artists": [
+      "Stefan Dunlop"
+    ],
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-22",
+    "eventType": "exhibition",
+    "tags": [
+      "painting"
+    ],
+    "admission": "unknown",
+    "sourceName": "Art Almanac",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.art-almanac.com.au/whats-on/melbourne/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "dupain-adams-perfection",
+    "venueId": "bayside-gallery",
+    "title": "Max Dupain and Ansel Adams: In search of perfection",
+    "artists": [
+      "Max Dupain",
+      "Ansel Adams"
+    ],
+    "startDate": "2026-06-27",
+    "endDate": "2026-08-30",
+    "eventType": "touring exhibition",
+    "tags": [
+      "photography",
+      "modernism"
+    ],
+    "admission": "unknown",
+    "sourceName": "Art Almanac",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.art-almanac.com.au/whats-on/melbourne/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "water-bodies",
+    "venueId": "kingston-arts-centre",
+    "title": "Water bodies",
+    "artists": [
+      "Nici Cumpston",
+      "Mandy Quadrio",
+      "Auntie Netty Shaw",
+      "Aunty Dyan Summers",
+      "Judy Watson",
+      "Lisa Waup"
+    ],
+    "startDate": "2026-07-03",
+    "endDate": "2026-08-29",
+    "eventType": "exhibition",
+    "tags": [
+      "First Peoples",
+      "water",
+      "climate",
+      "Country"
+    ],
+    "admission": "free",
+    "sourceName": "Kingston Arts",
+    "sourceType": "official",
+    "sourceUrl": "https://www.kingstonarts.com.au/whats-on/water-bodies-exhibition",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "anthea-kemp-found-behind",
+    "venueId": "linden-new-art",
+    "title": "What’s found behind and stays attached",
+    "artists": [
+      "Anthea Kemp"
+    ],
+    "startDate": "2026-08-20",
+    "endDate": "2026-09-27",
+    "eventType": "exhibition",
+    "tags": [
+      "contemporary"
+    ],
+    "admission": "unknown",
+    "sourceName": "Art Almanac",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.art-almanac.com.au/whats-on/melbourne/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "juncture-art-prize-2026",
+    "venueId": "linden-new-art",
+    "title": "Juncture Art Prize",
+    "artists": [
+      "Gian Manik",
+      "Sarah CrowEST"
+    ],
+    "startDate": "2026-08-20",
+    "endDate": "2026-11-09",
+    "eventType": "art prize",
+    "tags": [
+      "art prize",
+      "contemporary"
+    ],
+    "admission": "free",
+    "sourceName": "Linden New Art",
+    "sourceType": "official",
+    "sourceUrl": "https://www.lindenarts.org/juncture-art-prize/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "nathanael-edwards-weight-of-silence",
+    "venueId": "vivien-anderson-gallery",
+    "title": "The Weight of Silence",
+    "artists": [
+      "Nathanael Edwards"
+    ],
+    "startDate": "2026-08-19",
+    "endDate": "2026-09-19",
+    "eventType": "exhibition",
+    "tags": [
+      "contemporary"
+    ],
+    "admission": "unknown",
+    "sourceName": "Vivien Anderson Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://vivienandersongallery.com/exhibition/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "gertrude-waiho-i-te-toipoto",
+    "venueId": "gertrude-glasshouse",
+    "title": "Waiho i te toipoto (keep close together)",
+    "artists": [
+      "Renee Cosgrave",
+      "Maia Kreisler"
+    ],
+    "startDate": "2026-08-08",
+    "endDate": "2026-09-05",
+    "eventType": "exhibition",
+    "tags": [
+      "painting",
+      "whakapapa",
+      "contemporary"
+    ],
+    "admission": "free",
+    "opening": {
+      "date": "2026-08-15",
+      "start": "15:00",
+      "end": "17:00"
+    },
+    "sourceName": "Gertrude",
+    "sourceType": "official",
+    "sourceUrl": "https://gertrude.org.au/exhibition/waiho-i-te-toipoto-keep-close-together/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "blak-dot-after-spectacle",
+    "venueId": "blak-dot-gallery",
+    "title": "After Spectacle: Photography, Authority and the Archive",
+    "artists": [
+      "Kirsten Garner Lyttle"
+    ],
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-23",
+    "eventType": "exhibition",
+    "tags": [
+      "photography",
+      "archive",
+      "First Nations-led space"
+    ],
+    "admission": "unknown",
+    "sourceName": "Blak Dot Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://blakdot.com.au/exhibitions/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "blak-dot-reassociate",
+    "venueId": "blak-dot-gallery",
+    "title": "Reassociate",
+    "artists": [
+      "Yasuko Toda"
+    ],
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-23",
+    "eventType": "exhibition",
+    "tags": [
+      "animation",
+      "archive",
+      "hariko"
+    ],
+    "admission": "unknown",
+    "sourceName": "Blak Dot Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://blakdot.com.au/exhibitions/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "west-space-language-to-reach-with",
+    "venueId": "west-space",
+    "title": "language to reach with",
+    "artists": [
+      "Moorina Bonini",
+      "Chi Tran",
+      "Nithya Iyer",
+      "Tahmina Maskinyar"
+    ],
+    "startDate": "2026-08-22",
+    "endDate": "2026-10-24",
+    "eventType": "exhibition",
+    "tags": [
+      "contemporary",
+      "group exhibition"
+    ],
+    "admission": "free",
+    "sourceName": "West Space",
+    "sourceType": "official",
+    "sourceUrl": "https://westspace.org.au/whats-on/",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "id": "ruth-stanton-undercurrents",
+    "venueId": "firestation-print-studio",
+    "title": "Undercurrents",
+    "artists": [
+      "Ruth Stanton"
+    ],
+    "startDate": "2026-08-19",
+    "endDate": "2026-09-05",
+    "eventType": "exhibition",
+    "tags": [
+      "printmaking",
+      "etching",
+      "ceramics"
+    ],
+    "admission": "unknown",
+    "opening": {
+      "date": "2026-08-20",
+      "start": "18:00",
+      "end": "20:00"
+    },
+    "sourceName": "Firestation Print Studio",
+    "sourceType": "official",
+    "sourceUrl": "https://www.fps.org.au/gallery-calendar-2026.html",
+    "lastVerified": "2026-08-19"
+  }
 ]

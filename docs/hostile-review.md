@@ -18,7 +18,7 @@ The first build treated “today” as “the exhibition date range includes tod
 
 The first route used a nearest-neighbour approximation, hard-coded driving, ignored opening hours and allowed multiple selected exhibitions at one venue to create duplicate stops.
 
-**Decision:** keep the useful interaction but describe it accurately. One stop per venue, approximate proximity ordering, selectable transport mode, address-based handoff to Google Maps, and an explicit instruction to check hours. It is not presented as an optimal itinerary.
+**Decision:** keep the useful interaction but describe it accurately. One stop per venue, approximate proximity ordering, address-based handoff to Google Maps, walking/cycling/driving for multi-stop crawls, and an explicit instruction to check hours. Public transport remains a single-destination navigation choice rather than a falsely supported multi-stop optimiser.
 
 ### 3. location filters failed silently
 
@@ -38,11 +38,11 @@ A generic “source: Art Almanac / venue data” note hid the difference between
 
 **Decision:** each event carries source name, source type, source URL and verification date. The UI labels official vs directory sources. First-party data is preferred for hours, access and artist pathways.
 
-### 6. seed-data errors proved the need for the model
+### 6. the review itself can be wrong
 
-The review caught material inaccuracies in the seed corpus, including an expired Firestation Print Studio exhibition being presented as current and an incorrect ACCA start date.
+The first hostile pass correctly caught an incorrect ACCA start date, but it also incorrectly removed Firestation Print Studio’s *Undercurrents* after conflating it with the preceding exhibition, which ended on 15 August. A second first-party check showed *Undercurrents* actually runs 19 August–5 September 2026.
 
-**Decision:** remove/correct the records, deepen first-party verification, and make deployment depend on a reusable data validator. “More listings” is not a success metric if confidence falls.
+**Decision:** an adversarial review is not evidence by itself. Exact first-party event pages outrank inference, snippets and memory. The Firestation record was restored from its official 2026 calendar, the ACCA record was corrected, and deployment depends on a reusable data validator. “More listings” is not a success metric if confidence falls, but neither is aggressive deletion without source-level verification.
 
 ### 7. map availability was a single point of failure
 
@@ -67,6 +67,30 @@ The first `make art` cards offered generic phrases such as “represented artist
 The original Pages job could deploy independently of the validation workflow and uploaded the entire repository directory.
 
 **Decision:** the deployment workflow now runs its own verify gate, stages only production static assets into `_site`, then deploys. PR validation remains separate for fast review feedback.
+
+### 11. edge cases must match ordinary language
+
+A second logic pass caught two calendar semantics that were technically plausible but user-hostile: on a Sunday, “this weekend” jumped forward to the following weekend, and an opening-event filter kept showing an opening after its event time had already ended that day.
+
+**Decision:** Sunday belongs to the weekend currently in progress, same-day opening events expire after their listed end time, and an opening happening today can take precedence over a later formal exhibition start date in the status label. These semantics are now unit-tested.
+
+### 12. free entry is not a default
+
+The first seed set inherited `free: true` too broadly, including directory-sourced listings and first-party pages that did not explicitly state admission.
+
+**Decision:** admission is `free`, `paid` or `unknown`. `free` is only asserted where a first-party source explicitly supports it; otherwise the UI says unknown and the free filter stays conservative.
+
+### 13. navigation handoff must respect provider limits
+
+The first revision offered public transport as a multi-stop crawl mode. Google Maps URLs support transit as a travel mode, but intermediate waypoints are not consistently supported across products and platforms, and Google’s routing documentation excludes transit waypoints in its directions service.
+
+**Decision:** the v0 multi-stop crawl offers walking, cycling and driving only. Single-destination Google Maps links do not force a mode, so the user can choose public transport there. `hangabout` will not label an unreliable multi-stop PT handoff as a functioning route planner.
+
+### 14. the map backend is prototype infrastructure
+
+The first shell used Leaflet against a legacy-style OpenStreetMap subdomain template. The current OSM tile policy specifies the canonical standard-tile URL and makes clear that the community-funded tile service is best-effort rather than production infrastructure for heavy use.
+
+**Decision:** use the canonical OSM tile URL, keep visible attribution, make the tile endpoint a single replaceable constant, and treat this service as low-volume prototype infrastructure only. A real traffic or offline requirement triggers a provider/self-host decision rather than silent load growth.
 
 ## deliberately not added
 

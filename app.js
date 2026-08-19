@@ -1,3 +1,5 @@
+import { dateDiff, weekendDates, clockStringToMinutes, openingWithinDays, isoToUtc } from './lib/time.js';
+
 const state = {
   venues: [],
   events: [],
@@ -22,7 +24,7 @@ const state = {
 
 const MELBOURNE = [-37.8136, 144.9631];
 const MELBOURNE_TZ = 'Australia/Melbourne';
-const DAY_MS = 86_400_000;
+const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const KIND_LABELS = {
   'artist-run': 'artist-run initiative',
   'commercial': 'commercial gallery',
@@ -65,10 +67,6 @@ function safeUrl(value) {
     return '#';
   }
 }
-
-function isoToUtc(dateString) { return new Date(`${dateString}T00:00:00Z`); }
-function dateAdd(dateString, days) { return new Date(isoToUtc(dateString).getTime() + days * DAY_MS).toISOString().slice(0, 10); }
-function dateDiff(from, to) { return Math.round((isoToUtc(to) - isoToUtc(from)) / DAY_MS); }
 
 function melbourneClock(date = new Date()) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-AU', {
@@ -127,12 +125,6 @@ function humanHoursForDay(venue, weekday) {
   return hours ? `${formatMinutes(hours[0])}–${formatMinutes(hours[1])}` : 'closed';
 }
 
-function weekendDates(today = melbourneClock().date, weekday = melbourneClock().weekday) {
-  const daysUntilSaturday = (6 - weekday + 7) % 7;
-  const saturday = dateAdd(today, daysUntilSaturday);
-  return [saturday, dateAdd(saturday, 1)];
-}
-
 function eventAvailableThisWeekend(event) {
   const clock = melbourneClock();
   const [saturday, sunday] = weekendDates(clock.date, clock.weekday);
@@ -145,9 +137,7 @@ function eventAvailableThisWeekend(event) {
 }
 
 function eventOpeningSoon(event) {
-  if (!event.opening) return false;
-  const days = dateDiff(melbourneClock().date, event.opening.date);
-  return days >= 0 && days <= 7;
+  return openingWithinDays(event.opening, melbourneClock(), 7);
 }
 
 function eventClosingSoon(event) {
@@ -216,6 +206,9 @@ function filteredEvents() {
 
 function statusFor(event, venue) {
   const clock = melbourneClock();
+  if (event.opening?.date === clock.date && clockStringToMinutes(event.opening.end) > clock.minutes) {
+    return { label: `opening today · ${formatClockRange(event.opening.start, event.opening.end)}`, cls: 'status-open' };
+  }
   if (event.startDate > clock.date) return { label: `opens ${formatDate(event.startDate)}`, cls: 'status-unknown' };
   if (!venue.hoursVerified) return { label: 'hours unverified', cls: 'status-unknown' };
   const hours = verifiedHoursFor(venue, clock.weekday);
@@ -247,9 +240,9 @@ function initialiseMap() {
 
   state.mapAvailable = true;
   state.map = window.L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView(MELBOURNE, 12);
-  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  window.L.tileLayer(OSM_TILE_URL, {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>',
   }).addTo(state.map);
   state.markerLayer = window.L.layerGroup().addTo(state.map);
 }
@@ -288,8 +281,9 @@ function highlightVenue(venueId, scroll = false) {
   if (scroll) document.querySelector(`.result-card[data-venue-id="${CSS.escape(venueId)}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function googleDirectionsUrl(venue, travelmode = 'driving') {
-  const params = new URLSearchParams({ api: '1', destination: venue.address, travelmode });
+function googleDirectionsUrl(venue, travelmode = null) {
+  const params = new URLSearchParams({ api: '1', destination: venue.address });
+  if (travelmode) params.set('travelmode', travelmode);
   return `https://www.google.com/maps/dir/?${params.toString()}`;
 }
 function appleDirectionsUrl(venue) { return `https://maps.apple.com/?daddr=${encodeURIComponent(venue.address)}`; }
@@ -320,333 +314,4 @@ function renderResults() {
 
     return `<article class="result-card" data-event-id="${escapeAttr(event.id)}" data-venue-id="${escapeAttr(venue.id)}">
       <div class="card-topline">
-        <span class="${status.cls}"><span class="status-dot" aria-hidden="true"></span> ${escapeHtml(status.label)}</span>
-        <span>·</span><span>${formatDate(event.startDate)}–${formatDate(event.endDate)}</span>
-        ${futureOpening ? `<span>· opening ${formatDate(event.opening.date)} ${escapeHtml(formatClockRange(event.opening.start, event.opening.end))}</span>` : ''}
-        <span class="source-badge">${sourceLabel}</span>
-      </div>
-      <h2 class="card-title">${escapeHtml(event.title)}</h2>
-      <p class="card-artists">${escapeHtml(event.artists?.join(' · ') || '')}</p>
-      <div class="card-venue"><div><strong>${escapeHtml(venue.name)}</strong><br><span>${escapeHtml(venue.suburb)} · ${escapeHtml(KIND_LABELS[venue.kind])}</span></div>${distance !== null ? `<span>${distance.toFixed(distance < 10 ? 1 : 0)} km</span>` : ''}</div>
-      <div class="card-actions">
-        <button class="card-action js-detail" data-id="${escapeAttr(event.id)}">details</button>
-        <button class="card-action js-save ${saved ? 'is-saved' : ''}" data-id="${escapeAttr(event.id)}" aria-pressed="${saved}">${saved ? 'saved' : 'save'}</button>
-        <button class="card-action js-crawl is-crawl ${inCrawl ? 'is-added' : ''}" data-id="${escapeAttr(event.id)}" aria-pressed="${inCrawl}">${inCrawl ? 'in crawl' : 'add to crawl'}</button>
-        <a class="card-action" href="${escapeAttr(googleDirectionsUrl(venue))}" target="_blank" rel="noopener">navigate</a>
-      </div>
-    </article>`;
-  }).join('');
-
-  wireCards();
-}
-
-function wireCards() {
-  $$('.result-card').forEach(card => {
-    card.addEventListener('mouseenter', () => highlightVenue(card.dataset.venueId));
-    card.addEventListener('focusin', () => highlightVenue(card.dataset.venueId));
-  });
-  $$('.js-detail').forEach(button => button.addEventListener('click', () => showDetail(button.dataset.id)));
-  $$('.js-save').forEach(button => button.addEventListener('click', () => toggleSaved(button.dataset.id)));
-  $$('.js-crawl').forEach(button => button.addEventListener('click', () => toggleCrawl(button.dataset.id)));
-}
-
-function showDetail(eventId) {
-  const event = state.events.find(item => item.id === eventId);
-  if (!event) return;
-  const venue = venueById(event.venueId);
-  if (!venue) return;
-  const clock = melbourneClock();
-  const tags = event.tags?.map(tag => `<span>${escapeHtml(tag)}</span>`).join(' · ') || '—';
-  const hoursToday = venue.hoursVerified ? humanHoursForDay(venue, clock.weekday) : 'not verified yet';
-  const sourceUrl = safeUrl(event.sourceUrl);
-  const venueUrl = safeUrl(venue.website);
-  const access = venue.access?.note ? escapeHtml(venue.access.note) : 'not yet verified';
-
-  $('#detailContent').innerHTML = `<div class="detail-body">
-    <span class="eyebrow">${escapeHtml(event.eventType)} · ${escapeHtml(KIND_LABELS[venue.kind])}</span>
-    <h2 id="detailTitle">${escapeHtml(event.title)}</h2>
-    <p>${escapeHtml(event.artists?.join(' · ') || '')}</p>
-    <div class="detail-meta">
-      <div><strong>when</strong><br>${formatDate(event.startDate, { day: 'numeric', month: 'long' })} – ${formatDate(event.endDate, { day: 'numeric', month: 'long', year: 'numeric' })}${event.opening ? `<br>opening ${formatDate(event.opening.date, { weekday: 'short', day: 'numeric', month: 'short' })}, ${escapeHtml(formatClockRange(event.opening.start, event.opening.end))}` : ''}</div>
-      <div><strong>where</strong><br>${escapeHtml(venue.name)}<br>${escapeHtml(venue.address)}</div>
-      <div><strong>today's hours</strong><br>${escapeHtml(hoursToday)}${venue.hoursNote ? `<br><small>${escapeHtml(venue.hoursNote)}</small>` : ''}</div>
-      <div><strong>access</strong><br>${access}</div>
-      <div><strong>admission</strong><br>${escapeHtml(event.admission)}</div>
-      <div><strong>tags</strong><br>${tags}</div>
-    </div>
-    <div class="detail-links">
-      ${venueUrl !== '#' ? `<a href="${escapeAttr(venueUrl)}" target="_blank" rel="noopener">venue website</a>` : ''}
-      <a href="${escapeAttr(googleDirectionsUrl(venue))}" target="_blank" rel="noopener">google maps</a>
-      <a href="${escapeAttr(appleDirectionsUrl(venue))}" target="_blank" rel="noopener">apple maps</a>
-      <a href="${escapeAttr(wazeDirectionsUrl(venue))}" target="_blank" rel="noopener">waze · drive</a>
-    </div>
-    <p class="source-note">Verified ${escapeHtml(event.lastVerified)} from ${escapeHtml(event.sourceName)} (${escapeHtml(event.sourceType)}). ${sourceUrl !== '#' ? `<a href="${escapeAttr(sourceUrl)}" target="_blank" rel="noopener">check source ↗</a>` : ''} Confirm before travelling.</p>
-  </div>`;
-
-  const dialog = $('#detailDialog');
-  dialog.showModal();
-  $('#closeDialogButton').focus();
-}
-
-function toggleSaved(id) {
-  state.saved.has(id) ? state.saved.delete(id) : state.saved.add(id);
-  persistSet('hangabout:saved', state.saved);
-  $('#savedCount').textContent = state.saved.size;
-  renderResults();
-}
-
-function toggleCrawl(id) {
-  const event = state.events.find(item => item.id === id);
-  if (!event) return;
-  if (state.crawl.has(id)) {
-    state.crawl.delete(id);
-  } else {
-    for (const existingId of [...state.crawl]) {
-      const existing = state.events.find(item => item.id === existingId);
-      if (existing?.venueId === event.venueId) state.crawl.delete(existingId);
-    }
-    state.crawl.add(id);
-  }
-  persistSet('hangabout:crawl', state.crawl);
-  renderCrawl();
-  renderResults();
-}
-
-function crawlOrderedEvents() {
-  const selected = [...state.crawl].map(id => state.events.find(event => event.id === id)).filter(Boolean);
-  if (selected.length < 2) return selected;
-
-  const mapped = selected.filter(event => {
-    const venue = venueById(event.venueId);
-    return venue?.lat != null && venue?.lng != null;
-  });
-  const unmapped = selected.filter(event => !mapped.includes(event));
-  if (!mapped.length) return selected;
-
-  const remaining = [...mapped];
-  const ordered = [];
-  let current = state.userLocation || MELBOURNE;
-  while (remaining.length) {
-    remaining.sort((a, b) => {
-      const venueA = venueById(a.venueId);
-      const venueB = venueById(b.venueId);
-      return haversineKm(current, [venueA.lat, venueA.lng]) - haversineKm(current, [venueB.lat, venueB.lng]);
-    });
-    const next = remaining.shift();
-    ordered.push(next);
-    const venue = venueById(next.venueId);
-    current = [venue.lat, venue.lng];
-  }
-  return [...ordered, ...unmapped];
-}
-
-function renderCrawl() {
-  const ordered = crawlOrderedEvents();
-  const tray = $('#crawlTray');
-  tray.hidden = ordered.length === 0;
-  document.body.classList.toggle('has-crawl', ordered.length > 0);
-  $('#crawlCount').textContent = `${ordered.length} ${ordered.length === 1 ? 'stop' : 'stops'}`;
-  if (!ordered.length) return;
-
-  const venues = ordered.map(event => venueById(event.venueId)).filter(Boolean);
-  const destination = venues.at(-1);
-  const waypoints = venues.slice(0, -1).map(venue => venue.address).join('|');
-  const params = new URLSearchParams({ api: '1', destination: destination.address, travelmode: $('#routeModeSelect').value });
-  if (state.userLocation) params.set('origin', `${state.userLocation[0]},${state.userLocation[1]}`);
-  if (waypoints) params.set('waypoints', waypoints);
-  $('#googleRouteLink').href = `https://www.google.com/maps/dir/?${params.toString()}`;
-}
-
-function venueSearchText(venue) {
-  return normalise([
-    venue.name, venue.suburb, KIND_LABELS[venue.kind], venue.focus?.join(' '),
-    venue.artistPathways?.map(pathway => pathway.label).join(' '), venue.access?.note,
-  ].join(' '));
-}
-
-function renderVenueDirectory() {
-  const q = normalise(state.makeQuery.trim());
-  const venues = state.venues.filter(venue => {
-    if (state.makeKind !== 'all' && venue.kind !== state.makeKind) return false;
-    if (state.pathwaysOnly && !venue.artistPathways?.length) return false;
-    if (q && !venueSearchText(venue).includes(q)) return false;
-    return true;
-  }).sort((a, b) => {
-    const orderA = KIND_ORDER.indexOf(a.kind);
-    const orderB = KIND_ORDER.indexOf(b.kind);
-    return orderA - orderB || a.name.localeCompare(b.name);
-  });
-
-  $('#makeCount').textContent = `${venues.length} ${venues.length === 1 ? 'space' : 'spaces'}`;
-  $('#venueDirectory').innerHTML = venues.map(venue => {
-    const clock = melbourneClock();
-    const todayHours = venue.hoursVerified ? humanHoursForDay(venue, clock.weekday) : 'hours not verified';
-    const access = venue.access?.note || 'access information not yet verified';
-    const focus = venue.focus?.map(item => `<span>${escapeHtml(item)}</span>`).join('') || '';
-    const pathways = venue.artistPathways?.length
-      ? venue.artistPathways.map(pathway => `<a href="${escapeAttr(safeUrl(pathway.url))}" target="_blank" rel="noopener">${escapeHtml(pathway.label)} ↗</a>`).join('')
-      : '<span class="unknown">no verified artist pathway yet</span>';
-
-    return `<article class="venue-card">
-      <div class="venue-kind">${escapeHtml(KIND_LABELS[venue.kind])}</div>
-      <h3>${escapeHtml(venue.name)}</h3>
-      <p>${escapeHtml(venue.suburb)} · ${escapeHtml(venue.address)}</p>
-      <div class="venue-focus">${focus}</div>
-      <p><strong>today</strong> · ${escapeHtml(todayHours)}</p>
-      <p><strong>access</strong> · ${escapeHtml(access)}</p>
-      <div class="venue-pathways"><strong>artist pathways</strong>${pathways}</div>
-      <a href="${escapeAttr(safeUrl(venue.website))}" target="_blank" rel="noopener">official website ↗</a>
-    </article>`;
-  }).join('');
-}
-
-function renderMode() {
-  const see = state.mode === 'see';
-  $('.controls').hidden = !see;
-  $('.explorer').hidden = !see;
-  $('#makePanel').hidden = see;
-  $$('.mode-button').forEach(button => {
-    const active = button.dataset.mode === state.mode;
-    button.classList.toggle('is-active', active);
-    button.setAttribute('aria-pressed', String(active));
-  });
-  if (!see) renderVenueDirectory();
-  if (see && state.mapAvailable) setTimeout(() => state.map.invalidateSize(), 0);
-}
-
-function renderAll() {
-  renderMode();
-  if (state.mode === 'see') renderResults();
-  renderCrawl();
-  $('#savedCount').textContent = state.saved.size;
-}
-
-function updateQuickFilter(value) {
-  state.quick = value;
-  $$('#quickFilters .chip').forEach(chip => {
-    const active = chip.dataset.quick === value;
-    chip.classList.toggle('is-active', active);
-    chip.setAttribute('aria-pressed', String(active));
-  });
-  renderResults();
-}
-
-function setStatus(message) { $('#explorerStatus').textContent = message; }
-
-function requestLocation({ setNearby = false, setDistanceSort = false } = {}) {
-  if (!navigator.geolocation) {
-    setStatus('Location is not available in this browser.');
-    return;
-  }
-  setStatus('Requesting your location…');
-  navigator.geolocation.getCurrentPosition(position => {
-    state.userLocation = [position.coords.latitude, position.coords.longitude];
-    setStatus('Location found. Distance is approximate straight-line distance; navigation apps calculate the route.');
-    if (state.mapAvailable) {
-      if (state.locationLayer) state.locationLayer.remove();
-      state.locationLayer = window.L.circleMarker(state.userLocation, { radius: 7, weight: 2, color: '#11110f', fillColor: '#d7ff3f', fillOpacity: 1 }).addTo(state.map).bindTooltip('you are here');
-      state.map.setView(state.userLocation, 13);
-    }
-    if (setDistanceSort) {
-      state.sort = 'distance';
-      $('#sortSelect').value = 'distance';
-    }
-    if (setNearby) updateQuickFilter('nearby'); else renderResults();
-    renderCrawl();
-  }, () => {
-    setStatus('Location permission was not granted. “Within 5 km” and nearest sorting were left off.');
-    if (state.quick === 'nearby') updateQuickFilter('all');
-    if (state.sort === 'distance') {
-      state.sort = 'closing';
-      $('#sortSelect').value = 'closing';
-      renderResults();
-    }
-  }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 });
-}
-
-function populateKindSelect(select) {
-  for (const kind of KIND_ORDER.filter(item => state.venues.some(venue => venue.kind === item))) {
-    select.insertAdjacentHTML('beforeend', `<option value="${escapeAttr(kind)}">${escapeHtml(KIND_LABELS[kind])}</option>`);
-  }
-}
-
-function wireUI() {
-  $$('.mode-button').forEach(button => button.addEventListener('click', () => { state.mode = button.dataset.mode; renderAll(); }));
-  $('#searchInput').addEventListener('input', event => { state.query = event.target.value; renderResults(); });
-  $$('#quickFilters .chip').forEach(chip => chip.addEventListener('click', () => {
-    if (chip.dataset.quick === 'nearby' && !state.userLocation) requestLocation({ setNearby: true });
-    else updateQuickFilter(chip.dataset.quick);
-  }));
-  $('#venueTypeSelect').addEventListener('change', event => { state.venueType = event.target.value; renderResults(); });
-  $('#sortSelect').addEventListener('change', event => {
-    if (event.target.value === 'distance' && !state.userLocation) {
-      requestLocation({ setDistanceSort: true });
-      return;
-    }
-    state.sort = event.target.value;
-    renderResults();
-  });
-  $('#savedOnlyButton').addEventListener('click', () => {
-    state.savedOnly = !state.savedOnly;
-    $('#savedOnlyButton').setAttribute('aria-pressed', String(state.savedOnly));
-    renderResults();
-  });
-  $('#fitMapButton').addEventListener('click', fitVisibleMarkers);
-  $('#locateButton').addEventListener('click', () => requestLocation());
-  $('#toggleMapButton').addEventListener('click', () => {
-    const hidden = $('.explorer').classList.toggle('map-hidden');
-    $('#toggleMapButton').setAttribute('aria-expanded', String(!hidden));
-    $('#toggleMapButton').textContent = hidden ? 'show map' : 'hide map';
-    if (!hidden && state.mapAvailable) setTimeout(() => state.map.invalidateSize(), 0);
-  });
-  $('#clearCrawlButton').addEventListener('click', () => {
-    state.crawl.clear();
-    persistSet('hangabout:crawl', state.crawl);
-    renderAll();
-  });
-  $('#routeModeSelect').addEventListener('change', renderCrawl);
-  $('#closeDialogButton').addEventListener('click', () => $('#detailDialog').close());
-  $('#detailDialog').addEventListener('click', event => { if (event.target === $('#detailDialog')) $('#detailDialog').close(); });
-
-  $('#makeSearchInput').addEventListener('input', event => { state.makeQuery = event.target.value; renderVenueDirectory(); });
-  $('#makeKindSelect').addEventListener('change', event => { state.makeKind = event.target.value; renderVenueDirectory(); });
-  $('#pathwaysOnlyInput').addEventListener('change', event => { state.pathwaysOnly = event.target.checked; renderVenueDirectory(); });
-}
-
-function pruneStoredIds() {
-  const eventIds = new Set(state.events.map(event => event.id));
-  state.saved = new Set([...state.saved].filter(id => eventIds.has(id)));
-  state.crawl = new Set([...state.crawl].filter(id => eventIds.has(id)));
-  persistSet('hangabout:saved', state.saved);
-  persistSet('hangabout:crawl', state.crawl);
-}
-
-function renderDataStamp() {
-  const latest = [...state.events.map(event => event.lastVerified), ...state.venues.map(venue => venue.lastVerified)].sort().at(-1);
-  const official = state.events.filter(event => event.sourceType === 'official').length;
-  const directory = state.events.filter(event => event.sourceType === 'directory').length;
-  $('#dataStamp').textContent = `prototype · ${official} official-source listings · ${directory} directory-source listings · last checked ${latest}`;
-}
-
-async function boot() {
-  const [venuesResponse, eventsResponse] = await Promise.all([fetch('./data/venues.json'), fetch('./data/events.json')]);
-  if (!venuesResponse.ok || !eventsResponse.ok) throw new Error('Could not load hangabout data');
-  [state.venues, state.events] = await Promise.all([venuesResponse.json(), eventsResponse.json()]);
-  pruneStoredIds();
-
-  const clock = melbourneClock();
-  $('#dateLabel').textContent = formatDate(clock.date, { weekday: 'short', day: 'numeric', month: 'short' }).toLowerCase();
-  initialiseMap();
-  populateKindSelect($('#venueTypeSelect'));
-  populateKindSelect($('#makeKindSelect'));
-  wireUI();
-  renderDataStamp();
-  renderAll();
-  requestAnimationFrame(fitVisibleMarkers);
-}
-
-boot().catch(error => {
-  console.error(error);
-  $('#resultsList').innerHTML = '<div class="empty-state"><h3>the listings didn\'t load.</h3><p>Please refresh the page. If this persists, the data files may be unavailable.</p></div>';
-  setStatus('The data bundle could not be loaded.');
-});
+        <span class="${status.cls}"

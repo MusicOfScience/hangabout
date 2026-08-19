@@ -23,4 +23,6 @@ jobs:
       - name: validate data contract
         run: python scripts/validate_data.py
       - name: check JavaScript syntax
-        run: node --check app.js
+        run: node --check app.js && node --check lib/time.js
+      - name: test time semantics
+        run: node scripts/test_time.mjs
