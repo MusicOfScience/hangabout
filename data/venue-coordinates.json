@@ -1,0 +1,72 @@
+[
+  {
+    "venueId": "gallery-unbound",
+    "lat": -37.76534597,
+    "lng": 144.99953384,
+    "precision": "exact",
+    "method": "address-matched open geodata",
+    "sourceName": "Darebin Arts / map data",
+    "sourceUrl": "https://arts.darebin.vic.gov.au/Arts-Directory/Gallery-Unbound",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "brunswick-street-gallery",
+    "lat": -37.79767,
+    "lng": 144.97878,
+    "precision": "exact",
+    "method": "address-matched OpenStreetMap data",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/N1228815180",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "australian-galleries-stock-rooms",
+    "lat": -37.80675,
+    "lng": 144.98467,
+    "precision": "exact",
+    "method": "address-matched OpenStreetMap data",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/W234053530",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "town-hall-gallery",
+    "lat": -37.82306,
+    "lng": 145.03602,
+    "precision": "exact",
+    "method": "gallery is within Hawthorn Arts Centre at canonical 360 Burwood Road address",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/W1467073514",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "gertrude-contemporary",
+    "lat": -37.75143,
+    "lng": 145.00158,
+    "precision": "exact",
+    "method": "address-matched OpenStreetMap data",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/N6017236262",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "gertrude-glasshouse",
+    "lat": -37.80536,
+    "lng": 144.98774,
+    "precision": "exact",
+    "method": "address-matched OpenStreetMap data",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/N3677135826",
+    "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "stephen-mclaughlan-gallery",
+    "lat": -37.8162,
+    "lng": 144.9691,
+    "precision": "building",
+    "method": "same canonical Nicholas Building address as existing verified venue point",
+    "sourceName": "hangabout canonical Nicholas Building match",
+    "sourceUrl": "https://www.flg.com.au/pages/contact",
+    "lastVerified": "2026-08-19"
+  }
+]

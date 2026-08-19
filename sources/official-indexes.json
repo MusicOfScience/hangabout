@@ -1,0 +1,90 @@
+[
+  {
+    "venueId": "gallery-unbound",
+    "name": "Gallery Unbound",
+    "indexUrl": "https://galleryunbound.com.au/exhibitions-coming-soon/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/exhibition", "/exhibitions"]
+  },
+  {
+    "venueId": "brunswick-street-gallery",
+    "name": "Brunswick Street Gallery",
+    "indexUrl": "https://brunswickstreetgallery.com.au/blogs/exhibitions",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/blogs/exhibitions", "/collections/"]
+  },
+  {
+    "venueId": "charles-nodrum-gallery",
+    "name": "Charles Nodrum Gallery",
+    "indexUrl": "https://charlesnodrumgallery.com.au/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/exhibitions/"]
+  },
+  {
+    "venueId": "kings-artist-run",
+    "name": "KINGS Artist-Run",
+    "indexUrl": "https://www.kingsartistrun.org.au/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/program/", "/exhibitions/"]
+  },
+  {
+    "venueId": "blindside",
+    "name": "BLINDSIDE",
+    "indexUrl": "https://blindside.org.au/program/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/program/"]
+  },
+  {
+    "venueId": "gertrude-contemporary",
+    "name": "Gertrude Contemporary",
+    "indexUrl": "https://gertrude.org.au/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/exhibition", "/exhibitions/"]
+  },
+  {
+    "venueId": "ngv-international",
+    "name": "National Gallery of Victoria",
+    "indexUrl": "https://www.ngv.vic.gov.au/whats-on/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/exhibition/"]
+  },
+  {
+    "venueId": "heide-museum-modern-art",
+    "name": "Heide Museum of Modern Art",
+    "indexUrl": "https://www.heide.com.au/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/exhibitions/"]
+  },
+  {
+    "venueId": "craft-victoria",
+    "name": "Craft Victoria",
+    "indexUrl": "https://craft.org.au/whats-on/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/whats-on/"]
+  },
+  {
+    "venueId": "muma",
+    "name": "Monash University Museum of Art",
+    "indexUrl": "https://www.monash.edu/muma/exhibitions",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/muma/exhibitions/"]
+  },
+  {
+    "venueId": "buxton-contemporary",
+    "name": "Buxton Contemporary",
+    "indexUrl": "https://buxtoncontemporary.com/whats-on/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/whats-on/exhibitions/"]
+  }
+]
