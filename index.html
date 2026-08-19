@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./enhancements.css?v=5" />
   <style>#map{position:relative;overflow:hidden}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -36,6 +37,14 @@
       <button class="mode-button is-active" data-mode="see" aria-pressed="true">see art</button>
       <button class="mode-button" data-mode="make" aria-pressed="false">make art</button>
     </nav>
+
+    <aside id="locationPrompt" class="location-prompt" hidden aria-label="Use your location">
+      <p>Want the nearby stuff first? Use your location to sort Melbourne exhibitions by distance.</p>
+      <div class="location-prompt-actions">
+        <button id="locationPromptUse" type="button">use my location</button>
+        <button id="locationPromptDismiss" type="button">not now</button>
+      </div>
+    </aside>
 
     <section class="controls" aria-label="Find exhibitions">
       <label class="search-wrap">
@@ -81,6 +90,8 @@
           <span>The exhibition list still works. Navigation links use venue addresses.</span>
         </div>
         <div class="map-tools">
+          <button id="searchAreaButton" class="map-button" hidden>search this area</button>
+          <button id="clearAreaButton" class="map-button" hidden>show all areas</button>
           <button id="fitMapButton" class="map-button">show all pins</button>
           <button id="locateButton" class="map-button">locate me</button>
         </div>
@@ -119,7 +130,7 @@
       <div class="make-intro">
         <span class="eyebrow">for artists</span>
         <h2 id="make-title">the ecology, not just the exhibition.</h2>
-        <p>Find studios, shared workspaces, artist pathways, organisations and places to make. Availability-based listings are dated and source-labelled because they change quickly.</p>
+        <p>Find studios, shared workspaces, artist pathways and organisations. Galleries are a separate choice rather than the default.</p>
       </div>
 
       <div class="make-controls" aria-label="Filter artist-facing resources">
@@ -130,11 +141,12 @@
         <label>
           <span>show</span>
           <select id="makeKindSelect">
-            <option value="all">everything for artists</option>
-            <option value="resource:studio">studios available</option>
-            <option value="resource:workspace">shared workspaces</option>
+            <option value="resources">studios + making resources</option>
+            <option value="studio">studios available</option>
+            <option value="workspace">shared workspaces + finders</option>
             <option value="pathways">open calls + pathways</option>
-            <option value="places">organisations + galleries</option>
+            <option value="organisations">artist-run + organisations</option>
+            <option value="commercial">commercial galleries</option>
           </select>
         </label>
         <span id="makeCount" class="make-count" aria-live="polite"></span>
@@ -154,6 +166,7 @@
   </dialog>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script defer src="./app.js?v=4"></script>
+  <script defer src="./app.js?v=5"></script>
+  <script defer src="./enhance.js?v=5"></script>
 </body>
 </html>
