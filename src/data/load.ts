@@ -18,15 +18,21 @@ function mergeById<T extends { id: string }>(...layers: T[][]): T[] {
   return [...byId.values()];
 }
 
+function validated<T>(value: unknown): T {
+  // Repository Python validators gate these JSON files before build/deploy.
+  // This is the single boundary where validated external data enters the typed UI.
+  return value as T;
+}
+
 export function loadDataset(): Dataset {
   const venues = mergeById(
-    venuesBase as Venue[],
-    venuesExtra as Venue[],
-    venuesMajor as Venue[],
+    validated<Venue[]>(venuesBase),
+    validated<Venue[]>(venuesExtra),
+    validated<Venue[]>(venuesMajor),
   );
 
   const overlays = new Map(
-    (coordinateOverlay as CoordinateOverlay[]).map(item => [item.venueId, item]),
+    validated<CoordinateOverlay[]>(coordinateOverlay).map(item => [item.venueId, item]),
   );
 
   const canonicalVenues = venues.map(venue => {
@@ -42,14 +48,14 @@ export function loadDataset(): Dataset {
   });
 
   const events = mergeById(
-    eventsBase as Event[],
-    eventsExtra as Event[],
-    eventsMajor as Event[],
+    validated<Event[]>(eventsBase),
+    validated<Event[]>(eventsExtra),
+    validated<Event[]>(eventsMajor),
   );
 
   const resources = mergeById(
-    resourcesBase as MakeResource[],
-    resourcesExtra as MakeResource[],
+    validated<MakeResource[]>(resourcesBase),
+    validated<MakeResource[]>(resourcesExtra),
   );
 
   const venueIds = new Set(canonicalVenues.map(v => v.id));
