@@ -1,6 +1,6 @@
 import L, { Map as LeafletMap, LayerGroup, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { Dataset, Event, MakeResource, Venue } from './types';
+import type { Dataset, Event, KnownArtPlace, MakeResource, Venue } from './types';
 import { exactVenuePoint, haversine, MELBOURNE, resourcePoint, type Point } from './geo';
 
 const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -25,6 +25,7 @@ function divIcon(label: string, className: string) {
 
 export class SeeMap {
   private map: LeafletMap;
+  private knownLayer: LayerGroup;
   private layer: LayerGroup;
   private discoveryLayer: LayerGroup;
   private locationMarker: Marker | null = null;
@@ -38,6 +39,7 @@ export class SeeMap {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
+    this.knownLayer = L.layerGroup().addTo(this.map);
     this.layer = L.layerGroup().addTo(this.map);
     this.discoveryLayer = L.layerGroup().addTo(this.map);
     this.map.on('moveend', () => {
@@ -51,6 +53,7 @@ export class SeeMap {
 
   render(events: Event[], dataset: Dataset, focus = false) {
     this.layer.clearLayers();
+    this.knownLayer.clearLayers();
     const venueById = new Map(dataset.venues.map(v => [v.id, v]));
     const venues = new Map<string, Venue>();
     for (const event of events) {
@@ -62,6 +65,8 @@ export class SeeMap {
       .map(venue => ({ venue, point: exactVenuePoint(venue) }))
       .filter((item): item is { venue: Venue; point: Point } => Boolean(item.point))
       .map(item => ({ name: item.venue.name, point: item.point }));
+
+    this.renderKnownPlaces(dataset.knownPlaces);
 
     const markers: Marker[] = [];
     for (const venue of venues.values()) {
@@ -82,9 +87,36 @@ export class SeeMap {
     }
   }
 
+  private renderKnownPlaces(places: KnownArtPlace[]) {
+    for (const place of places) {
+      const point: Point = [place.lat, place.lng];
+      if (this.matchesCanonicalNameOrPoint(place.name, point)) continue;
+
+      const marker = L.circleMarker(point, {
+        radius: 6,
+        color: '#5f5d57',
+        weight: 2,
+        fillColor: '#f2efe7',
+        fillOpacity: .92,
+        opacity: .95,
+        dashArray: '3 2',
+        className: 'known-place-marker',
+      }).addTo(this.knownLayer);
+
+      const source = safeExternalUrl(place.sourceUrl);
+      marker.bindPopup([
+        `<strong>${escapeHtml(place.name)}</strong>`,
+        `<span>${escapeHtml(place.locality)} · known public gallery</span>`,
+        '<span>current exhibition programme not yet ingested by hangabout</span>',
+        `<small>${escapeHtml(place.sourceName)} · ${escapeHtml(place.precision)}-level location</small>`,
+        source ? `<a href="${escapeHtml(source)}" target="_blank" rel="noopener">source directory ↗</a>` : '',
+      ].filter(Boolean).join('<br>'));
+    }
+  }
+
   setDiscoveries(places: DiscoveredPlace[]): number {
     this.discoveryLayer.clearLayers();
-    const rendered = places.filter(place => !this.matchesCanonical(place));
+    const rendered = places.filter(place => !this.matchesCanonicalNameOrPoint(place.name, place.point));
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#b8ff2c';
 
     for (const place of rendered) {
@@ -115,10 +147,10 @@ export class SeeMap {
     this.discoveryLayer.clearLayers();
   }
 
-  private matchesCanonical(place: DiscoveredPlace): boolean {
-    const name = normaliseName(place.name);
+  private matchesCanonicalNameOrPoint(nameValue: string, point: Point): boolean {
+    const name = normaliseName(nameValue);
     return this.canonicalVenues.some(venue =>
-      normaliseName(venue.name) === name || haversine(venue.point, place.point) < 0.06
+      normaliseName(venue.name) === name || haversine(venue.point, point) < 0.06
     );
   }
 
@@ -133,7 +165,10 @@ export class SeeMap {
   }
 
   fitAll(dataset: Dataset) {
-    const points = dataset.venues.map(exactVenuePoint).filter((p): p is Point => Boolean(p));
+    const points = [
+      ...dataset.venues.map(exactVenuePoint).filter((p): p is Point => Boolean(p)),
+      ...dataset.knownPlaces.map(place => [place.lat, place.lng] as Point),
+    ];
     if (!points.length) return;
     this.map.fitBounds(L.latLngBounds(points), { padding: [20, 20], maxZoom: 13 });
   }
