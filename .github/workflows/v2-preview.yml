@@ -1,0 +1,66 @@
+name: v2 preview
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'data/**'
+      - 'package.json'
+      - 'tsconfig.json'
+      - 'vite.config.ts'
+      - 'index.html'
+      - '.github/workflows/v2-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}v2/
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout live prototype
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: prototype
+      - name: checkout v2 candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: build v2 for side-by-side path
+        working-directory: v2
+        run: |
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npx vite build --base=/hangabout/v2/
+      - name: stage live root plus v2 candidate
+        run: |
+          mkdir _site
+          cp prototype/index.html prototype/styles.css prototype/enhancements.css prototype/app.js prototype/enhance-v2.js prototype/coordinates.js _site/
+          cp -R prototype/data _site/data
+          cp -R prototype/lib _site/lib
+          mkdir -p _site/v2
+          cp -R v2/dist/. _site/v2/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: deploy side-by-side preview
+        id: deployment
+        uses: actions/deploy-pages@v4
