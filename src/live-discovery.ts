@@ -58,9 +58,12 @@ function boot(attempt = 0) {
   discoveryStatus.className = 'live-discovery-status';
   status.insertAdjacentElement('afterend', discoveryStatus);
 
-  const key = document.createElement('p');
+  const key = document.createElement('div');
   key.className = 'discovery-key';
-  key.innerHTML = '<span class="discovery-key-dot" aria-hidden="true"></span> hollow lime rings are OpenStreetMap art-place discoveries, not yet verified hangabout listings';
+  key.innerHTML = `
+    <span><span class="known-key-dot" aria-hidden="true"></span> outlined grey = known gallery/art place; hangabout has not yet ingested its current programme</span>
+    <span><span class="discovery-key-dot" aria-hidden="true"></span> hollow lime = live OpenStreetMap discovery; not yet verified by hangabout</span>
+  `;
   webDiscovery.appendChild(key);
 
   let currentAreaLabel: string | null = 'Melbourne';
@@ -96,14 +99,11 @@ function boot(attempt = 0) {
     const center = map.center();
     const span = viewportSpan(bounds);
 
-    // Broad regional views are useful for orientation and ordinary web discovery,
-    // but are a poor fit for a public Overpass instance. Do not leave the UI
-    // spinning while asking a donated service to trawl half a state.
     if (span.lat > 1.25 || span.lon > 1.7) {
       const label = regionalAreaLabel(center);
       currentAreaLabel = label;
       webArea.textContent = label;
-      clearLive(`regional view · hangabout’s verified programme is currently Melbourne-focused. Zoom into a town or city and tap “search this area” for live OSM art-place discovery; the web searches below now target ${label}.`);
+      clearLive(`regional view · known public galleries remain visible from the cached statewide layer. Zoom into a town or city and tap “search this area” for additional live OSM discovery; the web searches below now target ${label}.`);
       return;
     }
 
@@ -122,7 +122,7 @@ function boot(attempt = 0) {
       discoveryCount.textContent = rendered ? ` · ${rendered} discovered art ${rendered === 1 ? 'place' : 'places'}` : '';
       discoveryStatus.textContent = places.length
         ? `${places.length} OpenStreetMap art-place candidates found in this viewport · ${rendered} are not already matched to hangabout`
-        : 'OpenStreetMap returned no art-place candidates for this viewport · try the web exhibition/gallery searches below';
+        : 'OpenStreetMap returned no additional art-place candidates for this viewport · try the web exhibition/gallery searches below';
     } catch (error) {
       if (sequence !== searchSequence) return;
       const label = await resolveAreaLabel(center, bounds).catch(() => regionalAreaLabel(center));
