@@ -1,18 +1,18 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f0e8" />
-  <meta name="description" content="hangabout — art around you. Find exhibitions, openings and galleries across Melbourne." />
+  <meta name="description" content="hangabout — art around you. Find exhibitions, openings and artist-facing spaces across Melbourne." />
   <title>hangabout — art around you</title>
-  <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3yn8F8t3d8P6LG7qP4Kf1oD1wFGY=" crossorigin="" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <a class="skip-link" href="#results">Skip to exhibitions</a>
+  <a class="skip-link" href="#results">Skip to listings</a>
+
   <header class="site-header">
     <div class="brand-block">
       <a class="brand" href="./" aria-label="hangabout home">hangabout</a>
@@ -25,32 +25,32 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title">what's hanging,<br />where.</h1>
-      <p>Exhibitions, openings and places to look. Built for people who make art as much as people who go to see it.</p>
+      <p>Exhibitions, openings and places to look — with the artist-run, public, commercial and in-between parts of the city on the same map.</p>
     </section>
 
-    <nav class="mode-switch" aria-label="Explore mode">
+    <nav class="mode-switch" aria-label="Explore hangabout">
       <button class="mode-button is-active" data-mode="see" aria-pressed="true">see art</button>
       <button class="mode-button" data-mode="make" aria-pressed="false">make art</button>
     </nav>
 
-    <section class="controls" aria-label="Find art">
+    <section class="controls" aria-label="Find exhibitions">
       <label class="search-wrap">
-        <span class="sr-only">Search</span>
+        <span class="sr-only">Search exhibitions</span>
         <input id="searchInput" type="search" autocomplete="off" placeholder="artist, gallery, suburb, medium…" />
       </label>
 
       <div id="quickFilters" class="chip-row" aria-label="Quick filters">
         <button class="chip is-active" data-quick="all" aria-pressed="true">everything</button>
         <button class="chip" data-quick="open" aria-pressed="false">open now</button>
-        <button class="chip" data-quick="today" aria-pressed="false">today</button>
+        <button class="chip" data-quick="today" aria-pressed="false">open today</button>
         <button class="chip" data-quick="weekend" aria-pressed="false">this weekend</button>
-        <button class="chip" data-quick="openings" aria-pressed="false">openings</button>
-        <button class="chip" data-quick="closing" aria-pressed="false">closing soon</button>
+        <button class="chip" data-quick="openings" aria-pressed="false">opening events ≤7d</button>
+        <button class="chip" data-quick="closing" aria-pressed="false">closing ≤7d</button>
         <button class="chip" data-quick="free" aria-pressed="false">free</button>
-        <button class="chip" id="nearMeButton" data-quick="nearby" aria-pressed="false">near me</button>
+        <button class="chip" id="nearMeButton" data-quick="nearby" aria-pressed="false">within 5 km</button>
       </div>
 
       <div class="secondary-controls">
@@ -64,64 +64,89 @@
           <span>sort</span>
           <select id="sortSelect">
             <option value="closing">closing soon</option>
-            <option value="newest">just opened</option>
+            <option value="newest">recent / upcoming</option>
             <option value="distance">nearest</option>
             <option value="az">a–z</option>
           </select>
         </label>
         <button id="savedOnlyButton" class="text-button" aria-pressed="false">saved <span id="savedCount">0</span></button>
       </div>
+      <p id="explorerStatus" class="control-status" role="status" aria-live="polite"></p>
     </section>
 
     <section class="explorer" aria-label="Art explorer">
       <div class="map-panel">
-        <div id="map" role="application" aria-label="Map of exhibitions and galleries"></div>
+        <div id="map" aria-label="Map of exhibition venues"></div>
+        <div id="mapFallback" class="map-fallback" hidden>
+          <strong>map unavailable.</strong>
+          <span>The exhibition list still works. Navigation links use venue addresses.</span>
+        </div>
         <div class="map-tools">
-          <button id="fitMapButton" class="map-button">show all</button>
+          <button id="fitMapButton" class="map-button">show all pins</button>
           <button id="locateButton" class="map-button">locate me</button>
         </div>
       </div>
 
       <div class="results-panel" id="results" tabindex="-1">
-        <div class="results-head">
-          <div>
-            <span id="resultCount">0</span>
-            <span id="resultNoun">shows</span>
-          </div>
-          <button id="toggleMapButton" class="text-button mobile-only" aria-pressed="false">map</button>
+        <div class="results-head" id="resultSummary" aria-live="polite" aria-atomic="true">
+          <div><strong id="resultCount">0</strong> <span id="resultNoun">shows</span> <span id="mappedSummary"></span></div>
+          <button id="toggleMapButton" class="text-button mobile-only" aria-expanded="true" aria-controls="map">hide map</button>
         </div>
-        <div id="resultsList" class="results-list" aria-live="polite"></div>
+        <div id="resultsList" class="results-list"></div>
       </div>
     </section>
 
     <aside id="crawlTray" class="crawl-tray" aria-label="Your art crawl" hidden>
-      <div>
+      <div class="crawl-summary">
         <strong>your crawl</strong>
         <span id="crawlCount">0 stops</span>
+        <span class="crawl-caveat">rough proximity order · check hours</span>
       </div>
       <div class="crawl-actions">
+        <label>
+          <span class="sr-only">Travel mode</span>
+          <select id="routeModeSelect" aria-label="Travel mode">
+            <option value="walking">walk</option>
+            <option value="transit">public transport</option>
+            <option value="bicycling">bike</option>
+            <option value="driving">drive</option>
+          </select>
+        </label>
         <button id="clearCrawlButton" class="text-button">clear</button>
         <a id="googleRouteLink" class="button-link" href="#" target="_blank" rel="noopener">route in google maps</a>
       </div>
     </aside>
 
-    <section id="makePanel" class="make-panel" hidden>
+    <section id="makePanel" class="make-panel" hidden aria-labelledby="make-title">
       <div class="make-intro">
         <span class="eyebrow">for artists</span>
-        <h2>the ecology, not just the exhibition.</h2>
-        <p>Find artist-run spaces, public institutions, project spaces and places worth knowing. Venue intelligence will grow to include proposals, open calls, residencies and how emerging artists can engage.</p>
+        <h2 id="make-title">the ecology, not just the exhibition.</h2>
+        <p>Find spaces, verified artist pathways, access notes and official links. Unknowns stay unknown rather than being filled with guesswork.</p>
+      </div>
+
+      <div class="make-controls" aria-label="Filter artist-facing spaces">
+        <label class="make-search">
+          <span class="sr-only">Search artist-facing spaces</span>
+          <input id="makeSearchInput" type="search" autocomplete="off" placeholder="space, suburb, focus, pathway…" />
+        </label>
+        <label>
+          <span>space</span>
+          <select id="makeKindSelect"><option value="all">all spaces</option></select>
+        </label>
+        <label class="check-label"><input id="pathwaysOnlyInput" type="checkbox" /> verified artist pathway</label>
+        <span id="makeCount" class="make-count" aria-live="polite"></span>
       </div>
       <div id="venueDirectory" class="venue-directory"></div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p><strong>hangabout</strong> is an independent prototype. Always confirm times with the venue before travelling.</p>
+    <p><strong>hangabout</strong> is an independent prototype. Listings marked “directory” need an extra check; always confirm with the venue before travelling.</p>
     <p id="dataStamp"></p>
   </footer>
 
-  <dialog id="detailDialog" class="detail-dialog">
-    <button id="closeDialogButton" class="dialog-close" aria-label="Close">×</button>
+  <dialog id="detailDialog" class="detail-dialog" aria-labelledby="detailTitle">
+    <button id="closeDialogButton" class="dialog-close" aria-label="Close details">×</button>
     <div id="detailContent"></div>
   </dialog>
 

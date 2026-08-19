@@ -4,73 +4,84 @@
 
 A Melbourne-first art discovery service for people who see art and people who make it.
 
-`hangabout` is designed to answer the practical questions that existing art listings tend to leave fragmented: **what is on, where is it, is it open, what else is nearby, and how do I get there?** It also treats artist-run initiatives, public institutions, commercial galleries, university spaces and specialist organisations as parts of one ecology rather than separate worlds.
+`hangabout` answers the practical questions that art listings often leave fragmented: **what is on, where is it, can I see it today, what else is nearby, and how do I get there?** It treats artist-run initiatives, First Nations-led spaces, public institutions, commercial galleries, university galleries, specialist organisations and independents as parts of one ecology.
 
-## prototype
+## current prototype
 
-The first shell includes:
+The first release candidate includes:
 
-- current / upcoming exhibition cards
-- map + list as one browsing surface
-- quick filters: open now, today, weekend, openings, closing soon, free, near me
-- search by artist, venue, suburb, medium and venue type
-- saved exhibitions stored locally in the browser
-- multi-stop **build a crawl** flow with Google Maps handoff
-- per-venue Google Maps, Apple Maps and Waze navigation
-- a separate **make art** venue/ecosystem view
-- source + last-verified metadata
-- no artwork imagery in the critical path, avoiding rights problems at launch
+- exhibition discovery as a map + list surface
+- search by artist, venue, suburb, medium and space type
+- filters for **open now**, **open today**, **this weekend**, opening events, closing soon, free entry and within 5 km
+- Melbourne-time opening logic using only hours that have been checked against a first-party source
+- saved shows stored locally in the browser
+- a multi-stop **your crawl** route handed off to Google Maps, with walking, public transport, cycling and driving modes
+- per-venue Google Maps, Apple Maps and Waze links using canonical street addresses
+- a separate **make art** directory with focus areas, access notes and verified artist pathways where known
+- explicit listing provenance: official source vs directory source, source URL and last-checked date
+- progressive map enhancement: if Leaflet/CDN loading fails, the listing and navigation surfaces continue to work
 
-The August 2026 seed dataset is intentionally small and is for product development. Exhibition dates and venue details are currently derived from publicly available listings and should always be confirmed with the venue before travelling.
+The seed dataset is deliberately finite and editorially checked. It is a product-development corpus, not a claim of exhaustive Melbourne coverage yet.
 
 ## product principles
 
-1. **Do not bury the small stuff.** Major institutions, ARIs, project spaces, commercial galleries and student work belong in the same discovery layer.
-2. **Provenance is a feature.** Every listing should carry its source and verification date.
-3. **First-party data wins.** Prefer venue websites, authorised feeds and open public data. Third-party directories are discovery/cross-check sources, not a licence to republish protected content.
-4. **Useful before clever.** Opening hours, location, access, navigation and closing dates outrank recommendation theatre.
-5. **Melbourne is a scope, not the architecture.** The data model must be able to expand to Victoria and other cities without a rewrite.
-6. **No account required.** Saved shows and crawls are local-first until there is a strong reason to add a backend.
+1. **Truthful before clever.** Unknown hours are shown as unknown. Unmapped venues stay in the list. A proximity crawl is labelled as approximate rather than sold as an optimiser.
+2. **Do not bury the small stuff.** Major institutions, ARIs, First Nations-led spaces, project spaces, commercial galleries and student work belong in one discovery layer.
+3. **Provenance is part of the UX.** Every event has a source type, source name, source URL and verification date.
+4. **First-party data wins.** Official venue pages are preferred for dates, hours, access and artist pathways. Directories are useful discovery/cross-check sources, not licence to republish protected copy.
+5. **Melbourne is a scope, not the architecture.** City-specific data is separate from application behaviour.
+6. **No account required.** Saves and crawl choices are local-first until a backend solves a real problem.
+7. **No maturity theatre.** No PWA/offline claims, recommendation AI or account system until those features are genuinely useful and supported.
 
 ## structure
 
 ```text
-index.html                  # application shell
-styles.css                  # visual system + responsive layout
-app.js                      # filters, map, saves, crawl routing
-manifest.webmanifest        # installable web-app metadata
-data/venues.json            # canonical venue registry
-data/events.json            # exhibition/event records
-.github/workflows/          # validation + Pages deployment
+index.html                       # semantic application shell
+styles.css                       # editorial visual system + responsive layout
+app.js                           # filters, time logic, map, saves, crawl, artist directory
+data/venues.json                 # canonical venue registry
+data/events.json                 # event records + provenance
+scripts/validate_data.py         # data-contract validation
+.github/workflows/validate.yml   # PR/main validation
+.github/workflows/pages.yml      # verify -> stage -> deploy Pages
+docs/hostile-review.md           # decisions from the adversarial v0 review
 ```
 
 ## local preview
 
-No build step is required for the prototype.
+There is deliberately no build step for this prototype.
 
 ```bash
+python3 scripts/validate_data.py
+node --check app.js
 python3 -m http.server 8080
 ```
 
 Then open `http://localhost:8080`.
 
-## data model
+## data contract
 
-A venue and an event are separate records. A venue has one canonical address, coordinate pair, type, hours and artist-facing metadata. Events reference a venue by `venueId` and carry dates, artists, tags, admission, opening-event details, source URL and verification date.
+### venue
 
-This prevents duplicate venue information and lets `hangabout` later add talks, performances, openings, opportunities and public-art records without changing the core geography.
+A venue has a stable ID, controlled `kind`, canonical address, website, focus tags and provenance. Coordinates are optional: a venue can be useful before its map pin has been verified. Hours only drive **open now / open today / weekend** filters when `hoursVerified` is true and an `hoursSourceUrl` is present.
 
-## next build
+Artist-facing information is structured as `artistPathways` with a label and official URL. Empty means **not yet verified**, not “no opportunity exists”. Access notes are similarly source-backed when present.
 
-- expand the canonical Melbourne venue registry
-- add a source-adapter layer for authorised/first-party listings
-- define deduplication + confidence rules
-- add accessibility and public-transport metadata
-- research artist-facing fields: proposals, representation model, open calls, residencies, studios and prizes
-- automated stale-data checks and dead-link checks
-- refine route planning around actual opening hours
-- offline/service-worker support once the data pipeline is stable
+### event
 
-## source caution
+An event references `venueId` and carries dates, artists, event type, tags, admission state and optional opening-event time. It also carries:
 
-Do not add automated scraping of third-party listing platforms without confirming permission and applicable terms. `hangabout` should privilege official venue sources and authorised/open data.
+- `sourceName`
+- `sourceType`: `official` or `directory`
+- `sourceUrl`
+- `lastVerified`
+
+The application surfaces that distinction rather than flattening all listings into equal-confidence data.
+
+## source / rights policy
+
+Do not scrape or mirror third-party listing services without permission. Store factual metadata needed to identify and navigate to an event; link back to the source. Do not ingest artwork images or protected exhibition descriptions into the critical path unless there is an explicit licence or permission model.
+
+## next data work
+
+The next useful expansion is not more UI. It is deeper canonical coverage of Melbourne's ARIs, First Nations-led spaces, university galleries, public galleries, specialist venues and outer-suburban municipal programs, followed by source adapters only where first-party sites offer stable authorised feeds or structured data.
