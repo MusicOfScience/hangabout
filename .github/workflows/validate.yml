@@ -21,8 +21,8 @@ jobs:
         with:
           node-version: '22'
       - name: validate data contract
-        run: python scripts/validate_data_v2.py
+        run: python scripts/validate_data_v3.py
       - name: check JavaScript syntax
-        run: node --check app.js && node --check enhance.js && node --check lib/time.js
+        run: node --check app.js && node --check enhance-v2.js && node --check lib/time.js
       - name: test time semantics
         run: node scripts/test_time.mjs
