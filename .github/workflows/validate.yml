@@ -28,7 +28,9 @@ jobs:
         run: python scripts/validate_coordinates.py
       - name: validate source policy
         run: python scripts/validate_sources.py
-      - name: check JavaScript syntax
-        run: node --check app.js && node --check enhance-v2.js && node --check coordinates.js && node --check lib/time.js
-      - name: test time semantics
-        run: node scripts/test_time.mjs
+      - name: install frontend dependencies
+        run: npm install --no-audit --no-fund
+      - name: typecheck v2
+        run: npm run typecheck
+      - name: build v2
+        run: npm run build

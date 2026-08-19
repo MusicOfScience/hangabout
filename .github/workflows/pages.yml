@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
+  verify-and-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,27 +28,15 @@ jobs:
       - run: python scripts/validate_data_v3.py
       - run: python scripts/validate_coordinates.py
       - run: python scripts/validate_sources.py
-      - run: node --check app.js && node --check enhance-v2.js && node --check coordinates.js && node --check lib/time.js
-      - run: node scripts/test_time.mjs
-
-  build:
-    needs: verify
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
       - uses: actions/configure-pages@v5
-      - name: stage static site
-        run: |
-          mkdir _site
-          cp index.html styles.css enhancements.css app.js enhance-v2.js coordinates.js _site/
-          cp -R data _site/data
-          cp -R lib _site/lib
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: dist
 
   deploy:
-    needs: build
+    needs: verify-and-build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
