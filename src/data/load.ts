@@ -7,8 +7,9 @@ import eventsMajor from '../../data/events-major.json';
 import resourcesBase from '../../data/make-resources.json';
 import resourcesExtra from '../../data/make-resources-extra.json';
 import coordinateOverlay from '../../data/venue-coordinates.json';
+import knownPlacesBase from '../../data/known-art-places.json';
 
-import type { CoordinateOverlay, Dataset, Event, MakeResource, Venue } from '../types';
+import type { CoordinateOverlay, Dataset, Event, KnownArtPlace, MakeResource, Venue } from '../types';
 
 function mergeById<T extends { id: string }>(...layers: T[][]): T[] {
   const byId = new Map<string, T>();
@@ -19,8 +20,8 @@ function mergeById<T extends { id: string }>(...layers: T[][]): T[] {
 }
 
 function validated<T>(value: unknown): T {
-  // Repository Python validators gate these JSON files before build/deploy.
-  // This is the single boundary where validated external data enters the typed UI.
+  // Repository Python validators gate canonical JSON before build/deploy.
+  // This is the single boundary where validated/static data enters the typed UI.
   return value as T;
 }
 
@@ -58,6 +59,10 @@ export function loadDataset(): Dataset {
     validated<MakeResource[]>(resourcesExtra),
   );
 
+  const knownPlaces = mergeById(
+    validated<KnownArtPlace[]>(knownPlacesBase),
+  );
+
   const venueIds = new Set(canonicalVenues.map(v => v.id));
   const usableEvents = events.filter(event => venueIds.has(event.venueId));
 
@@ -65,5 +70,6 @@ export function loadDataset(): Dataset {
     venues: canonicalVenues,
     events: usableEvents,
     resources,
+    knownPlaces,
   };
 }
