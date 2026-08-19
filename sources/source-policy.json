@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "principles": [
+    "First-party venue and institution sources are canonical where available.",
+    "Automated discovery only runs against sources explicitly marked automationAllowed=true.",
+    "Automated discovery records URLs and factual link metadata only; it does not republish page copy or images.",
+    "robots.txt and source-specific terms are checked before fetching.",
+    "Reference directories can identify gaps in the venue universe but are not automatically ingested when their terms prohibit or restrict reuse."
+  ],
+  "referenceSources": [
+    {
+      "id": "ocula-melbourne",
+      "name": "Ocula Melbourne exhibitions",
+      "url": "https://ocula.com/art-exhibitions/f/location/australia,australia~melbourne/sort/date/",
+      "automationAllowed": false,
+      "reason": "Ocula Terms explicitly prohibit automated scraping, crawling, spidering and automated access for monitoring or competitive purposes.",
+      "use": "manual discovery and cross-check only; seek permission or a data partnership before automated use"
+    },
+    {
+      "id": "art-almanac-melbourne",
+      "name": "Art Almanac Melbourne What's On",
+      "url": "https://www.art-almanac.com.au/whats-on/melbourne/",
+      "automationAllowed": false,
+      "reason": "Art Almanac Terms restrict copying, redistribution and exploitation of site content without express permission.",
+      "use": "manual venue/event discovery and cross-check only; seek permission or a feed before automated reuse"
+    },
+    {
+      "id": "art-almanac-gallery-index",
+      "name": "Art Almanac Gallery Index",
+      "url": "https://www.art-almanac.com.au/gallery-index/",
+      "automationAllowed": false,
+      "reason": "Same Art Almanac content-use restrictions apply.",
+      "use": "manual venue-universe gap finding only"
+    },
+    {
+      "id": "art-guide-australia",
+      "name": "Art Guide Australia",
+      "url": "https://artguide.com.au/",
+      "automationAllowed": false,
+      "reason": "Reference directory; automated reuse has not been authorised for hangabout.",
+      "use": "manual cross-check until permissions/terms are reviewed"
+    }
+  ]
+}
