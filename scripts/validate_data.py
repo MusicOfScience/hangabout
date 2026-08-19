@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 VENUES_PATH = ROOT / "data" / "venues.json"
 EVENTS_PATH = ROOT / "data" / "events.json"
+RESOURCES_PATH = ROOT / "data" / "make-resources.json"
 
 KINDS = {
     "artist-run",
@@ -23,6 +24,7 @@ KINDS = {
     "specialist",
     "university",
 }
+RESOURCE_TYPES = {"studio", "workspace", "finder"}
 ADMISSION = {"free", "paid", "unknown"}
 SOURCE_TYPES = {"official", "directory"}
 ACCESS_LEVELS = {"full", "partial", "unknown"}
@@ -130,27 +132,53 @@ def validate_event(event: dict, venue_ids: set[str]):
         require(opening["start"] < opening["end"], f"{context}: opening start must precede end")
 
 
+def validate_resource(resource: dict):
+    context = resource.get("id", "<resource>")
+    require(ID_RE.fullmatch(context) is not None, f"{context}: invalid id")
+    require(str(resource.get("name", "")).strip(), f"{context}: missing name")
+    require(resource.get("resourceType") in RESOURCE_TYPES, f"{context}: bad resourceType")
+    require(str(resource.get("suburb", "")).strip(), f"{context}: missing suburb")
+    require(str(resource.get("address", "")).strip(), f"{context}: missing address")
+    require(str(resource.get("summary", "")).strip(), f"{context}: missing summary")
+    require(str(resource.get("availability", "")).strip(), f"{context}: missing availability")
+    require(valid_url(resource.get("website", "")), f"{context}: bad website")
+    require(str(resource.get("sourceName", "")).strip(), f"{context}: missing sourceName")
+    require(resource.get("sourceType") in SOURCE_TYPES, f"{context}: bad sourceType")
+    valid_date(resource.get("lastVerified"), context)
+    tags = resource.get("tags", [])
+    require(isinstance(tags, list) and all(isinstance(value, str) and value.strip() for value in tags), f"{context}: tags must be strings")
+    for optional in ("price", "size"):
+        if optional in resource:
+            require(isinstance(resource[optional], str) and resource[optional].strip(), f"{context}: {optional} must be a non-empty string")
+
+
 def main():
     venues = load(VENUES_PATH)
     events = load(EVENTS_PATH)
+    resources = load(RESOURCES_PATH)
     require(isinstance(venues, list), "venues.json must contain a list")
     require(isinstance(events, list), "events.json must contain a list")
+    require(isinstance(resources, list), "make-resources.json must contain a list")
 
     venue_ids = [venue.get("id") for venue in venues]
     event_ids = [event.get("id") for event in events]
+    resource_ids = [resource.get("id") for resource in resources]
     require(len(venue_ids) == len(set(venue_ids)), "duplicate venue id")
     require(len(event_ids) == len(set(event_ids)), "duplicate event id")
+    require(len(resource_ids) == len(set(resource_ids)), "duplicate resource id")
 
     for venue in venues:
         validate_venue(venue)
     known_venues = set(venue_ids)
     for event in events:
         validate_event(event, known_venues)
+    for resource in resources:
+        validate_resource(resource)
 
     official = sum(event["sourceType"] == "official" for event in events)
     directory = len(events) - official
     mapped = sum("lat" in venue for venue in venues)
-    print(f"validated {len(venues)} venues ({mapped} mapped) and {len(events)} events ({official} official, {directory} directory)")
+    print(f"validated {len(venues)} venues ({mapped} mapped), {len(events)} events ({official} official, {directory} directory), and {len(resources)} make-art resources")
 
 
 if __name__ == "__main__":
