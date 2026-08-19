@@ -22,7 +22,10 @@ interface OverpassResponse {
   elements?: OverpassElement[];
 }
 
-const OVERPASS_ENDPOINT = 'https://overpass-api.de/api/interpreter';
+const OVERPASS_ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+];
 const NOMINATIM_ENDPOINT = 'https://nominatim.openstreetmap.org/reverse';
 const discoveryCache = new Map<string, Promise<DiscoveredPlace[]>>();
 const labelCache = new Map<string, Promise<string>>();
@@ -57,7 +60,7 @@ function boot(attempt = 0) {
 
   const key = document.createElement('p');
   key.className = 'discovery-key';
-  key.innerHTML = '<span class="discovery-key-dot" aria-hidden="true"></span> lime-ring pins are OpenStreetMap art-place discoveries, not yet verified hangabout listings';
+  key.innerHTML = '<span class="discovery-key-dot" aria-hidden="true"></span> hollow lime rings are OpenStreetMap art-place discoveries, not yet verified hangabout listings';
   webDiscovery.appendChild(key);
 
   let currentAreaLabel: string | null = 'Melbourne';
@@ -104,9 +107,9 @@ function boot(attempt = 0) {
       webArea.textContent = label;
       const rendered = map.setDiscoveries(places);
       discoveryCount.textContent = rendered ? ` · ${rendered} discovered art ${rendered === 1 ? 'place' : 'places'}` : '';
-      discoveryStatus.textContent = rendered
-        ? `${rendered} additional art ${rendered === 1 ? 'place' : 'places'} discovered from OpenStreetMap in this viewport`
-        : 'no additional OpenStreetMap art places found in this viewport';
+      discoveryStatus.textContent = places.length
+        ? `${places.length} OpenStreetMap art-place candidates found in this viewport · ${rendered} are not already matched to hangabout`
+        : 'OpenStreetMap returned no art-place candidates for this viewport · try the web exhibition/gallery searches below';
     } catch (error) {
       if (sequence !== searchSequence) return;
       const label = await resolveAreaLabel(center, bounds).catch(() => fallbackAreaLabel(center));
@@ -136,8 +139,8 @@ function boot(attempt = 0) {
 async function discoverArtPlaces(bounds: Bounds): Promise<DiscoveredPlace[]> {
   const latSpan = Math.abs(bounds.north - bounds.south);
   const lonSpan = Math.abs(bounds.east - bounds.west);
-  if (latSpan > 15 || lonSpan > 15) {
-    throw new Error('zoom in a little before live discovery · this search is designed for a city or region, not a continent');
+  if (latSpan > 4.5 || lonSpan > 4.5) {
+    throw new Error('zoom in a little before live discovery · use a city or regional viewport rather than most of a state at once');
   }
 
   const key = boundsKey(bounds);
@@ -152,34 +155,52 @@ async function discoverArtPlaces(bounds: Bounds): Promise<DiscoveredPlace[]> {
 
 async function fetchOverpass(bounds: Bounds): Promise<DiscoveredPlace[]> {
   const bbox = `${bounds.south},${bounds.west},${bounds.north},${bounds.east}`;
-  const query = `[out:json][timeout:22];(
+  const span = Math.max(Math.abs(bounds.north - bounds.south), Math.abs(bounds.east - bounds.west));
+  const nameFallback = span <= 2.4
+    ? `nwr["name"~"gallery|galleries|art centre|arts centre|art center|arts center|art space|arts space|artist run|artist-run|contemporary art|photography gallery|print studio",i](${bbox});`
+    : '';
+
+  const query = `[out:json][timeout:25];(
     nwr["tourism"="gallery"]["name"](${bbox});
     nwr["amenity"="arts_centre"]["name"](${bbox});
     nwr["amenity"="exhibition_centre"]["name"](${bbox});
+    nwr["amenity"="community_centre"]["name"~"art|arts|gallery",i](${bbox});
     nwr["shop"="art"]["name"](${bbox});
+    nwr["craft"="artist"]["name"](${bbox});
+    nwr["studio"="art"]["name"](${bbox});
+    nwr["tourism"="museum"]["museum"~"art|design|photography",i]["name"](${bbox});
     nwr["tourism"="museum"]["name"~"art|gallery|photograph|design",i](${bbox});
+    ${nameFallback}
   );out center tags;`;
 
-  const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), 28000);
-  try {
-    const response = await fetch(OVERPASS_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-      body: `data=${encodeURIComponent(query)}`,
-      signal: controller.signal,
-    });
-    if (!response.ok) throw new Error(`live art-place discovery returned ${response.status}; try again shortly`);
-    const payload = await response.json() as OverpassResponse;
-    return parseOverpass(payload.elements ?? []).slice(0, 600);
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error('live art-place discovery timed out · try a smaller map area');
+  let lastError: unknown;
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 30000);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        lastError = new Error(`live art-place discovery returned ${response.status}`);
+        continue;
+      }
+      const payload = await response.json() as OverpassResponse;
+      return parseOverpass(payload.elements ?? []).slice(0, 800);
+    } catch (error) {
+      lastError = error;
+    } finally {
+      window.clearTimeout(timer);
     }
-    throw error;
-  } finally {
-    window.clearTimeout(timer);
   }
+
+  if (lastError instanceof DOMException && lastError.name === 'AbortError') {
+    throw new Error('live art-place discovery timed out · try a smaller map area');
+  }
+  throw new Error('live art-place discovery is temporarily unavailable · try again shortly');
 }
 
 function parseOverpass(elements: OverpassElement[]): DiscoveredPlace[] {
@@ -208,9 +229,12 @@ function category(tags: Record<string, string>): string {
   if (tags.tourism === 'gallery') return 'gallery';
   if (tags.amenity === 'arts_centre') return 'arts centre';
   if (tags.amenity === 'exhibition_centre') return 'exhibition centre';
+  if (tags.amenity === 'community_centre') return 'community art centre candidate';
   if (tags.shop === 'art') return 'art shop / possible commercial gallery';
+  if (tags.craft === 'artist') return 'artist / studio candidate';
+  if (tags.studio === 'art') return 'art studio candidate';
   if (tags.tourism === 'museum') return 'art / design museum candidate';
-  return 'art place';
+  return 'name-matched art place candidate';
 }
 
 function address(tags: Record<string, string>): string | undefined {
