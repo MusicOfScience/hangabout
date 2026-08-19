@@ -94,6 +94,19 @@ function boot(attempt = 0) {
     const sequence = ++searchSequence;
     const bounds = map.bounds();
     const center = map.center();
+    const span = viewportSpan(bounds);
+
+    // Broad regional views are useful for orientation and ordinary web discovery,
+    // but are a poor fit for a public Overpass instance. Do not leave the UI
+    // spinning while asking a donated service to trawl half a state.
+    if (span.lat > 1.25 || span.lon > 1.7) {
+      const label = regionalAreaLabel(center);
+      currentAreaLabel = label;
+      webArea.textContent = label;
+      clearLive(`regional view · hangabout’s verified programme is currently Melbourne-focused. Zoom into a town or city and tap “search this area” for live OSM art-place discovery; the web searches below now target ${label}.`);
+      return;
+    }
+
     clearLive('looking for galleries and art places in this map area…');
 
     try {
@@ -112,7 +125,7 @@ function boot(attempt = 0) {
         : 'OpenStreetMap returned no art-place candidates for this viewport · try the web exhibition/gallery searches below';
     } catch (error) {
       if (sequence !== searchSequence) return;
-      const label = await resolveAreaLabel(center, bounds).catch(() => fallbackAreaLabel(center));
+      const label = await resolveAreaLabel(center, bounds).catch(() => regionalAreaLabel(center));
       currentAreaLabel = label;
       webArea.textContent = label;
       discoveryStatus.textContent = error instanceof Error
@@ -129,7 +142,7 @@ function boot(attempt = 0) {
 
     const bounds = map.bounds();
     const center = map.center();
-    const area = currentAreaLabel ?? await resolveAreaLabel(center, bounds).catch(() => fallbackAreaLabel(center));
+    const area = currentAreaLabel ?? await resolveAreaLabel(center, bounds).catch(() => regionalAreaLabel(center));
     currentAreaLabel = area;
     webArea.textContent = area;
     window.open(googleSearchUrl(target.dataset.web as WebDiscoveryKind, area), '_blank', 'noopener');
@@ -137,12 +150,6 @@ function boot(attempt = 0) {
 }
 
 async function discoverArtPlaces(bounds: Bounds): Promise<DiscoveredPlace[]> {
-  const latSpan = Math.abs(bounds.north - bounds.south);
-  const lonSpan = Math.abs(bounds.east - bounds.west);
-  if (latSpan > 4.5 || lonSpan > 4.5) {
-    throw new Error('zoom in a little before live discovery · use a city or regional viewport rather than most of a state at once');
-  }
-
   const key = boundsKey(bounds);
   const cached = discoveryCache.get(key);
   if (cached) return cached;
@@ -156,11 +163,11 @@ async function discoverArtPlaces(bounds: Bounds): Promise<DiscoveredPlace[]> {
 async function fetchOverpass(bounds: Bounds): Promise<DiscoveredPlace[]> {
   const bbox = `${bounds.south},${bounds.west},${bounds.north},${bounds.east}`;
   const span = Math.max(Math.abs(bounds.north - bounds.south), Math.abs(bounds.east - bounds.west));
-  const nameFallback = span <= 2.4
+  const nameFallback = span <= 1.15
     ? `nwr["name"~"gallery|galleries|art centre|arts centre|art center|arts center|art space|arts space|artist run|artist-run|contemporary art|photography gallery|print studio",i](${bbox});`
     : '';
 
-  const query = `[out:json][timeout:25];(
+  const query = `[out:json][timeout:12];(
     nwr["tourism"="gallery"]["name"](${bbox});
     nwr["amenity"="arts_centre"]["name"](${bbox});
     nwr["amenity"="exhibition_centre"]["name"](${bbox});
@@ -176,7 +183,7 @@ async function fetchOverpass(bounds: Bounds): Promise<DiscoveredPlace[]> {
   let lastError: unknown;
   for (const endpoint of OVERPASS_ENDPOINTS) {
     const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 30000);
+    const timer = window.setTimeout(() => controller.abort(), 9000);
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -189,7 +196,7 @@ async function fetchOverpass(bounds: Bounds): Promise<DiscoveredPlace[]> {
         continue;
       }
       const payload = await response.json() as OverpassResponse;
-      return parseOverpass(payload.elements ?? []).slice(0, 800);
+      return parseOverpass(payload.elements ?? []).slice(0, 500);
     } catch (error) {
       lastError = error;
     } finally {
@@ -198,9 +205,9 @@ async function fetchOverpass(bounds: Bounds): Promise<DiscoveredPlace[]> {
   }
 
   if (lastError instanceof DOMException && lastError.name === 'AbortError') {
-    throw new Error('live art-place discovery timed out · try a smaller map area');
+    throw new Error('live OSM discovery is slow here · use the web gallery/exhibition searches below, or zoom in further and try again');
   }
-  throw new Error('live art-place discovery is temporarily unavailable · try again shortly');
+  throw new Error('live OSM discovery is temporarily unavailable · use the web searches below');
 }
 
 function parseOverpass(elements: OverpassElement[]): DiscoveredPlace[] {
@@ -246,7 +253,9 @@ function address(tags: Record<string, string>): string | undefined {
 
 async function resolveAreaLabel(center: Point, bounds: Bounds): Promise<string> {
   const span = Math.max(Math.abs(bounds.north - bounds.south), Math.abs(bounds.east - bounds.west));
-  const zoom = span > 4 ? 5 : span > 1.5 ? 8 : span > .55 ? 10 : span > .18 ? 12 : 13;
+  if (span > 1.25) return regionalAreaLabel(center);
+
+  const zoom = span > .55 ? 10 : span > .18 ? 12 : 13;
   const key = `${center[0].toFixed(3)},${center[1].toFixed(3)},${zoom}`;
   const cached = labelCache.get(key);
   if (cached) return cached;
@@ -263,9 +272,11 @@ async function resolveAreaLabel(center: Point, bounds: Bounds): Promise<string> 
 
     const response = await fetch(url, { headers: { Accept: 'application/json' } });
     if (!response.ok) throw new Error('area label unavailable');
-    const payload = await response.json() as { address?: Record<string, string>; name?: string; display_name?: string };
+    const payload = await response.json() as { address?: Record<string, string>; name?: string };
     const a = payload.address ?? {};
-    return a.suburb ?? a.city_district ?? a.city ?? a.town ?? a.village ?? a.municipality ?? a.county ?? a.state ?? payload.name ?? fallbackAreaLabel(center);
+    const locality = a.suburb ?? a.city_district ?? a.city ?? a.town ?? a.village ?? a.municipality ?? a.county ?? payload.name;
+    const state = a.state;
+    return [locality, state].filter(Boolean).join(', ') || regionalAreaLabel(center);
   });
 
   labelCache.set(key, request);
@@ -295,10 +306,17 @@ function queueNominatim<T>(task: () => Promise<T>): Promise<T> {
   return result;
 }
 
-function fallbackAreaLabel(center: Point): string {
-  if (haversine(center, MELBOURNE) < 85) return 'Melbourne';
+function viewportSpan(bounds: Bounds) {
+  return {
+    lat: Math.abs(bounds.north - bounds.south),
+    lon: Math.abs(bounds.east - bounds.west),
+  };
+}
+
+function regionalAreaLabel(center: Point): string {
   const [lat, lng] = center;
   if (lat <= -33.5 && lat >= -39.5 && lng >= 140.5 && lng <= 150.3) return 'Victoria';
+  if (haversine(center, MELBOURNE) < 85) return 'Melbourne, Victoria';
   return 'Australia';
 }
 
