@@ -1,0 +1,1 @@
+This directory contains automation only. Source eligibility and restrictions are defined in `sources/source-policy.json`; the scheduled source-discovery workflow may fetch only first-party indexes explicitly listed in `sources/official-indexes.json` and still checks robots.txt at runtime.
