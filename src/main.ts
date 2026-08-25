@@ -86,8 +86,10 @@ function shell(data: Dataset): string {
 
     <main>
       <section class="hero">
-        <p class="eyebrow">melbourne</p>
-        <h1>what's hanging,<br>where.</h1>
+        <div class="hero-title">
+          <p class="eyebrow">melbourne</p>
+          <h1>what's hanging,<br>where.</h1>
+        </div>
         <p class="lede">Exhibitions, openings and places to look—with the artist-run, public, commercial and in-between parts of the city on the same map.</p>
       </section>
 
