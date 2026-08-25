@@ -42,8 +42,10 @@ function boot(attempt = 0) {
   const mappedCount = document.querySelector<HTMLElement>('#mappedCount');
   const status = document.querySelector<HTMLElement>('#status');
   const webDiscovery = document.querySelector<HTMLElement>('.web-discovery');
+  const areaDiscovery = document.querySelector<HTMLElement>('#areaDiscovery');
+  const liveAreaResults = document.querySelector<HTMLElement>('#liveAreaResults');
 
-  if (!map || !searchArea || !clearArea || !fitMap || !webLinks || !webArea || !mappedCount || !status || !webDiscovery) {
+  if (!map || !searchArea || !clearArea || !fitMap || !webLinks || !webArea || !mappedCount || !status || !webDiscovery || !areaDiscovery || !liveAreaResults) {
     if (attempt < 90) window.setTimeout(() => boot(attempt + 1), 50);
     return;
   }
@@ -73,11 +75,14 @@ function boot(attempt = 0) {
     map.clearDiscoveries();
     discoveryCount.textContent = '';
     discoveryStatus.textContent = message;
+    if (message) liveAreaResults.innerHTML = `<p class="area-place-message">${escapeHtml(message)}</p>`;
+    else liveAreaResults.innerHTML = '';
   };
 
   window.addEventListener('hangabout:see-map-moved', () => {
     currentAreaLabel = null;
     webArea.textContent = 'this map area';
+    areaDiscovery.hidden = true;
     clearLive('map moved · tap “search this area” to discover art places here');
   });
 
@@ -103,11 +108,13 @@ function boot(attempt = 0) {
       const label = regionalAreaLabel(center);
       currentAreaLabel = label;
       webArea.textContent = label;
+      areaDiscovery.hidden = false;
       clearLive(`regional view · known public galleries remain visible from the cached statewide layer. Zoom into a town or city and tap “search this area” for additional live OSM discovery; the web searches below now target ${label}.`);
       return;
     }
 
     clearLive('looking for galleries and art places in this map area…');
+    areaDiscovery.hidden = false;
 
     try {
       const [places, label] = await Promise.all([
@@ -123,6 +130,7 @@ function boot(attempt = 0) {
       discoveryStatus.textContent = places.length
         ? `${places.length} OpenStreetMap art-place candidates found in this viewport · ${rendered} are not already matched to hangabout`
         : 'OpenStreetMap returned no additional art-place candidates for this viewport · try the web exhibition/gallery searches below';
+      renderLivePlaces(liveAreaResults, places);
     } catch (error) {
       if (sequence !== searchSequence) return;
       const label = await resolveAreaLabel(center, bounds).catch(() => regionalAreaLabel(center));
@@ -131,6 +139,7 @@ function boot(attempt = 0) {
       discoveryStatus.textContent = error instanceof Error
         ? error.message
         : 'live art-place discovery is temporarily unavailable';
+      liveAreaResults.innerHTML = `<p class="area-place-message">${escapeHtml(discoveryStatus.textContent)} The exhibition and gallery searches above still target this area.</p>`;
     }
   });
 
@@ -253,9 +262,7 @@ function address(tags: Record<string, string>): string | undefined {
 
 async function resolveAreaLabel(center: Point, bounds: Bounds): Promise<string> {
   const span = Math.max(Math.abs(bounds.north - bounds.south), Math.abs(bounds.east - bounds.west));
-  if (span > 1.25) return regionalAreaLabel(center);
-
-  const zoom = span > .55 ? 10 : span > .18 ? 12 : 13;
+  const zoom = span > 6 ? 4 : span > 1.25 ? 6 : span > .55 ? 10 : span > .18 ? 12 : 13;
   const key = `${center[0].toFixed(3)},${center[1].toFixed(3)},${zoom}`;
   const cached = labelCache.get(key);
   if (cached) return cached;
@@ -315,9 +322,43 @@ function viewportSpan(bounds: Bounds) {
 
 function regionalAreaLabel(center: Point): string {
   const [lat, lng] = center;
-  if (lat <= -33.5 && lat >= -39.5 && lng >= 140.5 && lng <= 150.3) return 'Victoria';
+  if (lat <= -35.12 && lat >= -35.92 && lng >= 148.75 && lng <= 149.4) return 'Australian Capital Territory';
+  if (lat <= -34 && lat >= -39.5 && lng >= 140.5 && lng <= 150.3) return 'Victoria';
   if (haversine(center, MELBOURNE) < 85) return 'Melbourne, Victoria';
   return 'Australia';
+}
+
+function renderLivePlaces(container: HTMLElement, places: DiscoveredPlace[]) {
+  if (!places.length) {
+    container.innerHTML = '<p class="area-place-message">No additional OpenStreetMap art places were returned for this view.</p>';
+    return;
+  }
+  container.innerHTML = places.slice(0, 40).map(place => {
+    const website = safeExternalUrl(place.website);
+    return `
+      <article class="area-place">
+        <div><strong>${escapeHtml(place.name)}</strong><span>${escapeHtml(place.category)}${place.address ? ` · ${escapeHtml(place.address)}` : ''}</span></div>
+        ${website ? `<a href="${escapeHtml(website)}" target="_blank" rel="noopener">website ↗</a>` : '<span>OpenStreetMap candidate</span>'}
+      </article>
+    `;
+  }).join('');
+}
+
+function safeExternalUrl(value?: string): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return ['http:', 'https:'].includes(url.protocol) ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function escapeHtml(value: string): string {
+  const entities: Record<string, string> = {
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+  };
+  return value.replace(/[&<>"']/g, char => entities[char] ?? char);
 }
 
 function boundsKey(bounds: Bounds): string {

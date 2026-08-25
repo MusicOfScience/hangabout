@@ -56,9 +56,14 @@ export class SeeMap {
     this.knownLayer.clearLayers();
     const venueById = new Map(dataset.venues.map(v => [v.id, v]));
     const venues = new Map<string, Venue>();
+    const eventsByVenue = new Map<string, Event[]>();
     for (const event of events) {
       const venue = venueById.get(event.venueId);
-      if (venue) venues.set(venue.id, venue);
+      if (!venue) continue;
+      venues.set(venue.id, venue);
+      const venueEvents = eventsByVenue.get(venue.id);
+      if (venueEvents) venueEvents.push(event);
+      else eventsByVenue.set(venue.id, [event]);
     }
 
     this.canonicalVenues = dataset.venues
@@ -72,12 +77,29 @@ export class SeeMap {
     for (const venue of venues.values()) {
       const point = exactVenuePoint(venue);
       if (!point) continue;
-      const count = events.filter(event => event.venueId === venue.id).length;
+      const venueEvents = eventsByVenue.get(venue.id) ?? [];
+      const count = venueEvents.length;
       const marker = L.marker(point, {
         icon: divIcon(String(count), 'venue-pin'),
         title: venue.name,
       }).addTo(this.layer);
-      marker.bindPopup(`<strong>${escapeHtml(venue.name)}</strong><br>${escapeHtml(venue.suburb)}<br>${count} ${count === 1 ? 'show' : 'shows'}<br><small>verified hangabout venue</small>`);
+      const listings = venueEvents.map(event => {
+        const source = safeExternalUrl(event.sourceUrl);
+        return [
+          '<li>',
+          `<strong>${escapeHtml(event.title)}</strong>`,
+          '<span class="popup-links">',
+          `<a href="#event-${escapeHtml(event.id)}">show in list ↓</a>`,
+          source ? `<a href="${escapeHtml(source)}" target="_blank" rel="noopener">exhibition page ↗</a>` : '',
+          '</span>',
+          '</li>',
+        ].join('');
+      }).join('');
+      marker.bindPopup([
+        `<strong>${escapeHtml(venue.name)}</strong>`,
+        `<span>${escapeHtml(venue.suburb)} · ${count} ${count === 1 ? 'show' : 'shows'}</span>`,
+        `<ul class="popup-listings">${listings}</ul>`,
+      ].join('<br>'), { maxWidth: 330, minWidth: 240 });
       markers.push(marker);
     }
 

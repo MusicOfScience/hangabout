@@ -35,6 +35,10 @@ const els = {
   locationUse: q<HTMLButtonElement>('#locationUse'),
   locationDismiss: q<HTMLButtonElement>('#locationDismiss'),
   webSuburb: q<HTMLElement>('#webSuburb'),
+  areaDiscovery: q<HTMLElement>('#areaDiscovery'),
+  areaDiscoverySummary: q<HTMLElement>('#areaDiscoverySummary'),
+  cachedAreaResults: q<HTMLElement>('#cachedAreaResults'),
+  liveAreaResults: q<HTMLElement>('#liveAreaResults'),
   crawlBar: q<HTMLElement>('#crawlBar'),
   crawlCount: q<HTMLElement>('#crawlCount'),
   crawlMode: q<HTMLSelectElement>('#crawlMode'),
@@ -149,6 +153,14 @@ function shell(data: Dataset): string {
                 ${(['galleries','exhibitions','openings','everything'] as WebDiscoveryKind[])
                   .map(kind => `<button data-web="${kind}" class="text-link">${kind} ↗</button>`).join('')}
               </div>
+              <section id="areaDiscovery" class="area-discovery" hidden aria-live="polite">
+                <div class="area-discovery-head">
+                  <strong>places in this map area</strong>
+                  <span id="areaDiscoverySummary"></span>
+                </div>
+                <div id="cachedAreaResults" class="area-place-list"></div>
+                <div id="liveAreaResults" class="area-place-list"></div>
+              </section>
             </div>
           </div>
 
@@ -257,6 +269,7 @@ function wire() {
     state.areaBounds = seeMap.bounds();
     els.searchArea.hidden = true;
     els.clearArea.hidden = false;
+    renderAreaDiscovery();
     renderSee();
   });
 
@@ -264,6 +277,7 @@ function wire() {
     state.areaBounds = null;
     els.clearArea.hidden = true;
     els.searchArea.hidden = true;
+    clearAreaDiscovery();
     renderSee(true);
   });
 
@@ -271,6 +285,7 @@ function wire() {
     state.areaBounds = null;
     els.clearArea.hidden = true;
     els.searchArea.hidden = true;
+    clearAreaDiscovery();
     seeMap.fitAll(dataset);
     renderSee();
   });
@@ -416,6 +431,33 @@ function renderSee(focusMap = false) {
   seeMap.render(rows, dataset, focusMap);
 }
 
+function renderAreaDiscovery() {
+  if (!state.areaBounds) return clearAreaDiscovery();
+  const areaEvents = filteredEvents();
+  const places = dataset.knownPlaces.filter(place =>
+    pointInsideBounds([place.lat, place.lng], state.areaBounds!)
+  );
+
+  els.areaDiscovery.hidden = false;
+  els.areaDiscoverySummary.textContent = `${areaEvents.length} exhibition ${areaEvents.length === 1 ? 'listing' : 'listings'} · ${places.length} known ${places.length === 1 ? 'place' : 'places'} awaiting programmes`;
+  els.cachedAreaResults.innerHTML = `
+    <a class="area-results-jump" href="#resultsList">${areaEvents.length ? `view ${areaEvents.length} exhibition ${areaEvents.length === 1 ? 'listing' : 'listings'}` : 'no current hangabout exhibition listings here yet'} ↓</a>
+  ` + places.map(place => `
+    <article class="area-place">
+      <div><strong>${esc(place.name)}</strong><span>${esc(place.locality)} · known public gallery</span></div>
+      <a href="${safeUrl(place.sourceUrl)}" target="_blank" rel="noopener">directory source ↗</a>
+    </article>
+  `).join('');
+  els.liveAreaResults.innerHTML = '<p class="area-place-message">checking OpenStreetMap for additional art places…</p>';
+}
+
+function clearAreaDiscovery() {
+  els.areaDiscovery.hidden = true;
+  els.areaDiscoverySummary.textContent = '';
+  els.cachedAreaResults.innerHTML = '';
+  els.liveAreaResults.innerHTML = '';
+}
+
 function eventCard(event: Event): string {
   const venue = venueById.get(event.venueId)!;
   const saved = state.saved.has(event.id);
@@ -424,7 +466,7 @@ function eventCard(event: Event): string {
     ? `${haversine(state.userLocation, venuePoint(venue)!).toFixed(1)} km`
     : '';
   return `
-    <article class="event-card">
+    <article class="event-card" id="event-${esc(event.id)}" tabindex="-1">
       <div class="card-top">
         <span class="kind">${esc(venue.kind.replaceAll('-', ' '))}</span>
         <span>${esc(formatDateRange(event.startDate, event.endDate))}</span>
