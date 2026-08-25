@@ -201,7 +201,7 @@ export class MakeMap {
     this.layer = L.layerGroup().addTo(this.map);
   }
 
-  render(resources: MakeResource[]) {
+  render(resources: MakeResource[], pathwayVenues: Venue[] = []) {
     this.layer.clearLayers();
     const groups = new Map<string, { suburb: string; point: Point; count: number }>();
     for (const resource of resources) {
@@ -211,6 +211,14 @@ export class MakeMap {
       const existing = groups.get(key);
       if (existing) existing.count += 1;
       else groups.set(key, { suburb: resource.suburb, point, count: 1 });
+    }
+    for (const venue of pathwayVenues) {
+      const point = exactVenuePoint(venue);
+      if (!point) continue;
+      const key = venue.suburb.toLowerCase();
+      const existing = groups.get(key);
+      if (existing) existing.count += 1;
+      else groups.set(key, { suburb: venue.suburb, point, count: 1 });
     }
 
     const markers: Marker[] = [];

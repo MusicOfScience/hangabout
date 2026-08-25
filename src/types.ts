@@ -107,5 +107,5 @@ export interface Dataset {
 }
 
 export type Mode = 'see' | 'make';
-export type QuickFilter = 'all' | 'open' | 'today' | 'weekend' | 'openings' | 'closing' | 'free' | 'nearby';
+export type QuickFilter = 'all' | 'open' | 'today' | 'weekend' | 'openings' | 'closing' | 'free' | 'nearby' | 'saved';
 export type SortMode = 'closing' | 'newest' | 'distance' | 'az';

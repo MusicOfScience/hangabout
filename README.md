@@ -37,14 +37,15 @@ The seed dataset is deliberately finite and editorially checked. It is a product
 ## structure
 
 ```text
-index.html                       # semantic application shell
-styles.css                       # editorial visual system + responsive layout
-app.js                           # filters, map, saves, crawl, artist directory
-lib/time.js                      # pure/tested calendar semantics
+index.html                       # Vite application shell
+src/main.ts                      # filters, results, saves, crawl and artist directory
+src/map.ts                       # Leaflet exhibition and make-art maps
+src/live-discovery.ts            # user-triggered OpenStreetMap discovery
+src/time.ts                      # Melbourne calendar semantics
+src/styles.css                   # editorial visual system + responsive layout
 data/venues.json                 # canonical venue registry
 data/events.json                 # event records + provenance
-scripts/validate_data.py         # data-contract validation
-scripts/test_time.mjs            # calendar edge-case tests
+scripts/validate_data_v3.py      # data-contract validation
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
 docs/hostile-review.md           # decisions from the adversarial v0 review
@@ -52,16 +53,17 @@ docs/hostile-review.md           # decisions from the adversarial v0 review
 
 ## local preview
 
-There is deliberately no build step for this prototype.
-
 ```bash
-python3 scripts/validate_data.py
-node --check app.js && node --check lib/time.js
-node scripts/test_time.mjs
-python3 -m http.server 8080
+npm install --no-audit --no-fund
+python3 scripts/validate_data_v3.py
+python3 scripts/validate_coordinates.py
+python3 scripts/validate_sources.py
+python3 scripts/validate_known_places.py
+npm run build
+npm run dev
 ```
 
-Then open `http://localhost:8080`.
+Vite prints the local development address.
 
 ## data contract
 

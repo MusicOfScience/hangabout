@@ -88,7 +88,7 @@ function shell(data: Dataset): string {
       <section class="hero">
         <p class="eyebrow">melbourne</p>
         <h1>what's hanging,<br>where.</h1>
-        <p class="lede">Exhibitions, openings and places to look — with the artist-run, public, commercial and in-between parts of the city on the same map.</p>
+        <p class="lede">Exhibitions, openings and places to look—with the artist-run, public, commercial and in-between parts of the city on the same map.</p>
       </section>
 
       <nav class="mode-switch" aria-label="choose mode">
@@ -100,7 +100,7 @@ function shell(data: Dataset): string {
         <aside id="locationPrompt" class="location-prompt">
           <div>
             <strong>Want the nearby stuff first?</strong>
-            <span>Use your location to sort by distance. Nothing is sent anywhere.</span>
+            <span>Use your location on this device to sort by distance.</span>
           </div>
           <div class="button-row">
             <button id="locationUse" class="button solid">use my location</button>
@@ -109,13 +109,13 @@ function shell(data: Dataset): string {
         </aside>
 
         <section class="filters" aria-label="find exhibitions">
-          <input id="searchInput" class="search" type="search" placeholder="artist, gallery, suburb, medium…" autocomplete="off">
+          <input id="searchInput" class="search" type="search" aria-label="search exhibitions" placeholder="artist, gallery, suburb, medium…" autocomplete="off">
           <div id="quickFilters" class="chips">
             ${[
               ['all','everything'], ['open','open now'], ['today','open today'],
               ['weekend','this weekend'], ['openings','opening ≤7d'], ['closing','closing ≤7d'],
-              ['free','free'], ['nearby','within 5 km']
-            ].map(([value,label]) => `<button class="chip${value === 'all' ? ' is-active' : ''}" data-quick="${value}">${label}</button>`).join('')}
+              ['free','free'], ['nearby','within 5 km'], ['saved','saved']
+            ].map(([value,label]) => `<button class="chip${value === 'all' ? ' is-active' : ''}" data-quick="${value}" aria-pressed="${value === 'all'}">${label}</button>`).join('')}
           </div>
           <div class="select-row">
             <label>space
@@ -134,7 +134,7 @@ function shell(data: Dataset): string {
 
         <section class="explorer">
           <div class="map-shell">
-            <div id="map"></div>
+            <div id="map" role="region" aria-label="map of exhibition venues"></div>
             <div class="map-actions">
               <button id="searchArea" class="map-button" hidden>search this area</button>
               <button id="clearArea" class="map-button" hidden>show all areas</button>
@@ -169,7 +169,7 @@ function shell(data: Dataset): string {
 
         <div class="make-grid">
           <div class="map-shell">
-            <div id="makeMap"></div>
+            <div id="makeMap" role="region" aria-label="map of artist resources"></div>
             <div class="map-actions">
               <button id="makeReset" class="map-button" hidden>show all resources</button>
               <button id="makeLocate" class="map-button">locate me</button>
@@ -177,7 +177,7 @@ function shell(data: Dataset): string {
           </div>
           <div>
             <div class="make-controls">
-              <input id="makeSearch" class="search" type="search" placeholder="studio, suburb, printmaking, open call…">
+              <input id="makeSearch" class="search" type="search" aria-label="search artist resources" placeholder="studio, suburb, printmaking, open call…">
               <label>show
                 <select id="makeKind">
                   <option value="resources">studios + making resources</option>
@@ -226,13 +226,28 @@ function wire() {
 
   els.search.addEventListener('input', () => { state.query = els.search.value; renderSee(); });
   els.kind.addEventListener('change', () => { state.venueKind = els.kind.value; renderSee(); });
-  els.sort.addEventListener('change', () => { state.sort = els.sort.value as typeof state.sort; renderSee(); });
+  els.sort.addEventListener('change', () => {
+    state.sort = els.sort.value as typeof state.sort;
+    if (state.sort === 'distance' && !state.userLocation) {
+      locate();
+      return;
+    }
+    renderSee();
+  });
 
   els.quick.addEventListener('click', event => {
     const target = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-quick]');
     if (!target) return;
     state.quick = target.dataset.quick as typeof state.quick;
-    els.quick.querySelectorAll('.chip').forEach(chip => chip.classList.toggle('is-active', chip === target));
+    els.quick.querySelectorAll<HTMLButtonElement>('.chip').forEach(chip => {
+      const active = chip === target;
+      chip.classList.toggle('is-active', active);
+      chip.setAttribute('aria-pressed', String(active));
+    });
+    if (state.quick === 'nearby' && !state.userLocation) {
+      locate();
+      return;
+    }
     renderSee();
   });
 
@@ -347,6 +362,7 @@ function filteredEvents(): Event[] {
     if (state.quick === 'openings' && !openingWithin(event, 7)) return false;
     if (state.quick === 'closing' && !closesWithin(event, 7)) return false;
     if (state.quick === 'free' && event.admission !== 'free') return false;
+    if (state.quick === 'saved' && !state.saved.has(event.id)) return false;
 
     const point = venuePoint(venue);
     if (state.quick === 'nearby') {
@@ -420,9 +436,9 @@ function eventCard(event: Event): string {
         ${venue.lat != null ? '<span>exact pin</span>' : '<span>area location</span>'}
       </div>
       <div class="card-actions">
-        <button class="text-link" data-detail="${esc(event.id)}">details</button>
-        <button class="text-link" data-save="${esc(event.id)}">${saved ? 'saved ✓' : 'save'}</button>
-        <button class="text-link" data-crawl="${esc(event.id)}">${inCrawl ? 'in crawl ✓' : 'add to crawl'}</button>
+        <button class="text-link" data-detail="${esc(event.id)}" aria-label="details for ${esc(event.title)}">details</button>
+        <button class="text-link" data-save="${esc(event.id)}" aria-label="${saved ? 'remove saved' : 'save'} ${esc(event.title)}">${saved ? 'saved ✓' : 'save'}</button>
+        <button class="text-link" data-crawl="${esc(event.id)}" aria-label="${inCrawl ? 'remove from crawl' : 'add to crawl'} ${esc(event.title)}">${inCrawl ? 'in crawl ✓' : 'add to crawl'}</button>
       </div>
     </article>
   `;
@@ -488,7 +504,7 @@ function renderMake() {
     ...venuePathways.map(pathwayCard),
   ].join('') || `<div class="empty"><strong>nothing there.</strong><span>Try another filter or show all resources.</span></div>`;
 
-  makeMap.render(mapResources);
+  makeMap.render(mapResources, venuePathways);
 }
 
 function resourceCard(resource: MakeResource): string {
@@ -539,11 +555,15 @@ function openVenueDetail(venueId: string) {
 }
 
 function locate() {
+  const setStatus = (message: string) => {
+    if (state.mode === 'make') els.makeStatus.textContent = message;
+    else els.status.textContent = message;
+  };
   if (!navigator.geolocation) {
-    els.status.textContent = 'location is not available in this browser';
+    setStatus('location is not available in this browser');
     return;
   }
-  els.status.textContent = 'finding you…';
+  setStatus('finding you…');
   navigator.geolocation.getCurrentPosition(
     position => {
       const point: Point = [position.coords.latitude, position.coords.longitude];
@@ -554,9 +574,16 @@ function locate() {
       seeMap.setUserLocation(point);
       makeMap.setUserLocation(point);
       renderSee();
-      els.status.textContent = 'nearby sorting is on';
+      setStatus('nearby sorting is on');
     },
-    () => { els.status.textContent = 'location permission was not granted'; },
+    () => {
+      if (state.sort === 'distance') {
+        state.sort = 'closing';
+        els.sort.value = 'closing';
+      }
+      renderSee();
+      setStatus('location permission was not granted');
+    },
     { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
   );
 }
