@@ -406,7 +406,7 @@ function setMode(mode: 'see' | 'make') {
   els.makePanel.hidden = mode !== 'make';
   els.skipLink.href = mode === 'see' ? '#resultsList' : '#makeResults';
   if (mode === 'see') seeMap.invalidate();
-  else makeMap.invalidate();
+  else makeMap.show();
 }
 
 function filteredEvents(): Event[] {

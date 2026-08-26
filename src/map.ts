@@ -287,10 +287,7 @@ export class MakeMap {
     const signature = [...groups.entries()].map(([key, group]) =>
       `${key}:${group.resources.map(resource => resource.id).join(',')}:${group.pathways.map(venue => venue.id).join(',')}`
     ).sort().join('|');
-    if (markers.length && signature !== this.markerSignature) {
-      const bounds = L.featureGroup(markers).getBounds();
-      if (bounds.isValid()) this.map.fitBounds(bounds.pad(.15), { maxZoom: 12 });
-    }
+    if (markers.length && signature !== this.markerSignature) this.fitCurrentMarkers();
     this.markerSignature = signature;
   }
 
@@ -305,6 +302,23 @@ export class MakeMap {
 
   invalidate() {
     requestAnimationFrame(() => this.map.invalidateSize());
+  }
+
+  show() {
+    // The make-art panel is rendered while hidden on first load. Leaflet cannot
+    // calculate a useful fit until the panel has a real size, so invalidate on
+    // the first painted frame and fit the current marker set on the next one.
+    requestAnimationFrame(() => {
+      this.map.invalidateSize({ animate: false });
+      requestAnimationFrame(() => this.fitCurrentMarkers());
+    });
+  }
+
+  private fitCurrentMarkers() {
+    const layers = this.layer.getLayers();
+    if (!layers.length) return;
+    const bounds = L.featureGroup(layers).getBounds();
+    if (bounds.isValid()) this.map.fitBounds(bounds.pad(.15), { maxZoom: 12, animate: false });
   }
 }
 

@@ -161,7 +161,14 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
 .resource-source .freshness-recheck { color: #704d00; }
 .resource-source .freshness-stale { color: #8f1d12; font-weight: 700; }
 .popup-filter { margin-top: .5rem; border: 1px solid var(--ink); background: var(--paper); padding: .45rem .6rem; cursor: pointer; }
-.make-map-note { margin: 0; padding: 0 .7rem .8rem; color: var(--muted); font-size: .72rem; }
+.make-map-note {
+  margin: 0;
+  padding: .2rem .7rem 1rem;
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.45;
+}
+#makeSearch { display: block; min-width: 0; line-height: 1.2; }
 
 .crawl-bar {
   position: fixed; z-index: 2000; left: 1rem; right: 1rem; bottom: 1rem;
@@ -195,6 +202,8 @@ footer {
   .explorer, .make-grid { grid-template-columns: 1fr; }
   .map-shell { position: relative; top: auto; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
   #map, #makeMap { height: 48vh; min-height: 320px; }
+  .make-map-note { padding: .35rem .75rem 1.15rem; }
+  .make-controls { padding-top: 1.2rem; }
   .results-head { position: sticky; top: 0; z-index: 900; background: var(--paper); }
   .crawl-bar { flex-direction: column; align-items: flex-start; }
   .area-place { flex-direction: column; gap: .35rem; }
