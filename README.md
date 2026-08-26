@@ -62,7 +62,7 @@ python3 scripts/validate_coordinates.py
 python3 scripts/validate_sources.py
 python3 scripts/validate_known_places.py
 python3 scripts/validate_freshness.py
-npx playwright install chromium
+npx playwright install chromium webkit
 npm run test:e2e
 npm run build
 npm run dev

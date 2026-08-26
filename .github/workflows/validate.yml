@@ -37,7 +37,7 @@ jobs:
       - name: typecheck v2
         run: npm run typecheck
       - name: install browser test runtime
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium webkit
       - name: test desktop and mobile interactions
         run: npm run test:e2e
       - name: build v2
