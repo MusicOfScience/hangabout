@@ -315,6 +315,8 @@ export class MakeMap {
   }
 
   private fitCurrentMarkers() {
+    const container = this.map.getContainer();
+    if (!container.clientWidth || !container.clientHeight) return;
     const layers = this.layer.getLayers();
     if (!layers.length) return;
     const bounds = L.featureGroup(layers).getBounds();
