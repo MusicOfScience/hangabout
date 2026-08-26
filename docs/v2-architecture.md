@@ -36,4 +36,6 @@ Web discovery is user-triggered and constructs ordinary Google Search queries fo
 
 ## Deployment
 
-Vite builds a static `dist/` directory. No runtime server is introduced. `main` remains the live prototype until v2 passes CI and real-device QA.
+Vite builds a static `dist/` directory. No runtime server is introduced. V2 is the canonical application on `main` and deploys at `/hangabout/`; the former `/hangabout/v2/` path is retained only as a target-preserving redirect.
+
+The prototype override files were removed when v2 became canonical. Interaction regressions are covered in desktop-Chrome and mobile-Safari Playwright projects before Pages deployment.

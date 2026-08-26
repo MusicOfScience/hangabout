@@ -6,7 +6,7 @@ A Melbourne-first art discovery service for people who see art and people who ma
 
 `hangabout` answers the practical questions that art listings often leave fragmented: **what is on, where is it, can I see it today, what else is nearby, and how do I get there?** It treats artist-run initiatives, First Nations-led spaces, public institutions, commercial galleries, university galleries, specialist organisations and independents as parts of one ecology.
 
-## current prototype
+## current app
 
 The first release candidate includes:
 
@@ -49,6 +49,7 @@ scripts/validate_data_v3.py      # data-contract validation
 scripts/validate_freshness.py    # release gate for stale live-facing records
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
+tests/e2e/hangabout.spec.ts      # desktop/mobile interaction regressions
 docs/hostile-review.md           # decisions from the adversarial v0 review
 ```
 
@@ -61,6 +62,8 @@ python3 scripts/validate_coordinates.py
 python3 scripts/validate_sources.py
 python3 scripts/validate_known_places.py
 python3 scripts/validate_freshness.py
+npx playwright install chromium
+npm run test:e2e
 npm run build
 npm run dev
 ```
