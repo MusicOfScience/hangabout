@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
+  verify-and-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,47 +28,18 @@ jobs:
       - run: python scripts/validate_data_v3.py
       - run: python scripts/validate_coordinates.py
       - run: python scripts/validate_sources.py
-      - run: node --check app.js && node --check enhance-v2.js && node --check coordinates.js && node --check lib/time.js
-      - run: node scripts/test_time.mjs
-
-  build:
-    needs: verify
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout live prototype
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          path: prototype
-      - name: checkout v2 candidate
-        uses: actions/checkout@v4
-        with:
-          ref: agent/v2-rebuild
-          path: v2
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: build v2 candidate
-        working-directory: v2
-        run: |
-          npm install --no-audit --no-fund
-          npm run typecheck
-          npx vite build --base=/hangabout/v2/
+      - run: python scripts/validate_freshness.py
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - run: npm run build
       - uses: actions/configure-pages@v5
-      - name: stage live root plus v2 preview
-        run: |
-          mkdir _site
-          cp prototype/index.html prototype/styles.css prototype/enhancements.css prototype/app.js prototype/enhance-v2.js prototype/coordinates.js _site/
-          cp -R prototype/data _site/data
-          cp -R prototype/lib _site/lib
-          mkdir -p _site/v2
-          cp -R v2/dist/. _site/v2/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: dist
 
   deploy:
-    needs: build
+    needs: verify-and-build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

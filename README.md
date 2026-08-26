@@ -6,7 +6,7 @@ A Melbourne-first art discovery service for people who see art and people who ma
 
 `hangabout` answers the practical questions that art listings often leave fragmented: **what is on, where is it, can I see it today, what else is nearby, and how do I get there?** It treats artist-run initiatives, First Nations-led spaces, public institutions, commercial galleries, university galleries, specialist organisations and independents as parts of one ecology.
 
-## current prototype
+## current app
 
 The first release candidate includes:
 
@@ -37,31 +37,38 @@ The seed dataset is deliberately finite and editorially checked. It is a product
 ## structure
 
 ```text
-index.html                       # semantic application shell
-styles.css                       # editorial visual system + responsive layout
-app.js                           # filters, map, saves, crawl, artist directory
-lib/time.js                      # pure/tested calendar semantics
+index.html                       # Vite application shell
+src/main.ts                      # filters, results, saves, crawl and artist directory
+src/map.ts                       # Leaflet exhibition and make-art maps
+src/live-discovery.ts            # user-triggered OpenStreetMap discovery
+src/time.ts                      # Melbourne calendar semantics
+src/styles.css                   # editorial visual system + responsive layout
 data/venues.json                 # canonical venue registry
 data/events.json                 # event records + provenance
-scripts/validate_data.py         # data-contract validation
-scripts/test_time.mjs            # calendar edge-case tests
+scripts/validate_data_v3.py      # data-contract validation
+scripts/validate_freshness.py    # release gate for stale live-facing records
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
+tests/e2e/hangabout.spec.ts      # desktop/mobile interaction regressions
 docs/hostile-review.md           # decisions from the adversarial v0 review
 ```
 
 ## local preview
 
-There is deliberately no build step for this prototype.
-
 ```bash
-python3 scripts/validate_data.py
-node --check app.js && node --check lib/time.js
-node scripts/test_time.mjs
-python3 -m http.server 8080
+npm install --no-audit --no-fund
+python3 scripts/validate_data_v3.py
+python3 scripts/validate_coordinates.py
+python3 scripts/validate_sources.py
+python3 scripts/validate_known_places.py
+python3 scripts/validate_freshness.py
+npx playwright install chromium
+npm run test:e2e
+npm run build
+npm run dev
 ```
 
-Then open `http://localhost:8080`.
+Vite prints the local development address.
 
 ## data contract
 
@@ -81,6 +88,8 @@ An event references `venueId` and carries dates, artists, event type, tags, admi
 - `lastVerified`
 
 The application surfaces that distinction rather than flattening all listings into equal-confidence data.
+
+Freshness targets, release limits and the recommended Victoria-to-Australia expansion are recorded in [`docs/coverage-and-freshness.md`](docs/coverage-and-freshness.md).
 
 ## source / rights policy
 
