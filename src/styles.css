@@ -145,9 +145,9 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
 .resource-pin { background: var(--paper); }
 .you-pin { background: var(--accent); color: var(--ink); font-size: 1.2rem; }
 
-.make-intro { padding: 2.5rem 0 1.5rem; border-bottom: 1px solid var(--line); }
-.make-intro h2 { margin: .4rem 0; font-size: clamp(2.7rem, 8vw, 6rem); line-height: .92; letter-spacing: -.06em; }
-.make-intro p:last-child { max-width: 50rem; font-size: 1.15rem; }
+.make-intro { padding: 1.4rem 0 1.1rem; border-bottom: 1px solid var(--line); }
+.make-intro h2 { margin: .35rem 0; font-size: clamp(2.35rem, 6vw, 4.6rem); line-height: .92; letter-spacing: -.055em; }
+.make-intro p:last-child { max-width: 50rem; font-size: 1rem; }
 .make-controls { display: grid; gap: .8rem; padding: 1rem; border-bottom: 1px solid var(--line); }
 .make-selects { display: flex; gap: 1rem; flex-wrap: wrap; }
 .make-grid .map-shell { top: 4rem; }
@@ -157,6 +157,7 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
 .resource-source { display: flex; justify-content: space-between; align-items: baseline; gap: .7rem; flex-wrap: wrap; margin-top: .9rem; }
 .resource-source span { color: var(--muted); font-size: .7rem; }
 .popup-filter { margin-top: .5rem; border: 1px solid var(--ink); background: var(--paper); padding: .45rem .6rem; cursor: pointer; }
+.make-map-note { margin: 0; padding: 0 .7rem .8rem; color: var(--muted); font-size: .72rem; }
 
 .crawl-bar {
   position: fixed; z-index: 2000; left: 1rem; right: 1rem; bottom: 1rem;

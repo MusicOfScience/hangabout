@@ -191,6 +191,7 @@ function shell(data: Dataset): string {
               <button id="makeReset" class="map-button" hidden>show all resources</button>
               <button id="makeLocate" class="map-button">sort near me</button>
             </div>
+            <p class="make-map-note">pins are grouped by suburb · open one for studio names, prices and links</p>
           </div>
           <div>
             <div class="make-controls">
@@ -249,7 +250,7 @@ function shell(data: Dataset): string {
     </dialog>
 
     <footer>
-      <strong>hangabout v2 candidate</strong>
+      <strong>hangabout v2</strong>
       <span>${data.events.length} listings · ${data.venues.length} spaces · ${data.venues.filter(v => v.lat != null && v.lng != null).length} exact/building pins · ${data.resources.length} make-art resources</span>
     </footer>
   `;
@@ -596,12 +597,13 @@ function renderMake() {
     state.makeSort === 'distance' && state.userLocation ? 'nearest first · map positions may be suburb-level' : '',
   ].filter(Boolean).join(' · ');
   els.makeReset.hidden = !state.makeSuburb;
+  els.makeReset.textContent = state.makeKind === 'studio' ? 'show all studios' : 'show all resources';
   els.makeFeatures.hidden = ['opportunity', 'pathways'].includes(state.makeKind);
 
   els.makeResults.innerHTML = [
     ...resources.map(resourceCard),
     ...venuePathways.map(pathwayCard),
-  ].join('') || `<div class="empty"><strong>nothing there.</strong><span>Try another filter or show all resources.</span></div>`;
+  ].join('') || `<div class="empty"><strong>nothing there.</strong><span>Try another search or remove a feature filter.</span></div>`;
 
   makeMap.render(mapResources, venuePathways);
 }
