@@ -95,7 +95,16 @@ export function intersectsThisWeekend(event: Event): boolean {
 }
 
 export function formatDateRange(start: string, end: string): string {
-  const parse = (iso: string) => new Date(`${iso}T12:00:00+10:00`);
-  const fmt = new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short' });
+  const parse = (iso: string) => {
+    const [year, month, day] = iso.split('-').map(Number);
+    return new Date(Date.UTC(year!, month! - 1, day!));
+  };
+  const crossesYear = start.slice(0, 4) !== end.slice(0, 4);
+  const fmt = new Intl.DateTimeFormat('en-AU', {
+    day: 'numeric',
+    month: 'short',
+    year: crossesYear ? 'numeric' : undefined,
+    timeZone: 'UTC',
+  });
   return start === end ? fmt.format(parse(start)) : `${fmt.format(parse(start))} — ${fmt.format(parse(end))}`;
 }

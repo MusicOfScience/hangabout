@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:test": "tsc --noEmit && vite build --base=/",
+    "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
@@ -13,6 +15,7 @@
     "leaflet": "^1.9.4"
   },
   "devDependencies": {
+    "@playwright/test": "latest",
     "@types/leaflet": "latest",
     "typescript": "latest",
     "vite": "latest"

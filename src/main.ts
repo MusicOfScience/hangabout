@@ -73,6 +73,7 @@ wire();
 renderSee(true);
 renderMake();
 updateCrawl();
+applyLocation();
 
 function q<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -260,8 +261,10 @@ function shell(data: Dataset): string {
 }
 
 function wire() {
-  els.seeTab.addEventListener('click', () => setMode('see'));
-  els.makeTab.addEventListener('click', () => setMode('make'));
+  els.seeTab.addEventListener('click', () => setMode('see', 'push'));
+  els.makeTab.addEventListener('click', () => setMode('make', 'push'));
+  window.addEventListener('popstate', applyLocation);
+  window.addEventListener('hashchange', applyLocation);
 
   els.search.addEventListener('input', () => { state.query = els.search.value; renderSee(); });
   els.kind.addEventListener('change', () => { state.venueKind = els.kind.value; renderSee(); });
@@ -396,7 +399,9 @@ function wire() {
   });
 }
 
-function setMode(mode: 'see' | 'make') {
+type HistoryAction = 'none' | 'push' | 'replace';
+
+function setMode(mode: 'see' | 'make', historyAction: HistoryAction = 'none') {
   state.mode = mode;
   els.seeTab.classList.toggle('is-active', mode === 'see');
   els.makeTab.classList.toggle('is-active', mode === 'make');
@@ -405,8 +410,48 @@ function setMode(mode: 'see' | 'make') {
   els.seePanel.hidden = mode !== 'see';
   els.makePanel.hidden = mode !== 'make';
   els.skipLink.href = mode === 'see' ? '#resultsList' : '#makeResults';
+  if (historyAction !== 'none') writeModeToLocation(mode, historyAction);
   if (mode === 'see') seeMap.invalidate();
   else makeMap.show();
+}
+
+function applyLocation() {
+  setMode(modeFromLocation());
+  revealLocationTarget();
+}
+
+function modeFromLocation(): 'see' | 'make' {
+  const target = decodeURIComponent(window.location.hash.slice(1));
+  if (target.startsWith('resource-') || target.startsWith('pathway-')) return 'make';
+  if (target.startsWith('event-')) return 'see';
+  return new URLSearchParams(window.location.search).get('mode') === 'make' ? 'make' : 'see';
+}
+
+function writeModeToLocation(mode: 'see' | 'make', action: Exclude<HistoryAction, 'none'>) {
+  const url = new URL(window.location.href);
+  if (mode === 'make') url.searchParams.set('mode', 'make');
+  else url.searchParams.delete('mode');
+
+  const target = decodeURIComponent(url.hash.slice(1));
+  const incompatible = mode === 'make' ? target.startsWith('event-') : target.startsWith('resource-') || target.startsWith('pathway-');
+  if (incompatible) url.hash = '';
+
+  window.history[action === 'push' ? 'pushState' : 'replaceState'](
+    { hangaboutMode: mode },
+    '',
+    `${url.pathname}${url.search}${url.hash}`,
+  );
+}
+
+function revealLocationTarget() {
+  const id = decodeURIComponent(window.location.hash.slice(1));
+  if (!/^(event|resource|pathway)-/.test(id)) return;
+  requestAnimationFrame(() => {
+    const target = document.getElementById(id);
+    if (!target || target.closest('[hidden]')) return;
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: 'center' });
+  });
 }
 
 function filteredEvents(): Event[] {
