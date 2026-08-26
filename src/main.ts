@@ -219,6 +219,7 @@ function shell(data: Dataset): string {
               </div>
               <div id="makeFeatures" class="chips" aria-label="studio features">
                 ${[
+                  ['available-now', 'vacancies now'],
                   ['24/7', '24/7 access'],
                   ['wash-up', 'wash-up space'],
                   ['natural-light', 'natural light'],
@@ -717,6 +718,7 @@ function locate() {
 
 function resourceMatchesFeature(resource: MakeResource, feature: string): boolean {
   const tags = norm(resource.tags?.join(' ') ?? '');
+  if (feature === 'available-now') return norm(resource.availability ?? '').includes('available now');
   if (feature === '24/7') return tags.includes('24/7') || tags.includes('24-hour');
   if (feature === 'wash-up') return tags.includes('wash-up') || tags.includes('washout');
   if (feature === 'natural-light') return tags.includes('natural light');
@@ -738,7 +740,22 @@ function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
     const origin = state.userLocation;
     resources.sort((a, b) => pointDistance(origin, resourcePoint(a)) - pointDistance(origin, resourcePoint(b)));
     pathways.sort((a, b) => pointDistance(origin, venuePoint(a)) - pointDistance(origin, venuePoint(b)));
+    return;
   }
+  if (state.makeSort === 'relevance') {
+    resources.sort((a, b) => availabilityRank(a) - availabilityRank(b)
+      || comparePrice(monthlyPrice(a.price), monthlyPrice(b.price))
+      || a.name.localeCompare(b.name));
+  }
+}
+
+function availabilityRank(resource: MakeResource): number {
+  const availability = norm(resource.availability ?? '');
+  if (availability.includes('available now')) return 0;
+  if (availability.includes('available from')) return 1;
+  if (availability.includes('enquir') || availability.includes('waitlist') || availability.includes('mailing list')) return 2;
+  if (availability.includes('occupied')) return 4;
+  return 3;
 }
 
 function pointDistance(origin: Point, point: Point | null): number {
