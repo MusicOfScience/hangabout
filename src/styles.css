@@ -200,6 +200,7 @@ footer {
   .hero h1 { font-size: clamp(3.8rem, 18vw, 6rem); }
   .location-prompt { align-items: flex-start; flex-direction: column; }
   .explorer, .make-grid { grid-template-columns: 1fr; }
+  .make-grid { grid-template-rows: auto auto; row-gap: 3.5rem; }
   .map-shell { position: relative; top: auto; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
   #map, #makeMap { height: 48vh; min-height: 320px; }
   .make-map-note { padding: .35rem .75rem 1.15rem; }
