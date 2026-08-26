@@ -4,6 +4,8 @@ export type Point = [number, number];
 
 export const MELBOURNE: Point = [-37.8136, 144.9631];
 
+// Approximate fallback centres for make-art resources and area labels;
+// exhibition pins still require provenance-backed exact/building coordinates.
 const SUBURB_CENTRES: Record<string, Point> = {
   'abbotsford': [-37.8024, 144.9982],
   'aberfeldie': [-37.7590, 144.8980],
