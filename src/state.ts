@@ -14,6 +14,8 @@ export interface AppState {
   crawl: Set<string>;
   makeQuery: string;
   makeKind: string;
+  makeSort: 'relevance' | 'price' | 'distance' | 'az';
+  makeFeatures: Set<string>;
   makeSuburb: string | null;
 }
 
@@ -28,6 +30,8 @@ export const state: AppState = {
   saved: readIds('hangabout.saved'),
   crawl: readIds('hangabout.crawl'),
   makeQuery: '',
-  makeKind: 'resources',
+  makeKind: 'studio',
+  makeSort: 'relevance',
+  makeFeatures: new Set(),
   makeSuburb: null,
 };

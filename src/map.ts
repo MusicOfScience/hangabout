@@ -213,6 +213,7 @@ export class MakeMap {
   private map: LeafletMap;
   private layer: LayerGroup;
   private locationMarker: Marker | null = null;
+  private markerSignature = '';
 
   constructor(element: HTMLElement, private readonly onSuburb: (suburb: string) => void) {
     this.map = L.map(element, { scrollWheelZoom: false, zoomControl: true }).setView(MELBOURNE, 11);
@@ -225,38 +226,72 @@ export class MakeMap {
 
   render(resources: MakeResource[], pathwayVenues: Venue[] = []) {
     this.layer.clearLayers();
-    const groups = new Map<string, { suburb: string; point: Point; count: number }>();
+    const groups = new Map<string, { suburb: string; point: Point; resources: MakeResource[]; pathways: Venue[] }>();
     for (const resource of resources) {
       const point = resourcePoint(resource);
       if (!point) continue;
       const key = resource.suburb.toLowerCase();
       const existing = groups.get(key);
-      if (existing) existing.count += 1;
-      else groups.set(key, { suburb: resource.suburb, point, count: 1 });
+      if (existing) existing.resources.push(resource);
+      else groups.set(key, { suburb: resource.suburb, point, resources: [resource], pathways: [] });
     }
     for (const venue of pathwayVenues) {
       const point = exactVenuePoint(venue);
       if (!point) continue;
       const key = venue.suburb.toLowerCase();
       const existing = groups.get(key);
-      if (existing) existing.count += 1;
-      else groups.set(key, { suburb: venue.suburb, point, count: 1 });
+      if (existing) existing.pathways.push(venue);
+      else groups.set(key, { suburb: venue.suburb, point, resources: [], pathways: [venue] });
     }
 
     const markers: Marker[] = [];
     for (const group of groups.values()) {
+      const count = group.resources.length + group.pathways.length;
       const marker = L.marker(group.point, {
-        icon: divIcon(String(group.count), 'resource-pin'),
-        title: `${group.suburb}: ${group.count} resources`,
+        icon: divIcon(String(count), 'resource-pin'),
+        title: `${group.suburb}: ${count} resources`,
       }).addTo(this.layer);
-      marker.bindPopup(`<strong>${escapeHtml(group.suburb)}</strong><br>${group.count} ${group.count === 1 ? 'resource' : 'resources'}`);
-      marker.on('click', () => this.onSuburb(group.suburb));
+      const resourceRows = group.resources.map(resource => {
+        const source = safeExternalUrl(resource.website);
+        return [
+          '<li>',
+          `<strong>${escapeHtml(resource.name)}</strong>`,
+          `<small>${escapeHtml(resource.resourceType)}${resource.price ? ` · ${escapeHtml(resource.price)}` : ''}</small>`,
+          '<span class="popup-links">',
+          `<a href="#resource-${escapeHtml(resource.id)}">show in list ↓</a>`,
+          source ? `<a href="${escapeHtml(source)}" target="_blank" rel="noopener">availability ↗</a>` : '',
+          '</span>',
+          '</li>',
+        ].join('');
+      });
+      const pathwayRows = group.pathways.map(venue => [
+        '<li>',
+        `<strong>${escapeHtml(venue.name)}</strong>`,
+        '<small>gallery / organisation pathway</small>',
+        `<span class="popup-links"><a href="#pathway-${escapeHtml(venue.id)}">show in list ↓</a></span>`,
+        '</li>',
+      ].join(''));
+      marker.bindPopup([
+        `<strong>${escapeHtml(group.suburb)}</strong>`,
+        `<span>${count} ${count === 1 ? 'resource' : 'resources'} in this view</span>`,
+        `<ul class="popup-listings">${[...resourceRows, ...pathwayRows].join('')}</ul>`,
+        `<button type="button" class="popup-filter">show only ${escapeHtml(group.suburb)} ↓</button>`,
+      ].join('<br>'), { maxWidth: 350, minWidth: 260 });
+      marker.on('popupopen', () => {
+        marker.getPopup()?.getElement()?.querySelector<HTMLButtonElement>('.popup-filter')
+          ?.addEventListener('click', () => this.onSuburb(group.suburb), { once: true });
+      });
       markers.push(marker);
     }
-    if (markers.length) {
+
+    const signature = [...groups.entries()].map(([key, group]) =>
+      `${key}:${group.resources.map(resource => resource.id).join(',')}:${group.pathways.map(venue => venue.id).join(',')}`
+    ).sort().join('|');
+    if (markers.length && signature !== this.markerSignature) {
       const bounds = L.featureGroup(markers).getBounds();
       if (bounds.isValid()) this.map.fitBounds(bounds.pad(.15), { maxZoom: 12 });
     }
+    this.markerSignature = signature;
   }
 
   setUserLocation(point: Point) {

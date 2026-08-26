@@ -4,7 +4,7 @@ import { loadDataset } from './data/load';
 import { state } from './state';
 import type { Dataset, Event, MakeResource, Venue } from './types';
 import { closesWithin, formatDateRange, intersectsThisWeekend, isEventCurrent, isEventUpcoming, isVenueOpenNow, isVenueOpenToday, melbourneLabel, openingWithin } from './time';
-import { haversine, nearestSuburb, venuePoint, type Point } from './geo';
+import { haversine, nearestSuburb, resourcePoint, venuePoint, type Point } from './geo';
 import { googleCrawlUrl, googleSearchUrl, mapsUrl, pointInsideBounds, type WebDiscoveryKind } from './discovery';
 import { MakeMap, SeeMap } from './map';
 import { writeIds } from './storage';
@@ -15,6 +15,7 @@ const venueById = new Map(dataset.venues.map(venue => [venue.id, venue]));
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = shell(dataset);
 
 const els = {
+  skipLink: q<HTMLAnchorElement>('.skip-link'),
   seeTab: q<HTMLButtonElement>('[data-mode="see"]'),
   makeTab: q<HTMLButtonElement>('[data-mode="make"]'),
   seePanel: q<HTMLElement>('#seePanel'),
@@ -46,6 +47,8 @@ const els = {
   crawlClear: q<HTMLButtonElement>('#crawlClear'),
   makeSearch: q<HTMLInputElement>('#makeSearch'),
   makeKind: q<HTMLSelectElement>('#makeKind'),
+  makeSort: q<HTMLSelectElement>('#makeSort'),
+  makeFeatures: q<HTMLElement>('#makeFeatures'),
   makeCount: q<HTMLElement>('#makeCount'),
   makeStatus: q<HTMLElement>('#makeStatus'),
   makeResults: q<HTMLElement>('#makeResults'),
@@ -177,8 +180,8 @@ function shell(data: Dataset): string {
       <section id="makePanel" hidden>
         <div class="make-intro">
           <p class="eyebrow">for artists</p>
-          <h2>the ecology, not just the exhibition.</h2>
-          <p>Studios, shared workshops, making spaces and live artist opportunities sit here. Gallery pathways are separate rather than padding the default feed.</p>
+          <h2>find somewhere to make.</h2>
+          <p>Start with current studio listings, then widen the search to shared workshops, live opportunities and gallery pathways. Every result shows where its information came from and when it was last checked.</p>
         </div>
 
         <div class="make-grid">
@@ -186,23 +189,41 @@ function shell(data: Dataset): string {
             <div id="makeMap" role="region" aria-label="map of artist resources"></div>
             <div class="map-actions">
               <button id="makeReset" class="map-button" hidden>show all resources</button>
-              <button id="makeLocate" class="map-button">locate me</button>
+              <button id="makeLocate" class="map-button">sort near me</button>
             </div>
           </div>
           <div>
             <div class="make-controls">
-              <input id="makeSearch" class="search" type="search" aria-label="search artist resources" placeholder="studio, suburb, printmaking, open call…">
-              <label>show
-                <select id="makeKind">
-                  <option value="resources">studios + making resources</option>
-                  <option value="studio">studios available</option>
+              <input id="makeSearch" class="search" type="search" aria-label="search artist resources" placeholder="studio, suburb, printmaking, 24/7…" autocomplete="off">
+              <div class="make-selects">
+                <label>show
+                  <select id="makeKind">
+                  <option value="studio">find a studio</option>
+                  <option value="resources">all making resources</option>
                   <option value="workspace">shared workspaces + finders</option>
                   <option value="opportunity">opportunities + development</option>
                   <option value="pathways">gallery / organisation pathways</option>
-                </select>
-              </label>
+                  </select>
+                </label>
+                <label>sort
+                  <select id="makeSort">
+                    <option value="relevance">recommended</option>
+                    <option value="price">lowest advertised price</option>
+                    <option value="distance">nearest</option>
+                    <option value="az">a–z</option>
+                  </select>
+                </label>
+              </div>
+              <div id="makeFeatures" class="chips" aria-label="studio features">
+                ${[
+                  ['24/7', '24/7 access'],
+                  ['wash-up', 'wash-up space'],
+                  ['natural-light', 'natural light'],
+                  ['accessible', 'accessible'],
+                ].map(([value, label]) => `<button class="chip" data-make-feature="${value}" aria-pressed="false">${label}</button>`).join('')}
+              </div>
             </div>
-            <div class="results-head"><strong id="makeCount">0 resources</strong><span id="makeStatus" class="status"></span></div>
+            <div class="results-head"><strong id="makeCount">0 studios</strong><span id="makeStatus" class="status" role="status"></span></div>
             <div id="makeResults"></div>
           </div>
         </div>
@@ -331,8 +352,31 @@ function wire() {
   });
   els.crawlMode.addEventListener('change', updateCrawl);
 
-  els.makeSearch.addEventListener('input', () => { state.makeQuery = els.makeSearch.value; renderMake(); });
+  els.makeSearch.addEventListener('input', () => {
+    state.makeQuery = els.makeSearch.value;
+    state.makeSuburb = null;
+    renderMake();
+  });
   els.makeKind.addEventListener('change', () => { state.makeKind = els.makeKind.value; state.makeSuburb = null; renderMake(); });
+  els.makeSort.addEventListener('change', () => {
+    state.makeSort = els.makeSort.value as typeof state.makeSort;
+    if (state.makeSort === 'distance' && !state.userLocation) {
+      locate();
+      return;
+    }
+    renderMake();
+  });
+  els.makeFeatures.addEventListener('click', event => {
+    const target = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-make-feature]');
+    if (!target) return;
+    const feature = target.dataset.makeFeature!;
+    if (state.makeFeatures.has(feature)) state.makeFeatures.delete(feature);
+    else state.makeFeatures.add(feature);
+    target.classList.toggle('is-active', state.makeFeatures.has(feature));
+    target.setAttribute('aria-pressed', String(state.makeFeatures.has(feature)));
+    state.makeSuburb = null;
+    renderMake();
+  });
   els.makeReset.addEventListener('click', () => { state.makeSuburb = null; renderMake(); });
   els.makeLocate.addEventListener('click', locate);
 
@@ -356,6 +400,7 @@ function setMode(mode: 'see' | 'make') {
   els.makeTab.setAttribute('aria-pressed', String(mode === 'make'));
   els.seePanel.hidden = mode !== 'see';
   els.makePanel.hidden = mode !== 'make';
+  els.skipLink.href = mode === 'see' ? '#resultsList' : '#makeResults';
   if (mode === 'see') seeMap.invalidate();
   else makeMap.invalidate();
 }
@@ -532,6 +577,12 @@ function renderMake() {
     resources = resources.filter(r => ['studio','workspace','finder','opportunity'].includes(r.resourceType));
   }
 
+  if (state.makeKind !== 'pathways' && state.makeFeatures.size) {
+    resources = resources.filter(resource => [...state.makeFeatures].every(feature => resourceMatchesFeature(resource, feature)));
+  }
+
+  sortMakeResults(resources, venuePathways);
+
   const mapResources = [...resources];
   if (state.makeSuburb) {
     resources = resources.filter(r => norm(r.suburb) === norm(state.makeSuburb!));
@@ -539,9 +590,13 @@ function renderMake() {
   }
 
   const total = resources.length + venuePathways.length;
-  els.makeCount.textContent = `${total} ${total === 1 ? 'resource' : 'resources'}`;
-  els.makeStatus.textContent = state.makeSuburb ? `showing ${state.makeSuburb}` : '';
+  els.makeCount.textContent = `${total} ${makeResultNoun(total)}`;
+  els.makeStatus.textContent = [
+    state.makeSuburb ? `showing ${state.makeSuburb}` : '',
+    state.makeSort === 'distance' && state.userLocation ? 'nearest first · map positions may be suburb-level' : '',
+  ].filter(Boolean).join(' · ');
   els.makeReset.hidden = !state.makeSuburb;
+  els.makeFeatures.hidden = ['opportunity', 'pathways'].includes(state.makeKind);
 
   els.makeResults.innerHTML = [
     ...resources.map(resourceCard),
@@ -552,8 +607,10 @@ function renderMake() {
 }
 
 function resourceCard(resource: MakeResource): string {
+  const point = resourcePoint(resource);
+  const distance = state.userLocation && point ? `${haversine(state.userLocation, point).toFixed(1)} km approx.` : '';
   return `
-    <article class="resource-card">
+    <article class="resource-card" id="resource-${esc(resource.id)}" tabindex="-1">
       <div class="card-top"><span class="kind">${esc(resource.resourceType)}</span><span>${esc(resource.sourceType)} source</span></div>
       <h3>${esc(resource.name)}</h3>
       <p class="venue-line">${esc(resource.suburb)} · ${esc(resource.address)}</p>
@@ -562,15 +619,20 @@ function resourceCard(resource: MakeResource): string {
         ${resource.price ? `<span>${esc(resource.price)}</span>` : ''}
         ${resource.size ? `<span>${esc(resource.size)}</span>` : ''}
         ${resource.availability ? `<span>${esc(resource.availability)}</span>` : ''}
+        ${distance ? `<span>${esc(distance)}</span>` : ''}
       </div>
-      <a href="${safeUrl(resource.website)}" target="_blank" rel="noopener">source / details ↗</a>
+      ${resource.tags?.length ? `<div class="resource-tags">${resource.tags.slice(0, 7).map(tag => `<span>${esc(tag)}</span>`).join('')}</div>` : ''}
+      <div class="resource-source">
+        <a href="${safeUrl(resource.website)}" target="_blank" rel="noopener">availability and details ↗</a>
+        <span>${esc(resource.sourceName)} · checked ${esc(formatChecked(resource.lastVerified))}</span>
+      </div>
     </article>
   `;
 }
 
 function pathwayCard(venue: Venue): string {
   return `
-    <article class="resource-card">
+    <article class="resource-card" id="pathway-${esc(venue.id)}" tabindex="-1">
       <div class="card-top"><span class="kind">${esc(venue.kind.replaceAll('-', ' '))}</span><span>${esc(venue.suburb)}</span></div>
       <h3>${esc(venue.name)}</h3>
       <div class="pathways">
@@ -613,23 +675,97 @@ function locate() {
       const point: Point = [position.coords.latitude, position.coords.longitude];
       state.userLocation = point;
       els.locationPrompt.hidden = true;
-      state.sort = 'distance';
-      els.sort.value = 'distance';
       seeMap.setUserLocation(point);
       makeMap.setUserLocation(point);
-      renderSee();
-      setStatus('nearby sorting is on');
+      if (state.mode === 'make') {
+        state.makeSort = 'distance';
+        els.makeSort.value = 'distance';
+        renderMake();
+        setStatus('nearest resources first · map positions may be suburb-level');
+      } else {
+        state.sort = 'distance';
+        els.sort.value = 'distance';
+        renderSee();
+        setStatus('nearby sorting is on');
+      }
     },
     () => {
-      if (state.sort === 'distance') {
+      if (state.mode === 'make' && state.makeSort === 'distance') {
+        state.makeSort = 'relevance';
+        els.makeSort.value = 'relevance';
+        renderMake();
+      } else if (state.sort === 'distance') {
         state.sort = 'closing';
         els.sort.value = 'closing';
+        renderSee();
       }
-      renderSee();
       setStatus('location permission was not granted');
     },
     { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
   );
+}
+
+function resourceMatchesFeature(resource: MakeResource, feature: string): boolean {
+  const tags = norm(resource.tags?.join(' ') ?? '');
+  if (feature === '24/7') return tags.includes('24/7') || tags.includes('24-hour');
+  if (feature === 'wash-up') return tags.includes('wash-up') || tags.includes('washout');
+  if (feature === 'natural-light') return tags.includes('natural light');
+  if (feature === 'accessible') return tags.includes('accessible') || tags.includes('wheelchair');
+  return true;
+}
+
+function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
+  if (state.makeSort === 'az') {
+    resources.sort((a, b) => a.name.localeCompare(b.name));
+    pathways.sort((a, b) => a.name.localeCompare(b.name));
+    return;
+  }
+  if (state.makeSort === 'price') {
+    resources.sort((a, b) => comparePrice(monthlyPrice(a.price), monthlyPrice(b.price)) || a.name.localeCompare(b.name));
+    return;
+  }
+  if (state.makeSort === 'distance' && state.userLocation) {
+    const origin = state.userLocation;
+    resources.sort((a, b) => pointDistance(origin, resourcePoint(a)) - pointDistance(origin, resourcePoint(b)));
+    pathways.sort((a, b) => pointDistance(origin, venuePoint(a)) - pointDistance(origin, venuePoint(b)));
+  }
+}
+
+function pointDistance(origin: Point, point: Point | null): number {
+  return point ? haversine(origin, point) : Number.POSITIVE_INFINITY;
+}
+
+function monthlyPrice(price?: string): number {
+  if (!price || /enquiry|free/i.test(price)) return Number.POSITIVE_INFINITY;
+  const match = price.match(/A\$([\d,]+)/i);
+  const amount = match?.[1];
+  if (!amount) return Number.POSITIVE_INFINITY;
+  const value = Number(amount.replaceAll(',', ''));
+  if (/\/week|per week/i.test(price)) return value * 52 / 12;
+  if (/\/hour|per hour|\/day|per day/i.test(price)) return Number.POSITIVE_INFINITY;
+  return value;
+}
+
+function comparePrice(a: number, b: number): number {
+  if (a === b) return 0;
+  if (!Number.isFinite(a)) return 1;
+  if (!Number.isFinite(b)) return -1;
+  return a - b;
+}
+
+function makeResultNoun(total: number): string {
+  const singular = total === 1;
+  if (state.makeKind === 'studio') return singular ? 'studio' : 'studios';
+  if (state.makeKind === 'opportunity') return singular ? 'opportunity' : 'opportunities';
+  if (state.makeKind === 'pathways') return singular ? 'pathway' : 'pathways';
+  return singular ? 'resource' : 'resources';
+}
+
+function formatChecked(iso: string): string {
+  const date = new Date(`${iso}T12:00:00+10:00`);
+  return new Intl.DateTimeFormat('en-AU', {
+    day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Australia/Melbourne',
+  }).format(date);
 }
 
 function updateCrawl() {

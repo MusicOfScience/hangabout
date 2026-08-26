@@ -103,10 +103,11 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
 .area-place div span { color: var(--muted); }
 .area-place > a, .area-place > span { flex: 0 0 auto; }
 .popup-listings { display: grid; gap: .65rem; margin: .55rem 0 .2rem; padding: 0; list-style: none; }
+.leaflet-popup-content .popup-listings { max-height: min(48vh, 360px); overflow-y: auto; overscroll-behavior: contain; }
 .popup-listings li { display: grid; gap: .2rem; padding-top: .5rem; border-top: 1px solid rgba(23, 24, 23, .18); }
 .popup-links { display: flex; gap: .7rem; flex-wrap: wrap; }
-.event-card { scroll-margin-top: 4rem; }
-.event-card:target, .event-card:focus { background: color-mix(in srgb, var(--accent) 28%, var(--panel)); }
+.event-card, .resource-card { scroll-margin-top: 4rem; }
+.event-card:target, .event-card:focus, .resource-card:target, .resource-card:focus { background: color-mix(in srgb, var(--accent) 28%, var(--panel)); }
 
 .results { min-width: 0; }
 .results-head {
@@ -148,8 +149,14 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
 .make-intro h2 { margin: .4rem 0; font-size: clamp(2.7rem, 8vw, 6rem); line-height: .92; letter-spacing: -.06em; }
 .make-intro p:last-child { max-width: 50rem; font-size: 1.15rem; }
 .make-controls { display: grid; gap: .8rem; padding: 1rem; border-bottom: 1px solid var(--line); }
+.make-selects { display: flex; gap: 1rem; flex-wrap: wrap; }
 .make-grid .map-shell { top: 4rem; }
 .pathways { display: grid; gap: .35rem; margin: .8rem 0; }
+.resource-tags { display: flex; gap: .35rem; flex-wrap: wrap; margin: .65rem 0; }
+.resource-tags span { padding: .18rem .42rem; background: color-mix(in srgb, var(--accent) 38%, transparent); font-size: .7rem; }
+.resource-source { display: flex; justify-content: space-between; align-items: baseline; gap: .7rem; flex-wrap: wrap; margin-top: .9rem; }
+.resource-source span { color: var(--muted); font-size: .7rem; }
+.popup-filter { margin-top: .5rem; border: 1px solid var(--ink); background: var(--paper); padding: .45rem .6rem; cursor: pointer; }
 
 .crawl-bar {
   position: fixed; z-index: 2000; left: 1rem; right: 1rem; bottom: 1rem;
