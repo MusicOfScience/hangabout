@@ -68,5 +68,75 @@
     "sourceName": "hangabout canonical Nicholas Building match",
     "sourceUrl": "https://www.flg.com.au/pages/contact",
     "lastVerified": "2026-08-19"
+  },
+  {
+    "venueId": "arts-project-australia-gallery",
+    "lat": -37.79964,
+    "lng": 144.98622,
+    "precision": "building",
+    "method": "gallery is within the address-matched Collingwood Yards complex",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/W993788445",
+    "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "bundoora-homestead-art-centre",
+    "lat": -37.7051404,
+    "lng": 145.0499516,
+    "precision": "exact",
+    "method": "coordinates published on the official venue page",
+    "sourceName": "Darebin Arts",
+    "sourceUrl": "https://arts.darebin.vic.gov.au/Arts-venues/Bundoora-Homestead-Art-Centre",
+    "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "counihan-gallery",
+    "lat": -37.77213,
+    "lng": 144.96104,
+    "precision": "exact",
+    "method": "address-matched OpenStreetMap gallery point",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/N1279107005",
+    "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "incinerator-gallery",
+    "lat": -37.764557,
+    "lng": 144.9033677,
+    "precision": "building",
+    "method": "address-matched public directory coordinates",
+    "sourceName": "Australia247",
+    "sourceUrl": "https://australia247.info/explore/victoria/moonee_valley_city/aberfeldie/incinerator-gallery-03-8325-1750.html",
+    "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "wyndham-art-gallery",
+    "lat": -37.90389,
+    "lng": 144.65764,
+    "precision": "building",
+    "method": "gallery is within Wyndham Cultural Centre at the canonical address",
+    "sourceName": "OpenStreetMap via Mapcarta",
+    "sourceUrl": "https://mapcarta.com/N8940070719",
+    "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "artspace-at-realm",
+    "lat": -37.8127947,
+    "lng": 145.2288591,
+    "precision": "building",
+    "method": "ArtSpace is within Realm at the official council-published coordinates",
+    "sourceName": "Maroondah City Council",
+    "sourceUrl": "https://www.maroondah.vic.gov.au/Community-support-business/Community-Directory/Maroondah-City-Council-Business-Activity-Centre-Development",
+    "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "the-substation",
+    "lat": -37.8442357,
+    "lng": 144.8829641,
+    "precision": "exact",
+    "method": "official local-government venue coordinates",
+    "sourceName": "Hobsons Bay City Council",
+    "sourceUrl": "https://www.hobsonsbay.vic.gov.au/Community/Venues-and-facilities/Community-venues-for-hire/The-Substation",
+    "lastVerified": "2026-08-26"
   }
 ]
