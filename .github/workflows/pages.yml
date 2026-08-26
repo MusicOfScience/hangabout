@@ -28,6 +28,7 @@ jobs:
       - run: python scripts/validate_data_v3.py
       - run: python scripts/validate_coordinates.py
       - run: python scripts/validate_sources.py
+      - run: python scripts/validate_freshness.py
       - run: npm install --no-audit --no-fund
       - run: npm run build
       - uses: actions/configure-pages@v5

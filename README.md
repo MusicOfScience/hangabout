@@ -46,6 +46,7 @@ src/styles.css                   # editorial visual system + responsive layout
 data/venues.json                 # canonical venue registry
 data/events.json                 # event records + provenance
 scripts/validate_data_v3.py      # data-contract validation
+scripts/validate_freshness.py    # release gate for stale live-facing records
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
 docs/hostile-review.md           # decisions from the adversarial v0 review
@@ -59,6 +60,7 @@ python3 scripts/validate_data_v3.py
 python3 scripts/validate_coordinates.py
 python3 scripts/validate_sources.py
 python3 scripts/validate_known_places.py
+python3 scripts/validate_freshness.py
 npm run build
 npm run dev
 ```
@@ -83,6 +85,8 @@ An event references `venueId` and carries dates, artists, event type, tags, admi
 - `lastVerified`
 
 The application surfaces that distinction rather than flattening all listings into equal-confidence data.
+
+Freshness targets, release limits and the recommended Victoria-to-Australia expansion are recorded in [`docs/coverage-and-freshness.md`](docs/coverage-and-freshness.md).
 
 ## source / rights policy
 

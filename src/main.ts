@@ -8,6 +8,7 @@ import { haversine, nearestSuburb, resourcePoint, venuePoint, type Point } from 
 import { googleCrawlUrl, googleSearchUrl, mapsUrl, pointInsideBounds, type WebDiscoveryKind } from './discovery';
 import { MakeMap, SeeMap } from './map';
 import { writeIds } from './storage';
+import { resourceFreshness } from './freshness';
 
 const dataset = loadDataset();
 const venueById = new Map(dataset.venues.map(venue => [venue.id, venue]));
@@ -182,6 +183,7 @@ function shell(data: Dataset): string {
           <p class="eyebrow">for artists</p>
           <h2>find somewhere to make.</h2>
           <p>Start with current studio listings, then widen the search to shared workshops, live opportunities and gallery pathways. Every result shows where its information came from and when it was last checked.</p>
+          <p class="freshness-note"><strong>Availability changes quickly.</strong> Checked dates are shown on every listing; confirm with the source before travelling, applying or paying.</p>
         </div>
 
         <div class="make-grid">
@@ -250,7 +252,7 @@ function shell(data: Dataset): string {
     </dialog>
 
     <footer>
-      <strong>hangabout v2</strong>
+      <strong>hangabout</strong>
       <span>${data.events.length} listings · ${data.venues.length} spaces · ${data.venues.filter(v => v.lat != null && v.lng != null).length} exact/building pins · ${data.resources.length} make-art resources</span>
     </footer>
   `;
@@ -611,6 +613,12 @@ function renderMake() {
 function resourceCard(resource: MakeResource): string {
   const point = resourcePoint(resource);
   const distance = state.userLocation && point ? `${haversine(state.userLocation, point).toFixed(1)} km approx.` : '';
+  const freshness = resourceFreshness(resource);
+  const freshnessAdvice = freshness.state === 'current'
+    ? 'confirm current availability'
+    : freshness.state === 'recheck'
+      ? 'recheck recommended'
+      : 'availability may have changed';
   return `
     <article class="resource-card" id="resource-${esc(resource.id)}" tabindex="-1">
       <div class="card-top"><span class="kind">${esc(resource.resourceType)}</span><span>${esc(resource.sourceType)} source</span></div>
@@ -626,7 +634,7 @@ function resourceCard(resource: MakeResource): string {
       ${resource.tags?.length ? `<div class="resource-tags">${resource.tags.slice(0, 7).map(tag => `<span>${esc(tag)}</span>`).join('')}</div>` : ''}
       <div class="resource-source">
         <a href="${safeUrl(resource.website)}" target="_blank" rel="noopener">availability and details ↗</a>
-        <span>${esc(resource.sourceName)} · checked ${esc(formatChecked(resource.lastVerified))}</span>
+        <span class="freshness freshness-${freshness.state}">${esc(resource.sourceName)} · last checked ${esc(formatChecked(resource.lastVerified))} (${esc(freshness.relativeLabel)}) · ${freshnessAdvice}</span>
       </div>
     </article>
   `;

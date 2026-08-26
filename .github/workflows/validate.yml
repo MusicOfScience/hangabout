@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '22'
       - name: compile Python tooling
-        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/discover_official.py
+        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py
       - name: validate data contract
         run: python scripts/validate_data_v3.py
       - name: validate coordinate provenance
@@ -30,6 +30,8 @@ jobs:
         run: python scripts/validate_sources.py
       - name: validate statewide known art places
         run: python scripts/validate_known_places.py
+      - name: block stale live-facing data
+        run: python scripts/validate_freshness.py
       - name: install frontend dependencies
         run: npm install --no-audit --no-fund
       - name: typecheck v2
