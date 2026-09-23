@@ -105,3 +105,83 @@ test('make-art map refits after every switch without overlapping the search', as
     expect(note!.y + note!.height).toBeLessThanOrEqual(search!.y);
   }
 });
+
+test('stale studio vacancies stay visible but do not qualify as available now', async ({ page }) => {
+  await page.clock.setSystemTime(new Date('2026-09-23T02:00:00Z'));
+  await page.goto('/?mode=make');
+  await expect(page.locator('#resource-pink-ember-studios-coburg')).toContainText('previously listed: available now');
+  await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
+  await expect(page.locator('.resource-card')).toHaveCount(0);
+  await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
+  await expect(page.locator('.resource-card')).toHaveCount(17);
+});
+
+test('recently checked vacancies still qualify as available now', async ({ page }) => {
+  await page.goto('/?mode=make');
+  await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
+  await expect(page.locator('#resource-pink-ember-studios-coburg')).toBeVisible();
+  await expect(page.locator('#resource-brunswick-street-gallery-studio')).toHaveCount(0);
+});
+
+test('stale exhibition programmes show a recheck notice on the card', async ({ page }) => {
+  await page.clock.setSystemTime(new Date('2026-09-23T02:00:00Z'));
+  await page.goto('/');
+  await expect(page.locator('#event-ngv-art-of-the-pacific')).toContainText('programme needs rechecking');
+});
+
+const candidate = (name: string) => ({ elements: [{
+  type: 'node', id: 987654321, lat: -37.81, lon: 144.96,
+  tags: { name, tourism: 'gallery' },
+}] });
+
+async function searchMap(page: import('@playwright/test').Page) {
+  await expect(page.locator('#liveDiscoveryStatus')).toBeAttached();
+  await expect(page.locator('#map')).not.toHaveClass(/leaflet-zoom-anim/);
+  await page.locator('#map .leaflet-control-zoom-in').click();
+  await expect(page.locator('#map')).not.toHaveClass(/leaflet-zoom-anim/);
+  await expect(page.locator('#searchArea')).toBeVisible();
+  await page.locator('#searchArea').click();
+}
+
+test('gallery discovery survives label-service failure and retries failed searches', async ({ page }) => {
+  let requests = 0;
+  await page.route('https://nominatim.openstreetmap.org/**', route => route.fulfill({ status: 503, body: '' }));
+  await page.route('https://*/api/interpreter', route => {
+    requests += 1;
+    return requests <= 2
+      ? route.fulfill({ status: 503, body: '' })
+      : route.fulfill({ json: candidate('Recovered fixture gallery') });
+  });
+  await page.goto('/');
+  await searchMap(page);
+  await expect(page.locator('#liveDiscoveryStatus')).toContainText('temporarily unavailable');
+  await expect(page.locator('#searchArea')).toBeVisible();
+  await page.locator('#searchArea').click();
+  await expect(page.locator('#liveAreaResults')).toContainText('Recovered fixture gallery');
+  expect(requests).toBe(3);
+});
+
+test('moving the map discards a late gallery response', async ({ page }) => {
+  let release!: () => void;
+  const held = new Promise<void>(resolve => { release = resolve; });
+  let requested = false;
+  await page.route('https://nominatim.openstreetmap.org/**', route => route.fulfill({ json: { address: { city: 'Fixture town' } } }));
+  await page.route('https://*/api/interpreter', async route => {
+    requested = true;
+    await held;
+    await route.fulfill({ json: candidate('Obsolete fixture gallery') });
+  });
+  await page.goto('/');
+  await searchMap(page);
+  await expect.poll(() => requested).toBe(true);
+  await page.locator('#map .leaflet-control-zoom-in').click();
+  await expect(page.locator('#liveDiscoveryStatus')).toContainText('map moved');
+  const response = page.waitForResponse('https://*/api/interpreter');
+  release();
+  await (await response).finished();
+  // Flush rendering after the fulfilled fetch; the stale response must not repaint.
+  await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await expect(page.locator('#liveDiscoveryStatus')).toContainText('map moved');
+  await expect(page.locator('#liveAreaResults')).not.toContainText('Obsolete fixture gallery');
+  await expect(page.locator('#webSuburb')).toHaveText('this map area');
+});

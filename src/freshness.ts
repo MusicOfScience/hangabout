@@ -1,5 +1,5 @@
 import { todayMelbourne } from './time';
-import type { MakeResource } from './types';
+import type { Event, MakeResource } from './types';
 
 export type FreshnessState = 'current' | 'recheck' | 'stale';
 
@@ -21,7 +21,7 @@ function dayNumber(iso: string): number {
   return Math.floor(Date.UTC(year!, month! - 1, day!) / 86_400_000);
 }
 
-export function resourceFreshness(resource: MakeResource, today = todayMelbourne()): Freshness {
+export function resourceFreshness(resource: Pick<MakeResource, 'resourceType' | 'lastVerified'>, today = todayMelbourne()): Freshness {
   const ageDays = Math.max(0, dayNumber(today) - dayNumber(resource.lastVerified));
   const reviewDays = REVIEW_DAYS[resource.resourceType] ?? 30;
   const state: FreshnessState = ageDays <= reviewDays
@@ -37,4 +37,14 @@ export function resourceFreshness(resource: MakeResource, today = todayMelbourne
       : `${ageDays} days ago`;
 
   return { ageDays, state, relativeLabel };
+}
+
+export function eventFreshness(event: Event, today = todayMelbourne()): Freshness {
+  return resourceFreshness({ resourceType: 'opportunity', lastVerified: event.lastVerified }, today);
+}
+
+export function hasCurrentAvailability(resource: MakeResource): boolean {
+  // A historic vacancy is still useful context, but cannot answer "available now".
+  return resourceFreshness(resource).state !== 'stale'
+    && /^available now\b/i.test(resource.availability?.trim() ?? '');
 }

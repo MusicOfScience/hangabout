@@ -50,9 +50,9 @@ Run each command even when investigating a freshness failure so application chec
 
 On 2026-09-23 freshness fails for 25 current/upcoming exhibitions and 22 studio/opportunity records, last checked 28–35 days earlier. Rechecking actual sources is required to update `lastVerified`; do not change it merely to make CI pass. The 60-day workspace/finder and 90-day venue checks pass. Counts and outcomes change with the actual date.
 
-Playwright runs seven regressions in desktop Chromium and mobile WebKit (iPhone 13 emulation), with the viewer timezone set to America/Los_Angeles. The checked-in catalogue is the local data fixture; browser time starts at 2026-08-26 and advances normally for Leaflet animations for repeatable interaction tests. Map tiles are replaced with a local transparent PNG and other external requests are blocked. This fixture clock is confined to browser tests; it does not alter the freshness validator or production data.
+Playwright runs twelve regressions in desktop Chromium and mobile WebKit (iPhone 13 emulation), with the viewer timezone set to America/Los_Angeles. The checked-in catalogue is the local data fixture; browser time starts at 2026-08-26 and advances normally for Leaflet animations for repeatable interaction tests. Map tiles are replaced with a local transparent PNG and other external requests are blocked. This fixture clock is confined to browser tests; it does not alter the freshness validator or production data.
 
-The suite starts its own root-base test build and Python server on `127.0.0.1:4173`. Keep that port free: local Playwright is configured to reuse an existing server, which could otherwise test the wrong build. `build:test` overwrites `dist/` for the test root; run `npm run build` again before a production-path preview. The suite does not verify live ingestion, real tiles, exhaustive search-area race behaviour or real-device Safari; those need separate checks/fixtures.
+The suite starts its own root-base test build and Python server on `127.0.0.1:4173`. Keep that port free: local Playwright is configured to reuse an existing server, which could otherwise test the wrong build. `build:test` overwrites `dist/` for the test root; run `npm run build` again before a production-path preview. The suite covers map-movement races, failed discovery retries, area-label outages and stale vacancy filtering using synthetic responses. It does not verify live ingestion, real tiles or real-device Safari.
 
 ## Preview
 
@@ -105,3 +105,12 @@ git push -u origin HEAD
 ```
 
 Create the PR with `gh pr create --base main --head <branch> --title '<title>' --body-file <description-file>`. If authentication is unavailable, keep the local commit and run those commands after reconnecting. Never discard uncommitted work to switch branches.
+
+## Source recheck queue and reporting tests
+
+```bash
+python3.13 -m unittest discover -s tests/python
+python3.13 scripts/validate_freshness.py --report /private/tmp/hangabout-recheck-queue.json
+```
+
+The report command still exits nonzero when records are overdue. The JSON supplies IDs, source URLs, names, verification dates and ages for a genuine source-review pass. As of 2026-09-23 it contains 25 exhibitions and 22 studio/opportunity records. It is a task queue, not evidence of a new verification. Review source access conditions before fetching; a reachable page alone does not confirm all listing facts. Preserve good data and record unresolved checks rather than advancing their dates.
