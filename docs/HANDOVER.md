@@ -92,3 +92,17 @@ No triggers or freshness gates were relaxed. The owner reviews and merges PRs in
 5. Expand maintained programmes and regional source coverage with visible coverage/freshness distinctions. Assess a separate hosted API only if measured requirements justify its cost.
 
 For this branch's final commit use `git log -1 --oneline`; its own hash cannot be embedded in the same commit. The final task response records the pushed commit and PR URL.
+
+## Publication blocker
+
+The setup commit was completed locally, but GitHub rejected the feature-branch push because the current OAuth credential has `repo`, `read:org` and `gist` scopes but lacks `workflow`. Updating the two workflow install commands requires that scope. Existing SSH access could not be verified because no trusted GitHub host key was available; no trust settings or credentials were changed. No setup PR was created.
+
+After the owner completes GitHub's authentication flow, run from this repository:
+
+```bash
+gh auth refresh -h github.com -s workflow
+git push -u origin chore/local-development-handover
+gh pr create --base main --head chore/local-development-handover --title "Establish reproducible development and national discovery handover" --body-file docs/HANDOVER.md
+```
+
+This publishes the setup for review only. The independent catalogue freshness blocker still applies.
