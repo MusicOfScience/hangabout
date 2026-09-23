@@ -6,6 +6,14 @@ const transparentPng = Buffer.from(
 );
 
 test.beforeEach(async ({ page }) => {
+  // The checked-in catalogue is the fixture; release freshness uses the real clock.
+  // Let time advance so Leaflet's Date.now()-based pan animations can finish.
+  await page.clock.install({ time: new Date('2026-08-26T02:00:00Z') });
+  // Keep interaction regressions independent of live discovery and external services.
+  await page.route('**/*', route => {
+    const url = new URL(route.request().url());
+    return url.hostname === '127.0.0.1' ? route.continue() : route.abort();
+  });
   await page.route('https://tile.openstreetmap.org/**', route => route.fulfill({
     status: 200,
     contentType: 'image/png',

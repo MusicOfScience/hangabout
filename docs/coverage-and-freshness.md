@@ -21,6 +21,8 @@ These are review targets, not a claim that a source has changed:
 
 ## Geographic expansion
 
+Historical staging recommendation below. The current national milestone and implementation sequence are in [NATIONAL_DISCOVERY_PLAN.md](NATIONAL_DISCOVERY_PLAN.md); studios remain Melbourne-only. The freshness limits above remain in force.
+
 ### Recommendation
 
 Expand to Victoria before attempting national coverage. The statewide known-place layer is already useful for discovering regional gaps, but those markers are not a claim that current programmes have been ingested. Add verified programmes region by region and show the coverage boundary honestly.

@@ -19,5 +19,10 @@
     "@types/leaflet": "latest",
     "typescript": "latest",
     "vite": "latest"
-  }
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x"
+  },
+  "packageManager": "npm@10.9.9"
 }
