@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Block releases when live-facing records have gone materially stale."""
+"""Audit live-facing freshness and optionally fail a deliberate strict check."""
 
 import argparse
 import json
@@ -44,7 +44,8 @@ def check(records: list[dict], label: str, maximum_days: int, today: date, *, ac
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--report", type=Path, help="write a source-linked JSON recheck queue; stale data still exits nonzero")
+    parser.add_argument("--report", type=Path, help="write a source-linked JSON recheck queue")
+    parser.add_argument("--strict", action="store_true", help="fail when any record exceeds its review age")
     args = parser.parse_args()
     queue: list[dict] = []
     today = datetime.now(ZoneInfo("Australia/Melbourne")).date()
@@ -71,7 +72,10 @@ def main() -> None:
         }, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     if stale:
-        raise SystemExit("release blocked by stale live-facing data:\n" + "\n".join(f"- {item}" for item in stale))
+        message = "freshness warning: records need source verification:\n" + "\n".join(f"- {item}" for item in stale)
+        if args.strict:
+            raise SystemExit(message)
+        print(message)
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ src/styles.css                   # editorial visual system + responsive layout
 data/venues.json                 # canonical venue registry
 data/events.json                 # event records + provenance
 scripts/validate_data_v3.py      # data-contract validation
-scripts/validate_freshness.py    # release gate for stale live-facing records
+scripts/validate_freshness.py    # source-linked freshness audit; --strict for data release checks
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
 tests/e2e/hangabout.spec.ts      # desktop/mobile interaction regressions

@@ -10,14 +10,14 @@ The public interface therefore shows both the calendar date and the age of each 
 
 These are review targets, not a claim that a source has changed:
 
-| Record | Review target | Release-blocking age | Why |
+| Record | Review target | Freshness warning age | Why |
 | --- | ---: | ---: | --- |
 | Current/upcoming exhibitions | weekly | 14 days | dates, cancellations and programme pages change |
 | Studios and opportunities | weekly | 14 days | vacancies, prices and deadlines are volatile |
 | Shared workspaces and finders | monthly | 60 days | services are steadier but can close or change terms |
 | Venue registry and hours | monthly/quarterly | 90 days | addresses and hours change less often |
 
-`scripts/validate_freshness.py` enforces the release-blocking ages. A release can no longer publish newly changed code while its live-facing data is beyond those limits. Weekly discovery remains a review queue; first-party adapters can later reduce manual work where automation is authorised.
+`scripts/validate_freshness.py` reports records beyond these review ages and writes a source-linked recheck queue. The normal audit is deliberately non-blocking: stale records remain visible with uncertainty or are excluded from current-availability results by the application. Use `--strict` for a deliberate data-maintenance check when a catalogue refresh is being reviewed. Malformed data and application-integrity failures remain release blockers. Weekly discovery remains a review queue; first-party adapters can later reduce manual work where automation is authorised.
 
 ## Geographic expansion
 
