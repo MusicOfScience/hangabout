@@ -33,7 +33,7 @@ jobs:
       - name: block stale live-facing data
         run: python scripts/validate_freshness.py
       - name: install frontend dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: typecheck v2
         run: npm run typecheck
       - name: install browser test runtime

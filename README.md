@@ -53,22 +53,13 @@ tests/e2e/hangabout.spec.ts      # desktop/mobile interaction regressions
 docs/hostile-review.md           # decisions from the adversarial v0 review
 ```
 
-## local preview
+## local development and handover
 
-```bash
-npm install --no-audit --no-fund
-python3 scripts/validate_data_v3.py
-python3 scripts/validate_coordinates.py
-python3 scripts/validate_sources.py
-python3 scripts/validate_known_places.py
-python3 scripts/validate_freshness.py
-npx playwright install chromium webkit
-npm run test:e2e
-npm run build
-npm run dev
-```
+Use Node 22, npm 10 and Python 3.13. Install the locked dependencies with `npm ci --no-audit --no-fund`.
 
-Vite prints the local development address.
+- [Local development](docs/LOCAL_DEVELOPMENT.md): setup, validation, browser tests, preview and offline behaviour.
+- [Current handover](docs/HANDOVER.md): verified baseline, test results and outstanding work.
+- [National discovery plan](docs/NATIONAL_DISCOVERY_PLAN.md): staged gallery/exhibition indexing and refresh; studios remain Melbourne-only.
 
 ## data contract
 
@@ -97,4 +88,4 @@ Do not scrape or mirror third-party listing services without permission. Store f
 
 ## next data work
 
-The next useful expansion is not more UI. It is deeper canonical coverage of Melbourne's ARIs, First Nations-led spaces, university galleries, public galleries, specialist venues and outer-suburban municipal programs, followed by source adapters only where first-party sites offer stable authorised feeds or structured data.
+The next milestone is national gallery and exhibition discovery, including regional Australia, with source-backed indexing and scheduled refresh. See the national discovery plan above. Studios remain focused on inner and outer Melbourne.

@@ -29,7 +29,7 @@ jobs:
       - run: python scripts/validate_coordinates.py
       - run: python scripts/validate_sources.py
       - run: python scripts/validate_freshness.py
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e
       - run: npm run build
