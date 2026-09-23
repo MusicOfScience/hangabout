@@ -82,6 +82,7 @@ Environment: macOS arm64, Node 22.23.2, npm 10.9.9, Python 3.13.5. Dependencies 
 | Typecheck | Pass |
 | Production build | Pass |
 | Desktop/mobile browser suite | Pass: 24/24 (12 desktop Chromium, 12 mobile WebKit), 9.9 seconds |
+| Lint | Not configured: `package.json` has no lint script or lint dependency |
 
 Freshness is a data-maintenance warning, not an application-integrity release blocker. Workspace/finder and venue age limits pass. Do not alter verification dates or treat a warning as verification. The six updated events were checked against current official programme pages; the remaining records stay in the queue because their facts could not be re-established from an adequately current source during this pass. The app labels stale exhibitions and excludes stale records from current-vacancy filtering; the workflow uploads the queue and continues through typecheck, browser tests and build. Use the strict audit before a deliberate catalogue refresh or data publication.
 

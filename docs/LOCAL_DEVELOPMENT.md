@@ -46,6 +46,8 @@ npm run test:e2e
 npm run build
 ```
 
+There is currently no lint script or lint dependency in `package.json`; do not treat the missing command as a passing lint check.
+
 The freshness audit is deliberately non-blocking: stale records are reported and retained with visible uncertainty in the app, while malformed data and broken build checks remain blocking. Use `--strict` when you intentionally need a failing data-maintenance audit. PR and Pages workflows upload the source-linked report and continue to build the application.
 
 On 2026-09-23 the audit warned for 19 current/upcoming exhibitions and 22 studio/opportunity records, last checked 28–35 days earlier. Six event records were rechecked against current official programme pages in this release pass; the remaining records stay queued because their facts could not be re-established from an adequately current source. Do not change `lastVerified` merely to make CI pass. The 60-day workspace/finder and 90-day venue checks pass. Counts and outcomes change with the actual date.
