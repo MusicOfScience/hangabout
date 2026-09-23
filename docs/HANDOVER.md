@@ -2,6 +2,18 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Reliability follow-up after PR #10
+
+Baseline: merged main `9a5bd2d`; branch `fix/discovery-and-availability-reliability`.
+
+- Gallery searches discard responses after map movement, clearing the area or showing all places. Failed request caches are evicted so the same area can be retried. An unavailable area-label service no longer suppresses successful gallery results; label fetches have a timeout.
+- The studio “vacancies now” filter excludes availability older than its existing freshness limit. Stale listings remain discoverable, with availability labelled as previously listed, and no longer receive a vacancy ranking boost.
+- Exhibition cards expose their checked date and warn when programme verification is overdue.
+- `validate_freshness.py --report <path>` produces a source-linked recheck queue and still fails the release gate for overdue data. It does not fetch sources or update dates.
+- Validation: 24 desktop/mobile browser regressions and 2 Python report tests pass; structural validators and typechecking pass. The 47-record real-date freshness failure remains unchanged. See local-development instructions for generating the queue.
+
+This is a reliability milestone, not completed national indexing or source re-verification. Next work remains genuine source checks followed by the fixture-driven ingestion pilot. The earlier setup evidence below is retained as history.
+
 ## Repository and authoritative baseline
 
 - Absolute workspace: `/Users/hudson/Documents/GitHub/hangabout`.

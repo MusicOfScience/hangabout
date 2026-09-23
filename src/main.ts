@@ -8,7 +8,7 @@ import { haversine, nearestSuburb, resourcePoint, venuePoint, type Point } from 
 import { googleCrawlUrl, googleSearchUrl, mapsUrl, pointInsideBounds, type WebDiscoveryKind } from './discovery';
 import { MakeMap, SeeMap } from './map';
 import { writeIds } from './storage';
-import { resourceFreshness } from './freshness';
+import { eventFreshness, hasCurrentAvailability, resourceFreshness } from './freshness';
 
 const dataset = loadDataset();
 const venueById = new Map(dataset.venues.map(venue => [venue.id, venue]));
@@ -183,7 +183,7 @@ function shell(data: Dataset): string {
         <div class="make-intro">
           <p class="eyebrow">for artists</p>
           <h2>find somewhere to make.</h2>
-          <p>Start with current studio listings, then widen the search to shared workshops, live opportunities and gallery pathways. Every result shows where its information came from and when it was last checked.</p>
+          <p>Start with studio listings, then widen the search to shared workshops, live opportunities and gallery pathways. Every result shows where its information came from and when it was last checked.</p>
           <p class="freshness-note"><strong>Availability changes quickly.</strong> Checked dates are shown on every listing; confirm with the source before travelling, applying or paying.</p>
         </div>
 
@@ -554,6 +554,7 @@ function clearAreaDiscovery() {
 
 function eventCard(event: Event): string {
   const venue = venueById.get(event.venueId)!;
+  const freshness = eventFreshness(event);
   const saved = state.saved.has(event.id);
   const inCrawl = state.crawl.has(event.id);
   const distance = state.userLocation && venuePoint(venue)
@@ -573,6 +574,7 @@ function eventCard(event: Event): string {
         ${event.admission === 'free' ? '<span>free</span>' : ''}
         ${venue.lat != null ? '<span>exact pin</span>' : '<span>area location</span>'}
       </div>
+      <p class="freshness freshness-${freshness.state}">checked ${esc(formatChecked(event.lastVerified))} · ${freshness.state === 'stale' ? 'programme needs rechecking — confirm with the source' : freshness.relativeLabel}</p>
       <div class="card-actions">
         <button class="text-link" data-detail="${esc(event.id)}" aria-label="details for ${esc(event.title)}">details</button>
         <button class="text-link" data-save="${esc(event.id)}" aria-label="${saved ? 'remove saved' : 'save'} ${esc(event.title)}">${saved ? 'saved ✓' : 'save'}</button>
@@ -651,7 +653,7 @@ function renderMake() {
   els.makeResults.innerHTML = [
     ...resources.map(resourceCard),
     ...venuePathways.map(pathwayCard),
-  ].join('') || `<div class="empty"><strong>nothing there.</strong><span>Try another search or remove a feature filter.</span></div>`;
+  ].join('') || `<div class="empty"><strong>nothing there.</strong><span>${state.makeFeatures.has('available-now') ? 'No recently checked vacancies match. Remove “vacancies now” to see studios and contact their sources.' : 'Try another search or remove a feature filter.'}</span></div>`;
 
   makeMap.render(mapResources, venuePathways);
 }
@@ -674,7 +676,7 @@ function resourceCard(resource: MakeResource): string {
       <div class="resource-facts">
         ${resource.price ? `<span>${esc(resource.price)}</span>` : ''}
         ${resource.size ? `<span>${esc(resource.size)}</span>` : ''}
-        ${resource.availability ? `<span>${esc(resource.availability)}</span>` : ''}
+        ${resource.availability ? `<span>${freshness.state === 'stale' ? 'previously listed: ' : ''}${esc(resource.availability)}</span>` : ''}
         ${distance ? `<span>${esc(distance)}</span>` : ''}
       </div>
       ${resource.tags?.length ? `<div class="resource-tags">${resource.tags.slice(0, 7).map(tag => `<span>${esc(tag)}</span>`).join('')}</div>` : ''}
@@ -763,7 +765,7 @@ function locate() {
 
 function resourceMatchesFeature(resource: MakeResource, feature: string): boolean {
   const tags = norm(resource.tags?.join(' ') ?? '');
-  if (feature === 'available-now') return norm(resource.availability ?? '').includes('available now');
+  if (feature === 'available-now') return hasCurrentAvailability(resource);
   if (feature === '24/7') return tags.includes('24/7') || tags.includes('24-hour');
   if (feature === 'wash-up') return tags.includes('wash-up') || tags.includes('washout');
   if (feature === 'natural-light') return tags.includes('natural light');
@@ -795,8 +797,9 @@ function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
 }
 
 function availabilityRank(resource: MakeResource): number {
+  if (resourceFreshness(resource).state === 'stale') return 3;
   const availability = norm(resource.availability ?? '');
-  if (availability.includes('available now')) return 0;
+  if (hasCurrentAvailability(resource)) return 0;
   if (availability.includes('available from')) return 1;
   if (availability.includes('enquir') || availability.includes('waitlist') || availability.includes('mailing list')) return 2;
   if (availability.includes('occupied')) return 4;

@@ -80,6 +80,7 @@ function boot(attempt = 0) {
   };
 
   window.addEventListener('hangabout:see-map-moved', () => {
+    searchSequence += 1;
     currentAreaLabel = null;
     webArea.textContent = 'this map area';
     areaDiscovery.hidden = true;
@@ -87,12 +88,14 @@ function boot(attempt = 0) {
   });
 
   clearArea.addEventListener('click', () => {
+    searchSequence += 1;
     currentAreaLabel = 'Melbourne';
     webArea.textContent = 'Melbourne';
     clearLive();
   });
 
   fitMap.addEventListener('click', () => {
+    searchSequence += 1;
     currentAreaLabel = 'Melbourne';
     webArea.textContent = 'Melbourne';
     clearLive();
@@ -119,7 +122,7 @@ function boot(attempt = 0) {
     try {
       const [places, label] = await Promise.all([
         discoverArtPlaces(bounds),
-        resolveAreaLabel(center, bounds),
+        resolveAreaLabel(center, bounds).catch(() => regionalAreaLabel(center)),
       ]);
       if (sequence !== searchSequence) return;
 
@@ -134,6 +137,8 @@ function boot(attempt = 0) {
     } catch (error) {
       if (sequence !== searchSequence) return;
       const label = await resolveAreaLabel(center, bounds).catch(() => regionalAreaLabel(center));
+      if (sequence !== searchSequence) return;
+      searchArea.hidden = false;
       currentAreaLabel = label;
       webArea.textContent = label;
       discoveryStatus.textContent = error instanceof Error
@@ -163,7 +168,10 @@ async function discoverArtPlaces(bounds: Bounds): Promise<DiscoveredPlace[]> {
   const cached = discoveryCache.get(key);
   if (cached) return cached;
 
-  const request = fetchOverpass(bounds);
+  const request = fetchOverpass(bounds).catch(error => {
+    discoveryCache.delete(key);
+    throw error;
+  });
   discoveryCache.set(key, request);
   if (discoveryCache.size > 12) discoveryCache.delete(discoveryCache.keys().next().value as string);
   return request;
@@ -277,13 +285,19 @@ async function resolveAreaLabel(center: Point, bounds: Bounds): Promise<string> 
     url.searchParams.set('layer', 'address');
     url.searchParams.set('accept-language', 'en-AU,en');
 
-    const response = await fetch(url, { headers: { Accept: 'application/json' } });
+    const response = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(9000),
+    });
     if (!response.ok) throw new Error('area label unavailable');
     const payload = await response.json() as { address?: Record<string, string>; name?: string };
     const a = payload.address ?? {};
     const locality = a.suburb ?? a.city_district ?? a.city ?? a.town ?? a.village ?? a.municipality ?? a.county ?? payload.name;
     const state = a.state;
     return [locality, state].filter(Boolean).join(', ') || regionalAreaLabel(center);
+  }).catch(error => {
+    labelCache.delete(key);
+    throw error;
   });
 
   labelCache.set(key, request);
