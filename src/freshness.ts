@@ -21,9 +21,12 @@ function dayNumber(iso: string): number {
   return Math.floor(Date.UTC(year!, month! - 1, day!) / 86_400_000);
 }
 
-export function resourceFreshness(resource: Pick<MakeResource, 'resourceType' | 'lastVerified'>, today = todayMelbourne()): Freshness {
+function freshnessFor(
+  resource: Pick<MakeResource, 'resourceType' | 'lastVerified'>,
+  reviewDays: number,
+  today: string,
+): Freshness {
   const ageDays = Math.max(0, dayNumber(today) - dayNumber(resource.lastVerified));
-  const reviewDays = REVIEW_DAYS[resource.resourceType] ?? 30;
   const state: FreshnessState = ageDays <= reviewDays
     ? 'current'
     : ageDays <= reviewDays * 2
@@ -39,12 +42,16 @@ export function resourceFreshness(resource: Pick<MakeResource, 'resourceType' | 
   return { ageDays, state, relativeLabel };
 }
 
-export function eventFreshness(event: Event, today = todayMelbourne()): Freshness {
-  return resourceFreshness({ resourceType: 'opportunity', lastVerified: event.lastVerified }, today);
+export function resourceFreshness(resource: Pick<MakeResource, 'resourceType' | 'lastVerified'>, today = todayMelbourne()): Freshness {
+  return freshnessFor(resource, REVIEW_DAYS[resource.resourceType] ?? 30, today);
 }
 
-export function hasCurrentAvailability(resource: MakeResource): boolean {
+export function eventFreshness(event: Event, today = todayMelbourne()): Freshness {
+  return freshnessFor({ resourceType: 'opportunity', lastVerified: event.lastVerified }, 14, today);
+}
+
+export function hasCurrentAvailability(resource: MakeResource, today = todayMelbourne()): boolean {
   // A historic vacancy is still useful context, but cannot answer "available now".
-  return resourceFreshness(resource).state !== 'stale'
+  return resourceFreshness(resource, today).state !== 'stale'
     && /^available now\b/i.test(resource.availability?.trim() ?? '');
 }
