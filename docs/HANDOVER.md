@@ -93,11 +93,11 @@ No triggers or freshness gates were relaxed. The owner reviews and merges PRs in
 
 For this branch's final commit use `git log -1 --oneline`; its own hash cannot be embedded in the same commit. The final task response records the pushed commit and PR URL.
 
-## Publication blocker
+## Publication authorization (resolved)
 
-The setup commit was completed locally, but GitHub rejected the feature-branch push because the current OAuth credential has `repo`, `read:org` and `gist` scopes but lacks `workflow`. Updating the two workflow install commands requires that scope. Existing SSH access could not be verified because no trusted GitHub host key was available; no trust settings or credentials were changed. No setup PR was created.
+The setup commit was completed locally, but GitHub rejected the feature-branch push because the current OAuth credential has `repo`, `read:org` and `gist` scopes but lacks `workflow`. Updating the two workflow install commands requires that scope. Existing SSH access could not be verified because no trusted GitHub host key was available; no trust settings or credentials were changed. The owner subsequently approved the workflow scope and the setup branch was successfully pushed. The authentication blocker is resolved.
 
-After the owner completes GitHub's authentication flow, run from this repository:
+The recovery commands used for this branch are retained for reference:
 
 ```bash
 gh auth refresh -h github.com -s workflow
