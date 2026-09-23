@@ -1,8 +1,10 @@
 """Offline regression coverage for freshness warnings and their review report."""
 import unittest
 from datetime import date
+from pathlib import Path
 import subprocess
 import sys
+import tempfile
 from scripts.validate_freshness import check
 
 
@@ -39,15 +41,16 @@ class FreshnessReportTests(unittest.TestCase):
         self.assertEqual(queue[0]["ageDays"], 22)
 
     def test_cli_warning_is_non_blocking_but_strict_mode_fails(self):
-        report = "/private/tmp/hangabout-test-freshness-report.json"
-        normal = subprocess.run(
-            [sys.executable, "scripts/validate_freshness.py", "--report", report],
-            capture_output=True, text=True,
-        )
-        strict = subprocess.run(
-            [sys.executable, "scripts/validate_freshness.py", "--strict"],
-            capture_output=True, text=True,
-        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            report = str(Path(tmpdir) / "freshness-report.json")
+            normal = subprocess.run(
+                [sys.executable, "scripts/validate_freshness.py", "--report", report],
+                capture_output=True, text=True,
+            )
+            strict = subprocess.run(
+                [sys.executable, "scripts/validate_freshness.py", "--strict"],
+                capture_output=True, text=True,
+            )
         self.assertEqual(normal.returncode, 0)
         self.assertNotEqual(strict.returncode, 0)
         self.assertIn("freshness warning", normal.stdout)
