@@ -28,7 +28,14 @@ jobs:
       - run: python scripts/validate_data_v3.py
       - run: python scripts/validate_coordinates.py
       - run: python scripts/validate_sources.py
-      - run: python scripts/validate_freshness.py
+      - name: audit live-facing freshness
+        run: python scripts/validate_freshness.py --report generated/freshness-recheck.json
+      - name: retain freshness audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-freshness-audit-pages
+          path: generated/freshness-recheck.json
       - run: npm ci --no-audit --no-fund
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e

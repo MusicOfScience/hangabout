@@ -32,8 +32,14 @@ jobs:
         run: python scripts/validate_sources.py
       - name: validate statewide known art places
         run: python scripts/validate_known_places.py
-      - name: block stale live-facing data
-        run: python scripts/validate_freshness.py
+      - name: audit live-facing freshness
+        run: python scripts/validate_freshness.py --report generated/freshness-recheck.json
+      - name: upload freshness audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-freshness-audit
+          path: generated/freshness-recheck.json
       - name: install frontend dependencies
         run: npm ci --no-audit --no-fund
       - name: typecheck v2
