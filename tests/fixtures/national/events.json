@@ -1,0 +1,4 @@
+[
+  {"id":"fixture-sydney-event","venueId":"fixture-sydney-gallery","title":"River Country","artists":["Fixture artist"],"startDate":"2026-10-01","endDate":"2026-11-15","eventType":"exhibition","admission":"unknown","sourceName":"Fixture source","sourceType":"official","sourceUrl":"https://fixture.example.org/sydney/river-country","lastVerified":"2026-09-01"},
+  {"id":"fixture-darwin-event","venueId":"fixture-darwin-gallery","title":"Top End Light","artists":["Fixture artist"],"startDate":"2026-10-10","endDate":"2026-11-20","eventType":"exhibition","admission":"unknown","sourceName":"Fixture source","sourceType":"official","sourceUrl":"https://fixture.example.org/darwin/top-end-light","lastVerified":"2026-09-01"}
+]

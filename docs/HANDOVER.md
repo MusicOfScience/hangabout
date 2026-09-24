@@ -2,6 +2,12 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## National/studio data milestone (2026-09-24)
+
+Feature branch `codex/national-studio-data` adds the next planned data stage without changing the signed-off layout or publishing unreviewed records. Studio resource IDs remain stable; `data/studio-vacancies.json` carries separate vacancy status, price, size, source and check metadata, and the loader projects the latest listing onto the existing cards while exposing `studioPremises` and `studioVacancies` in the dataset. Structured Make Art queries now understand practice/facility fields and price limits while unknown facts remain non-matches. National venue records support AU state/locality/region/timezone/coverage fields, and venue-local opening logic works across Australian zones.
+
+The offline ingestion pilot (`scripts/ingest_fixtures.py`) emits deterministic candidates and check statuses from JSON/HTML fixtures, including deduplication, redirects and failure preservation. Interstate venue/event fixtures are validation-only and are deliberately not in the live catalogue. Real maintained data remains the existing Melbourne/Victoria catalogue; national source promotion is the next focused PR.
+
 ## Release follow-up after the reliability PRs
 
 Baseline: merged main `16fedff`; this branch `codex/release-freshness-deploy`.
@@ -101,8 +107,8 @@ No structural validators or deployment permissions were relaxed. Freshness is no
 ## Next steps
 
 1. Review the freshness artifact and resolve stale source-backed catalogue records. Expired opportunities need genuine review; unknown availability must remain unknown.
-2. Implement the plan's first focused milestone: persistent gallery/exhibition candidate and check contracts, deterministic replay fixtures and a bounded approved-source pilot. Preserve last good data on failed checks; do not automatically publish candidates.
-3. Add per-venue Australian timezones and national geographic fields/search in focused follow-up PRs; studios remain inner/outer Melbourne.
+2. Promote the offline pilot into reviewed source adapters and a persistent candidate/check artifact, preserving last good data on failed checks; do not automatically publish candidates.
+3. Add promoted interstate source coverage and static national search/shards only after review; studios remain inner/outer Melbourne.
 4. Add explicit fixtures for live search-area refresh/races and failed-cache retry before expanding that surface. Retain existing desktop/mobile regressions and the editorial interface.
 5. Expand maintained programmes and regional source coverage with visible coverage/freshness distinctions. Assess a separate hosted API only if measured requirements justify its cost.
 

@@ -1,10 +1,11 @@
 import type { Event, Venue } from './types';
 
-const MELBOURNE_TZ = 'Australia/Melbourne';
+export const MELBOURNE_TZ = 'Australia/Melbourne';
+export const DEFAULT_TIME_ZONE = MELBOURNE_TZ;
 
-function dateParts(date = new Date()) {
+export function datePartsInTimeZone(date = new Date(), timeZone = DEFAULT_TIME_ZONE) {
   const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: MELBOURNE_TZ,
+    timeZone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -30,7 +31,11 @@ const weekdayIndex: Record<string, number> = {
 };
 
 export function todayMelbourne(): string {
-  return dateParts().iso;
+  return todayInTimeZone(MELBOURNE_TZ);
+}
+
+export function todayInTimeZone(timeZone = DEFAULT_TIME_ZONE, date = new Date()): string {
+  return datePartsInTimeZone(date, timeZone).iso;
 }
 
 export function melbourneLabel(): string {
@@ -50,9 +55,9 @@ export function isEventUpcoming(event: Event, iso = todayMelbourne()): boolean {
   return event.endDate >= iso;
 }
 
-export function isVenueOpenNow(venue: Venue): boolean {
+export function isVenueOpenNow(venue: Venue, nowDate = new Date()): boolean {
   if (!venue.hoursVerified || !venue.hours) return false;
-  const now = dateParts();
+  const now = datePartsInTimeZone(nowDate, venue.timeZone ?? DEFAULT_TIME_ZONE);
   const day = weekdayIndex[now.weekday];
   if (day == null) return false;
   const hours = venue.hours[String(day)];
@@ -61,9 +66,9 @@ export function isVenueOpenNow(venue: Venue): boolean {
   return minutes >= hours[0] && minutes < hours[1];
 }
 
-export function isVenueOpenToday(venue: Venue): boolean {
+export function isVenueOpenToday(venue: Venue, nowDate = new Date()): boolean {
   if (!venue.hoursVerified || !venue.hours) return false;
-  const day = weekdayIndex[dateParts().weekday];
+  const day = weekdayIndex[datePartsInTimeZone(nowDate, venue.timeZone ?? DEFAULT_TIME_ZONE).weekday];
   return day != null && Boolean(venue.hours[String(day)]);
 }
 
@@ -73,19 +78,19 @@ function addDays(iso: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function closesWithin(event: Event, days: number): boolean {
-  const today = todayMelbourne();
+export function closesWithin(event: Event, days: number, timeZone = DEFAULT_TIME_ZONE): boolean {
+  const today = todayInTimeZone(timeZone);
   return event.endDate >= today && event.endDate <= addDays(today, days);
 }
 
-export function openingWithin(event: Event, days: number): boolean {
+export function openingWithin(event: Event, days: number, timeZone = DEFAULT_TIME_ZONE): boolean {
   if (!event.opening?.date) return false;
-  const today = todayMelbourne();
+  const today = todayInTimeZone(timeZone);
   return event.opening.date >= today && event.opening.date <= addDays(today, days);
 }
 
-export function intersectsThisWeekend(event: Event): boolean {
-  const now = dateParts();
+export function intersectsThisWeekend(event: Event, timeZone = DEFAULT_TIME_ZONE): boolean {
+  const now = datePartsInTimeZone(new Date(), timeZone);
   const day = weekdayIndex[now.weekday] ?? 1;
   const today = now.iso;
   const untilSaturday = day === 0 ? -1 : 6 - day;

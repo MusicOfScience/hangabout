@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '22'
       - name: compile Python tooling
-        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py
+        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
       - name: test freshness reporting
         run: python -m unittest discover -s tests/python
       - name: validate data contract
@@ -32,6 +32,15 @@ jobs:
         run: python scripts/validate_sources.py
       - name: validate statewide known art places
         run: python scripts/validate_known_places.py
+      - name: validate national geography contract
+        run: python scripts/validate_national_contract.py
+      - name: replay offline ingestion fixtures
+        run: python scripts/ingest_fixtures.py --report generated/ingestion-review.json
+      - name: upload ingestion review
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-ingestion-review
+          path: generated/ingestion-review.json
       - name: audit live-facing freshness
         run: python scripts/validate_freshness.py --report generated/freshness-recheck.json
       - name: upload freshness audit

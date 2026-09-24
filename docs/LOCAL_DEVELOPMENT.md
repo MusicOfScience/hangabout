@@ -35,8 +35,10 @@ The rebuild completes Node's binary installation if the bootstrap npm blocks pac
 These commands need no external service after dependencies are installed:
 
 ```bash
-python3.13 -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py
+python3.13 -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
 python3.13 scripts/validate_data_v3.py
+python3.13 scripts/validate_national_contract.py
+python3.13 scripts/ingest_fixtures.py --report /private/tmp/hangabout-ingestion-review.json
 python3.13 scripts/validate_coordinates.py
 python3.13 scripts/validate_sources.py
 python3.13 scripts/validate_known_places.py
@@ -79,7 +81,7 @@ Open `http://127.0.0.1:4174/hangabout/`. The legacy `http://127.0.0.1:4174/hanga
 
 After setup, retained `node_modules`, browser binaries and Python are sufficient for validators, typechecking, builds, the fixture browser suite and local previews without internet. An offline reinstall was verified during setup. A reinstall can use `npm ci --offline --no-audit --no-fund` only if npm's package cache is complete; browser binaries must already be installed. Preserve those caches if disconnected work is expected. A missing package or browser is a setup failure, not an app defect.
 
-The local catalogue, filtering, saved items, date rendering and map/list controls operate from bundled data. Actual map backgrounds need OSM tiles; live discovery needs Overpass and Nominatim; source links, web searches and external navigation need their destination services. There is no service worker or claim that the production site supports offline first-load. External service failures should not be confused with fixture regression results.
+The local catalogue, filtering, saved items, date rendering and map/list controls operate from bundled data. The national contract validator and ingestion replay are also offline and use only checked-in fixtures; they do not add fixture records to the catalogue. Actual map backgrounds need OSM tiles; live discovery needs Overpass and Nominatim; source links, web searches and external navigation need their destination services. There is no service worker or claim that the production site supports offline first-load. External service failures should not be confused with fixture regression results.
 
 Live ingestion is separate and explicitly networked:
 
@@ -88,7 +90,7 @@ python3.13 scripts/validate_sources.py
 python3.13 scripts/discover_official.py
 ```
 
-It writes `generated/source-discovery.json`, which is a review queue, not verified live data. Do not promote or commit its contents without review. The script may return success despite source skips/errors or zero links; inspect every source status. No local live ingestion run was needed for setup: the latest scheduled artifact was inspected instead. The current script has no persisted HTTP cache or offline replay; those belong to the first ingestion milestone.
+It writes `generated/source-discovery.json`, which is a review queue, not verified live data. Do not promote or commit its contents without review. The script may return success despite source skips/errors or zero links; inspect every source status. The scheduled discovery script remains networked and emits a review queue. The offline adapter replay is intentionally separate: it validates parser behaviour and failure preservation without making a request.
 
 Git fetch/push, GitHub PR operations, package/browser installation and genuine source verification require network access. No API key or paid service is needed for existing local development.
 

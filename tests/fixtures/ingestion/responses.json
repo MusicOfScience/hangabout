@@ -1,0 +1,41 @@
+{
+  "cases": [
+    {
+      "source": "regional-gallery-feed",
+      "status": "ok",
+      "payload": {
+        "events": [
+          {
+            "id": "regional-001",
+            "title": "River Country",
+            "startDate": "2026-10-01",
+            "endDate": "2026-11-15",
+            "venueName": "Fixture Regional Gallery",
+            "url": "https://fixture.example.org/exhibitions/river-country"
+          },
+          {
+            "id": "regional-001",
+            "title": "River Country duplicate",
+            "startDate": "2026-10-01",
+            "endDate": "2026-11-15",
+            "url": "https://fixture.example.org/exhibitions/river-country"
+          }
+        ]
+      }
+    },
+    {
+      "source": "regional-gallery-html",
+      "status": "ok",
+      "url": "https://fixture.example.org",
+      "payload": "<article data-title=\"Salt Lines\" data-start=\"2026-09-28\" data-end=\"2026-10-20\" data-url=\"/exhibitions/salt-lines\"></article>"
+    },
+    { "source": "redirected-gallery", "status": "redirect", "payload": { "items": [{ "id": "r1", "name": "Moved programme", "url": "https://fixture.example.org/moved", "startDate": "2026-12-01", "endDate": "2027-01-10" }] } },
+    { "source": "temporarily-slow-gallery", "status": "timeout", "previousRecord": "fixture-existing" },
+    { "source": "rate-limited-gallery", "status": "rate-limited", "previousRecord": "fixture-existing" },
+    { "source": "robots-gallery", "status": "robots-denied", "previousRecord": "fixture-existing" },
+    { "source": "removed-gallery", "status": "not-found", "previousRecord": "fixture-existing" },
+    { "source": "broken-json-gallery", "status": "malformed", "previousRecord": "fixture-existing" },
+    { "source": "empty-gallery", "status": "empty", "previousRecord": "fixture-existing" },
+    { "source": "unchanged-gallery", "status": "not-modified", "previousRecord": "fixture-existing" }
+  ]
+}

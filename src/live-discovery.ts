@@ -337,7 +337,17 @@ function viewportSpan(bounds: Bounds) {
 function regionalAreaLabel(center: Point): string {
   const [lat, lng] = center;
   if (lat <= -35.12 && lat >= -35.92 && lng >= 148.75 && lng <= 149.4) return 'Australian Capital Territory';
-  if (lat <= -34 && lat >= -39.5 && lng >= 140.5 && lng <= 150.3) return 'Victoria';
+  if (lat <= -28 && lat >= -37.5 && lng >= 140.5 && lng <= 154) {
+    if (lng >= 150.5) return 'New South Wales';
+    if (lat >= -29.3 && lng >= 138.5) return 'Queensland';
+    if (lat <= -34 && lng <= 141.5) return 'South Australia';
+    return 'Victoria';
+  }
+  if (lat <= -9 && lat >= -27 && lng >= 137 && lng <= 154) return 'Queensland';
+  if (lat <= -25 && lat >= -36 && lng >= 112 && lng <= 129) return 'Western Australia';
+  if (lat <= -26 && lat >= -39 && lng >= 129 && lng <= 141) return 'South Australia';
+  if (lat <= -39 && lat >= -44 && lng >= 143 && lng <= 149) return 'Tasmania';
+  if (lat <= -10 && lat >= -27 && lng >= 129 && lng < 139) return 'Northern Territory';
   if (haversine(center, MELBOURNE) < 85) return 'Melbourne, Victoria';
   return 'Australia';
 }
