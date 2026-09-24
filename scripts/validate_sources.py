@@ -30,6 +30,7 @@ def main():
     indexes = load(ROOT / "sources" / "official-indexes.json")
 
     reference = policy.get("referenceSources", [])
+    refresh_sources = policy.get("refreshSources", [])
     blocked_hosts = {
         host(source["url"])
         for source in reference
@@ -65,7 +66,14 @@ def main():
         require(source.get("automationAllowed") is False, f"reference source must be automation-disabled: {source.get('id')}")
         require(str(source.get("reason", "")).strip(), f"reference source needs a reason: {source.get('id')}")
 
-    print(f"validated {len(indexes)} automated first-party indexes; {len(reference)} reference-only sources blocked from automation")
+    for source in refresh_sources:
+        require(source.get("automationAllowed") is True, f"refresh source must explicitly allow automation: {source.get('id')}")
+        refresh_host = source.get("host", "").lower().removeprefix("www.")
+        require(refresh_host and "." in refresh_host, f"refresh source needs a valid host: {source.get('id')}")
+        require(refresh_host not in blocked_hosts, f"blocked reference host placed in refresh sources: {refresh_host}")
+        require(str(source.get("use", "")).strip(), f"refresh source needs a documented use: {source.get('id')}")
+
+    print(f"validated {len(indexes)} automated first-party indexes; {len(refresh_sources)} scheduled refresh sources; {len(reference)} reference-only sources blocked from automation")
 
 
 if __name__ == "__main__":

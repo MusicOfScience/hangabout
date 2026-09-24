@@ -1,0 +1,95 @@
+name: scheduled source refresh
+
+on:
+  schedule:
+    # 04:17 Australia/Melbourne during standard time (05:17 during daylight
+    # time); the data date is
+    # calculated explicitly in that timezone by the refresh script.
+    - cron: '17 18 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: hangabout-source-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: validate source policy and data before refresh
+        run: |
+          python scripts/validate_sources.py
+          python scripts/validate_data_v3.py
+      - name: refresh permitted studio listings
+        run: python scripts/refresh_sources.py --apply --report generated/source-refresh.json --delay 1
+      - name: validate refreshed data
+        run: |
+          python scripts/validate_data_v3.py
+          python scripts/validate_sources.py
+          python -m unittest discover -s tests/python
+      - name: validate application build
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm run build
+      - name: upload refresh report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-source-refresh-${{ github.run_id }}
+          path: generated/source-refresh.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: detect reviewed data changes
+        id: changes
+        run: |
+          if git diff --quiet -- data/studio-vacancies.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: create review branch and pull request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh pr list --state open --base main --json headRefName --jq '[.[] | select(.headRefName | startswith("automation/source-refresh-"))] | length')
+          if [ "$existing" -gt 0 ]; then
+            echo "an open source-refresh PR already exists; preserving it for review"
+            exit 0
+          fi
+          branch="automation/source-refresh-${GITHUB_RUN_ID}"
+          git config user.name "hangabout-source-refresh[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add data/studio-vacancies.json
+          git commit -m "Refresh permitted studio source records"
+          git push --set-upstream origin "$branch"
+          cat > /tmp/source-refresh-pr.md <<'EOF'
+          ## Scheduled source refresh
+
+          This pull request contains only successful, explicit observations from permitted first-party studio listing pages.
+
+          - Failed, blocked or ambiguous checks preserve the previous record and verification date.
+          - The refresh report is attached to the workflow run.
+          - Review the source evidence and data diff before merging.
+
+          This workflow does not deploy production or publish unreviewed gallery candidates.
+          EOF
+          gh pr create --base main --head "$branch" \
+            --title "Refresh studio source records" \
+            --body-file /tmp/source-refresh-pr.md
