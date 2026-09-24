@@ -11,7 +11,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/the-pea-green-boat-artist-studios",
-    "lastVerified": "2026-08-19",
+    "lastVerified": "2026-09-24",
     "checkStatus": "ok"
   },
   {
@@ -26,7 +26,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/irene-warehouse",
-    "lastVerified": "2026-08-19",
+    "lastVerified": "2026-09-24",
     "checkStatus": "ok"
   },
   {
@@ -86,7 +86,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/artist-studios-for-rent-studio-118",
-    "lastVerified": "2026-08-19",
+    "lastVerified": "2026-09-24",
     "checkStatus": "ok"
   },
   {
@@ -238,6 +238,18 @@
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/studio-at-brunswick-street-gallery",
     "lastVerified": "2026-08-26",
+    "checkStatus": "ok"
+  },
+  {
+    "id": "brunswick-bower-vacancy",
+    "premisesId": "brunswick-bower",
+    "availabilityStatus": "advertised",
+    "availability": "available now",
+    "price": "from A$150/month + GST",
+    "sourceName": "Creative Spaces",
+    "sourceType": "directory",
+    "sourceUrl": "https://www.creativespaces.net.au/space/the-brunswick-bower",
+    "lastVerified": "2026-09-24",
     "checkStatus": "ok"
   }
 ]

@@ -6,7 +6,7 @@ Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workf
 
 Feature branch `codex/national-studio-data` adds the next planned data stage without changing the signed-off layout or publishing unreviewed records. Studio resource IDs remain stable; `data/studio-vacancies.json` carries separate vacancy status, price, size, source and check metadata, and the loader projects the latest listing onto the existing cards while exposing `studioPremises` and `studioVacancies` in the dataset. Structured Make Art queries now understand practice/facility fields and price limits while unknown facts remain non-matches. National venue records support AU state/locality/region/timezone/coverage fields, and venue-local opening logic works across Australian zones.
 
-The offline ingestion pilot (`scripts/ingest_fixtures.py`) emits deterministic candidates and check statuses from JSON/HTML fixtures, including deduplication, redirects and failure preservation. Interstate venue/event fixtures are validation-only and are deliberately not in the live catalogue. Real maintained data remains the existing Melbourne/Victoria catalogue; national source promotion is the next focused PR.
+The offline ingestion pilot (`scripts/ingest_fixtures.py`) emits deterministic candidates and check statuses from JSON/HTML fixtures, including deduplication, redirects and failure preservation. Interstate venue/event fixtures are validation-only and are deliberately not in the live catalogue. Real maintained data remains the existing Melbourne/Victoria catalogue; national source promotion is the next focused PR. On 2026-09-24, four Creative Spaces listings were rechecked against their current source pages and one newly listed Brunswick premises was added; the remaining vacancy records stay stale or uncertain.
 
 ## Release follow-up after the reliability PRs
 
@@ -50,7 +50,7 @@ Merged catalogue counts, freshly measured rather than adopted as targets:
 
 - 49 venues, with 36 effective exact/building pins after 14 coordinate overlays.
 - 80 exhibitions: 53 official-source and 27 directory-source records.
-- 28 make-art resources, including 17 studio premises and 5 opportunities.
+- 29 make-art resources, including 18 studio premises and 5 opportunities.
 - 20 cached known-art places, separate from verified exhibition coverage.
 - 11 automated first-party indexes and 4 reference-only sources blocked from automation.
 
