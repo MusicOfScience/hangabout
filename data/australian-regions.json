@@ -1,0 +1,10 @@
+[
+  {"stateCode":"ACT","name":"Australian Capital Territory","timeZones":["Australia/Sydney"]},
+  {"stateCode":"NSW","name":"New South Wales","timeZones":["Australia/Sydney"]},
+  {"stateCode":"NT","name":"Northern Territory","timeZones":["Australia/Darwin"]},
+  {"stateCode":"QLD","name":"Queensland","timeZones":["Australia/Brisbane"]},
+  {"stateCode":"SA","name":"South Australia","timeZones":["Australia/Adelaide"]},
+  {"stateCode":"TAS","name":"Tasmania","timeZones":["Australia/Hobart"]},
+  {"stateCode":"VIC","name":"Victoria","timeZones":["Australia/Melbourne"]},
+  {"stateCode":"WA","name":"Western Australia","timeZones":["Australia/Perth"]}
+]

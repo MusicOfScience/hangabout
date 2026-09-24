@@ -50,6 +50,10 @@ const norm = (value: string) => value.trim().toLowerCase();
 
 export function venuePoint(venue: Venue): Point | null {
   if (venue.lat != null && venue.lng != null) return [venue.lat, venue.lng];
+  // Legacy Melbourne records predate the national address contract and may still
+  // use a clearly labelled locality centre. National records without coordinates
+  // stay unmapped rather than silently appearing in Melbourne.
+  if (venue.countryCode || venue.stateCode && venue.stateCode !== 'VIC') return null;
   return SUBURB_CENTRES[norm(venue.suburb)] ?? null;
 }
 
@@ -80,10 +84,12 @@ export function nearestSuburb(point: Point, dataset: Dataset): string {
     ...dataset.resources.map(r => r.suburb),
   ])].filter(Boolean);
 
-  let best = 'Melbourne';
+  let best = haversine(point, MELBOURNE) < 85 ? 'Melbourne' : 'this map area';
   let distance = Infinity;
   for (const suburb of candidates) {
-    const p = SUBURB_CENTRES[norm(suburb)];
+    const venue = dataset.venues.find(item => item.suburb === suburb);
+    const resource = dataset.resources.find(item => item.suburb === suburb);
+    const p = venue ? venuePoint(venue) : resource ? resourcePoint(resource) : SUBURB_CENTRES[norm(suburb)];
     if (!p) continue;
     const d = haversine(point, p);
     if (d < distance) {

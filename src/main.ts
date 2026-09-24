@@ -3,12 +3,13 @@ import './styles.css';
 import { loadDataset } from './data/load';
 import { state } from './state';
 import type { Dataset, Event, MakeResource, Venue } from './types';
-import { closesWithin, formatDateRange, intersectsThisWeekend, isEventCurrent, isEventUpcoming, isVenueOpenNow, isVenueOpenToday, melbourneLabel, openingWithin } from './time';
+import { closesWithin, DEFAULT_TIME_ZONE, formatDateRange, intersectsThisWeekend, isEventCurrent, isEventUpcoming, isVenueOpenNow, isVenueOpenToday, melbourneLabel, openingWithin, todayInTimeZone } from './time';
 import { haversine, nearestSuburb, resourcePoint, venuePoint, type Point } from './geo';
 import { googleCrawlUrl, googleSearchUrl, mapsUrl, pointInsideBounds, type WebDiscoveryKind } from './discovery';
 import { MakeMap, SeeMap } from './map';
 import { writeIds } from './storage';
 import { eventFreshness, hasCurrentAvailability, resourceFreshness } from './freshness';
+import { matchesStudioQuery, studioMonthlyAmount, studioRelevance } from './studio-search';
 
 const dataset = loadDataset();
 const venueById = new Map(dataset.venues.map(venue => [venue.id, venue]));
@@ -456,7 +457,10 @@ function revealLocationTarget() {
 
 function filteredEvents(): Event[] {
   const query = norm(state.query);
-  let rows = dataset.events.filter(event => isEventUpcoming(event));
+  let rows = dataset.events.filter(event => {
+    const venue = venueById.get(event.venueId);
+    return Boolean(venue && isEventUpcoming(event, todayInTimeZone(venue.timeZone ?? DEFAULT_TIME_ZONE)));
+  });
 
   rows = rows.filter(event => {
     const venue = venueById.get(event.venueId);
@@ -467,11 +471,13 @@ function filteredEvents(): Event[] {
       venue.name, venue.suburb, venue.kind,
     ].join(' ')).includes(query)) return false;
 
-    if (state.quick === 'open' && (!isEventCurrent(event) || !isVenueOpenNow(venue))) return false;
-    if (state.quick === 'today' && (!isEventCurrent(event) || !isVenueOpenToday(venue))) return false;
-    if (state.quick === 'weekend' && !intersectsThisWeekend(event)) return false;
-    if (state.quick === 'openings' && !openingWithin(event, 7)) return false;
-    if (state.quick === 'closing' && !closesWithin(event, 7)) return false;
+    const timeZone = venue.timeZone ?? DEFAULT_TIME_ZONE;
+    const localToday = todayInTimeZone(timeZone);
+    if (state.quick === 'open' && (!isEventCurrent(event, localToday) || !isVenueOpenNow(venue))) return false;
+    if (state.quick === 'today' && (!isEventCurrent(event, localToday) || !isVenueOpenToday(venue))) return false;
+    if (state.quick === 'weekend' && !intersectsThisWeekend(event, timeZone)) return false;
+    if (state.quick === 'openings' && !openingWithin(event, 7, timeZone)) return false;
+    if (state.quick === 'closing' && !closesWithin(event, 7, timeZone)) return false;
     if (state.quick === 'free' && event.admission !== 'free') return false;
     if (state.quick === 'saved' && !state.saved.has(event.id)) return false;
 
@@ -614,7 +620,7 @@ function openDetail(eventId: string) {
 function renderMake() {
   const query = norm(state.makeQuery);
   let resources = dataset.resources.filter(resource =>
-    !query || norm([resource.name, resource.suburb, resource.summary, resource.tags?.join(' ') ?? '', resource.availability ?? ''].join(' ')).includes(query)
+    !query || matchesStudioQuery(resource, query)
   );
   let venuePathways: Venue[] = [];
 
@@ -766,10 +772,10 @@ function locate() {
 function resourceMatchesFeature(resource: MakeResource, feature: string): boolean {
   const tags = norm(resource.tags?.join(' ') ?? '');
   if (feature === 'available-now') return hasCurrentAvailability(resource);
-  if (feature === '24/7') return tags.includes('24/7') || tags.includes('24-hour');
-  if (feature === 'wash-up') return tags.includes('wash-up') || tags.includes('washout');
-  if (feature === 'natural-light') return tags.includes('natural light');
-  if (feature === 'accessible') return tags.includes('accessible') || tags.includes('wheelchair');
+  if (feature === '24/7') return resource.features?.['24/7'] === true || tags.includes('24/7') || tags.includes('24-hour');
+  if (feature === 'wash-up') return resource.features?.['wash-up'] === true || tags.includes('wash-up') || tags.includes('washout');
+  if (feature === 'natural-light') return resource.features?.['natural-light'] === true || tags.includes('natural light');
+  if (feature === 'accessible') return resource.features?.accessible === true || tags.includes('accessible') || tags.includes('wheelchair');
   return true;
 }
 
@@ -780,7 +786,7 @@ function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
     return;
   }
   if (state.makeSort === 'price') {
-    resources.sort((a, b) => comparePrice(monthlyPrice(a.price), monthlyPrice(b.price)) || a.name.localeCompare(b.name));
+    resources.sort((a, b) => comparePrice(studioMonthlyAmount(a), studioMonthlyAmount(b)) || a.name.localeCompare(b.name));
     return;
   }
   if (state.makeSort === 'distance' && state.userLocation) {
@@ -790,8 +796,9 @@ function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
     return;
   }
   if (state.makeSort === 'relevance') {
-    resources.sort((a, b) => availabilityRank(a) - availabilityRank(b)
-      || comparePrice(monthlyPrice(a.price), monthlyPrice(b.price))
+    resources.sort((a, b) => studioRelevance(b, state.makeQuery) - studioRelevance(a, state.makeQuery)
+      || availabilityRank(a) - availabilityRank(b)
+      || comparePrice(studioMonthlyAmount(a), studioMonthlyAmount(b))
       || a.name.localeCompare(b.name));
   }
 }
@@ -808,17 +815,6 @@ function availabilityRank(resource: MakeResource): number {
 
 function pointDistance(origin: Point, point: Point | null): number {
   return point ? haversine(origin, point) : Number.POSITIVE_INFINITY;
-}
-
-function monthlyPrice(price?: string): number {
-  if (!price || /enquiry|free/i.test(price)) return Number.POSITIVE_INFINITY;
-  const match = price.match(/A\$([\d,]+)/i);
-  const amount = match?.[1];
-  if (!amount) return Number.POSITIVE_INFINITY;
-  const value = Number(amount.replaceAll(',', ''));
-  if (/\/week|per week/i.test(price)) return value * 52 / 12;
-  if (/\/hour|per hour|\/day|per day/i.test(price)) return Number.POSITIVE_INFINITY;
-  return value;
 }
 
 function comparePrice(a: number, b: number): number {
