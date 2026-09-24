@@ -72,11 +72,11 @@ test('saved exhibitions and studio feature filters remain functional', async ({ 
   await expect(page.locator('.event-card')).toHaveCount(1);
 
   await page.getByRole('button', { name: 'make art', exact: true }).click();
-  await expect(page.locator('#makeCount')).toHaveText('17 studios');
+  await expect(page.locator('#makeCount')).toHaveText('18 studios');
   await page.getByRole('button', { name: '24/7 access', exact: true }).click();
   await expect(page.locator('#makeCount')).toHaveText('12 studios');
   await page.getByRole('button', { name: '24/7 access', exact: true }).click();
-  await expect(page.locator('#makeCount')).toHaveText('17 studios');
+  await expect(page.locator('#makeCount')).toHaveText('18 studios');
 });
 
 test('event dates are timezone-stable and cross-year ranges show both years', async ({ page }) => {
@@ -106,14 +106,15 @@ test('make-art map refits after every switch without overlapping the search', as
   }
 });
 
-test('stale studio vacancies stay visible but do not qualify as available now', async ({ page }) => {
+test('stale studio vacancies stay visible while source-rechecked listings qualify as available now', async ({ page }) => {
   await page.clock.setSystemTime(new Date('2026-09-23T02:00:00Z'));
   await page.goto('/?mode=make');
   await expect(page.locator('#resource-pink-ember-studios-coburg')).toContainText('previously listed: available now');
   await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
-  await expect(page.locator('.resource-card')).toHaveCount(0);
+  await expect(page.locator('.resource-card')).toHaveCount(4);
+  await expect(page.locator('#resource-brunswick-bower')).toBeVisible();
   await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
-  await expect(page.locator('.resource-card')).toHaveCount(17);
+  await expect(page.locator('.resource-card')).toHaveCount(18);
 });
 
 test('recently checked vacancies still qualify as available now', async ({ page }) => {
