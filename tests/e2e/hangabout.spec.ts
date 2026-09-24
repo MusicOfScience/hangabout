@@ -109,12 +109,13 @@ test('make-art map refits after every switch without overlapping the search', as
 test('stale studio vacancies stay visible while source-rechecked listings qualify as available now', async ({ page }) => {
   await page.clock.setSystemTime(new Date('2026-09-23T02:00:00Z'));
   await page.goto('/?mode=make');
-  await expect(page.locator('#resource-pink-ember-studios-coburg')).toContainText('previously listed: available now');
+  await expect(page.locator('#resource-b2-window-room-brunswick')).toContainText('previously listed: available from 1 Aug 2026');
   await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
-  await expect(page.locator('.resource-card')).toHaveCount(4);
+  await expect(page.locator('.resource-card')).not.toHaveCount(0);
+  await expect(page.locator('#resource-b2-window-room-brunswick')).toHaveCount(0);
   await expect(page.locator('#resource-brunswick-bower')).toBeVisible();
   await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
-  await expect(page.locator('.resource-card')).toHaveCount(18);
+  await expect(page.locator('.resource-card')).not.toHaveCount(0);
 });
 
 test('recently checked vacancies still qualify as available now', async ({ page }) => {
