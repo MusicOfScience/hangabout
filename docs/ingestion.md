@@ -32,6 +32,12 @@ The discovery job starts from stable programme/index URLs on every run and redis
 
 It does **not** republish page copy or images and does not automatically mutate live event data.
 
+## Offline adapter replay
+
+`python scripts/ingest_fixtures.py --report generated/ingestion-review.json` replays the deterministic pilot fixtures without network access. The replay accepts explicit structured JSON and first-party HTML attributes, assigns IDs from the source namespace plus native ID or canonical URL, and deduplicates identical identities. Redirects are retained as successful checks. Timeouts, 429s, robots denials, malformed/empty responses, 304s and not-found responses become review statuses; a previous record is marked preserved and its verification date is not changed. The report is a candidate/check artifact, not production data publication.
+
+Studio premises remain in the curated make-art resource layers. `data/studio-vacancies.json` is a separate listing layer keyed by `premisesId`; a failed vacancy check cannot remove the durable premise or turn unknown availability into “no”.
+
 ## Next adapter layer
 
 For high-value first-party sources, add source-specific adapters that prefer structured metadata and extract only factual fields needed by hangabout: title, artist, venue, start/end dates, opening time, admission, URL and verification timestamp. Generated candidates should be schema-validated and compared against the canonical registry before they are promoted to live data.

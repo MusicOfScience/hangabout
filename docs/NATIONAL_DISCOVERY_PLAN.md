@@ -1,14 +1,14 @@
 # National gallery discovery and programme refresh plan
 
-Status: proposal informed by `main` at `04472e2`, inspected 2026-09-23. No backend is implemented by this setup change. National gallery/exhibition discovery, including regional Australia, is the milestone; studio discovery stays in inner and outer Melbourne.
+Status: milestone 1 implemented on feature branch `codex/national-studio-data`, inspected 2026-09-24. The application remains static-first: the national contract and offline ingestion pilot produce reviewable candidates, while only promoted records enter the catalogue. National gallery/exhibition discovery, including regional Australia, remains the next coverage expansion; studio discovery stays in inner and outer Melbourne.
 
 ## Existing boundaries
 
 - `src/data/load.ts` merges three venue/event layers and two resource layers by stable ID, then applies the separate coordinate overlay. Later layers replace earlier records. Keep existing IDs and deep links during migration; reject accidental collisions rather than silently replacing unrelated records.
-- `src/types.ts` separates venues, events, make resources and known places. Provenance exists, but lifecycle, field-level verification, national geography and per-venue timezone contracts are missing.
+- `src/types.ts` now carries optional country/state/locality/region/timezone/coverage fields and coordinate precision for national records. Studio resources retain stable IDs while `data/studio-vacancies.json` tracks time-sensitive listings separately.
 - `scripts/discover_official.py` reads 11 approved first-party programme indexes, checks robots and emits candidate links. It neither discovers new canonical galleries nor extracts verified programmes. `.github/workflows/source-discovery.yml` runs weekly and retains a review artifact for 14 days.
 - `src/live-discovery.ts` provides user-triggered Overpass candidates and Nominatim labels, with small in-memory caches. These are not maintained venue records or exhibition evidence. The static known-place layer contains 20 Victorian places.
-- `src/time.ts` assumes Melbourne; `src/geo.ts` contains Melbourne suburb centroids. `src/main.ts` owns search, history and rendering; `src/map.ts` owns map/list interaction. National discovery must preserve those interaction contracts while removing geographic assumptions.
+- `src/time.ts` accepts an explicit venue timezone (with Melbourne as the legacy default); `src/geo.ts` refuses to map national records without coordinates while retaining the existing Melbourne locality fallback for legacy studio resources. `src/main.ts` owns search, history and rendering; `src/map.ts` owns map/list interaction. National discovery preserves those interaction contracts.
 
 ## Hosting decision
 
@@ -57,7 +57,7 @@ Replace Melbourne-only time helpers with explicit venue timezone inputs (for exa
 
 ## First implementation milestone and acceptance
 
-**Deliver a persistent candidate/check contract and fixture-driven ingestion pilot, without changing production publication.** Extend the existing discovery script through reusable modules, add schemas/validators and an explicit offline replay mode, and pilot one approved first-party programme adapter plus one eligible new-gallery source after checking their access conditions. Use national geography fields and an interstate fixture from day one.
+**Delivered: a persistent candidate/check contract and fixture-driven ingestion pilot, without changing production publication.** `scripts/ingestion/replay.py` normalises structured JSON and explicit first-party HTML fixtures, derives stable IDs, deduplicates candidates, and preserves prior records for timeout, rate-limit, robots, malformed, empty, 304 and not-found checks. `scripts/validate_national_contract.py` validates Australian state/timezone records and interstate fixtures. `data/studio-vacancies.json` separates refreshable listings from durable studio premises while preserving existing resource IDs and deep links.
 
 Acceptance:
 

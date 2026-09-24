@@ -41,11 +41,13 @@ index.html                       # Vite application shell
 src/main.ts                      # filters, results, saves, crawl and artist directory
 src/map.ts                       # Leaflet exhibition and make-art maps
 src/live-discovery.ts            # user-triggered OpenStreetMap discovery
-src/time.ts                      # Melbourne calendar semantics
+src/time.ts                      # venue-local Australian calendar semantics
 src/styles.css                   # editorial visual system + responsive layout
 data/venues.json                 # canonical venue registry
 data/events.json                 # event records + provenance
+data/studio-vacancies.json       # refreshable vacancy records keyed to studio premises
 scripts/validate_data_v3.py      # data-contract validation
+scripts/ingest_fixtures.py       # deterministic offline ingestion review
 scripts/validate_freshness.py    # source-linked freshness audit; --strict for data release checks
 .github/workflows/validate.yml   # PR/main validation
 .github/workflows/pages.yml      # verify -> stage -> deploy Pages
@@ -60,6 +62,8 @@ Use Node 22, npm 10 and Python 3.13. Install the locked dependencies with `npm c
 - [Local development](docs/LOCAL_DEVELOPMENT.md): setup, validation, browser tests, preview and offline behaviour.
 - [Current handover](docs/HANDOVER.md): verified baseline, test results and outstanding work.
 - [National discovery plan](docs/NATIONAL_DISCOVERY_PLAN.md): staged gallery/exhibition indexing and refresh; studios remain Melbourne-only.
+
+The offline ingestion pilot can be run without network access after setup: `python scripts/ingest_fixtures.py --report generated/ingestion-review.json`. It produces review artifacts only; it does not promote candidates into the catalogue.
 
 ## data contract
 

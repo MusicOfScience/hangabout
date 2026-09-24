@@ -16,6 +16,21 @@ def load_optional(name: str):
     return base.load(path) if path.exists() else []
 
 
+def validate_studio_vacancy(vacancy: dict, premise_ids: set[str]):
+    context = vacancy.get("id", "<vacancy>")
+    base.require(base.ID_RE.fullmatch(context) is not None, f"{context}: invalid vacancy id")
+    base.require(vacancy.get("premisesId") in premise_ids, f"{context}: unknown premises")
+    base.require(vacancy.get("availabilityStatus") in {"advertised", "occupied", "waitlist", "unknown", "expired"}, f"{context}: bad availability status")
+    base.require(str(vacancy.get("sourceName", "")).strip(), f"{context}: missing sourceName")
+    base.require(vacancy.get("sourceType") in base.SOURCE_TYPES, f"{context}: bad sourceType")
+    base.require(base.valid_url(vacancy.get("sourceUrl", "")), f"{context}: bad source URL")
+    base.valid_date(vacancy.get("lastVerified"), context)
+    if vacancy.get("availableFrom"):
+        base.valid_date(vacancy["availableFrom"], context)
+    if vacancy.get("priceAmount") is not None:
+        base.require(isinstance(vacancy["priceAmount"], (int, float)) and vacancy["priceAmount"] >= 0, f"{context}: bad priceAmount")
+
+
 def main():
     venues = [
         *base.load(ROOT / "data" / "venues.json"),
@@ -31,6 +46,7 @@ def main():
         *load_optional("make-resources.json"),
         *load_optional("make-resources-extra.json"),
     ]
+    vacancies = load_optional("studio-vacancies.json")
 
     venue_ids = [v.get("id") for v in venues]
     event_ids = [e.get("id") for e in events]
@@ -47,6 +63,11 @@ def main():
         base.validate_event(event, known_venues)
     for resource in resources:
         base.validate_resource(resource)
+    premise_ids = {r["id"] for r in resources if r.get("resourceType") == "studio"}
+    vacancy_ids = [row.get("id") for row in vacancies]
+    base.require(len(vacancy_ids) == len(set(vacancy_ids)), "duplicate studio vacancy id")
+    for vacancy in vacancies:
+        validate_studio_vacancy(vacancy, premise_ids)
 
     official = sum(event["sourceType"] == "official" for event in events)
     directory = len(events) - official
@@ -55,7 +76,7 @@ def main():
     print(
         f"validated {len(venues)} venues ({exact} exact pins), "
         f"{len(events)} events ({official} official, {directory} directory), "
-        f"{len(resources)} make-art resources ({opportunities} opportunities)"
+        f"{len(resources)} make-art resources ({opportunities} opportunities), {len(vacancies)} studio vacancy records"
     )
 
 
