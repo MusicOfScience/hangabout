@@ -35,7 +35,7 @@ The rebuild completes Node's binary installation if the bootstrap npm blocks pac
 These commands need no external service after dependencies are installed:
 
 ```bash
-python3.13 -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
+python3.13 -m py_compile scripts/validate_data_v3.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/refresh_sources.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
 python3.13 scripts/validate_data_v3.py
 python3.13 scripts/validate_national_contract.py
 python3.13 scripts/ingest_fixtures.py --report /private/tmp/hangabout-ingestion-review.json
@@ -91,6 +91,14 @@ python3.13 scripts/discover_official.py
 ```
 
 It writes `generated/source-discovery.json`, which is a review queue, not verified live data. Do not promote or commit its contents without review. The script may return success despite source skips/errors or zero links; inspect every source status. The scheduled discovery script remains networked and emits a review queue. The offline adapter replay is intentionally separate: it validates parser behaviour and failure preservation without making a request.
+
+The scheduled studio refresh can be inspected locally in report-only mode (network required):
+
+```bash
+python3.13 scripts/refresh_sources.py --report /private/tmp/hangabout-source-refresh.json
+```
+
+It checks only policy-approved first-party pages and never changes data unless `--apply` is supplied. The GitHub Actions workflow uses `--apply` on a disposable automation branch, validates the resulting JSON, and opens a pull request for review. It preserves existing records on failed or ambiguous checks. Do not run `--apply` on `main` as a substitute for reviewing the generated PR. Gallery candidate discovery remains a separate weekly artifact workflow and is not automatically promoted to verified exhibitions.
 
 Git fetch/push, GitHub PR operations, package/browser installation and genuine source verification require network access. No API key or paid service is needed for existing local development.
 

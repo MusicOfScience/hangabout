@@ -32,6 +32,14 @@ The discovery job starts from stable programme/index URLs on every run and redis
 
 It does **not** republish page copy or images and does not automatically mutate live event data.
 
+## Scheduled source refresh
+
+`.github/workflows/source-refresh.yml` runs daily and is deliberately separate from browser visits. It checks only sources listed under `refreshSources` in `sources/source-policy.json`; the current adapter supports permitted Creative Spaces studio listing pages. A page must expose an explicit availability field before its vacancy record can be updated. Explicit price facts are updated when present, while missing fields remain unknown rather than becoming negative facts.
+
+Successful observations are committed to an automation branch and opened as a pull request for review. Gallery programme discovery remains a separate weekly artifact workflow; candidate galleries and exhibitions are not published automatically. Robots denials, timeouts, malformed pages and pages without explicit availability are recorded in the refresh report and preserve the last good vacancy and verification date. A durable studio premise therefore remains discoverable when a temporary vacancy is filled or its source is temporarily unavailable.
+
+This is a scheduled, reviewable refresh rather than per-visit scraping. GitHub Actions needs network access for source pages and GitHub write permissions to open the review PR; the application itself remains a static build and works from its checked-in data without that service being available.
+
 ## Offline adapter replay
 
 `python scripts/ingest_fixtures.py --report generated/ingestion-review.json` replays the deterministic pilot fixtures without network access. The replay accepts explicit structured JSON and first-party HTML attributes, assigns IDs from the source namespace plus native ID or canonical URL, and deduplicates identical identities. Redirects are retained as successful checks. Timeouts, 429s, robots denials, malformed/empty responses, 304s and not-found responses become review statuses; a previous record is marked preserved and its verification date is not changed. The report is a candidate/check artifact, not production data publication.

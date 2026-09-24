@@ -84,6 +84,10 @@ export function loadDataset(): Dataset {
       ...resource,
       premisesId: resource.id,
       vacancyId: vacancy?.id,
+      // A vacancy check is the authoritative freshness signal for the
+      // listing projected onto this durable studio premise. Keep the
+      // premise itself even when the listing is stale or a refresh fails.
+      lastVerified: vacancy?.lastVerified ?? resource.lastVerified,
       availability: vacancy?.availability ?? resource.availability,
       price: vacancy?.price ?? resource.price,
       size: vacancy?.size ?? resource.size,

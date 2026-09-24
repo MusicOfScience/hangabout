@@ -101,13 +101,14 @@ Production-path local preview: `http://127.0.0.1:4174/hangabout/`. Restart comma
 - `validate.yml`: pull requests, pushes to main, and manual dispatch; read-only repository permission.
 - `pages.yml`: pushes to main or manual dispatch; verifies/builds then deploys with Pages permissions. A feature-branch push and ordinary PR do not trigger it.
 - `source-discovery.yml`: weekly schedule and manual dispatch, read-only, 14-day artifact retention. No automatic canonical-data update or publication.
+- `source-refresh.yml`: daily schedule and manual dispatch. Permitted Creative Spaces vacancy pages are checked with robots/source-policy rules; successful explicit observations are proposed in an automation PR, while failed or ambiguous checks preserve last-good data. Gallery programme discovery remains the separate weekly artifact workflow; neither workflow publishes unverified galleries or exhibitions.
 
 No structural validators or deployment permissions were relaxed. Freshness is now an artifact-backed warning in normal CI; `--strict` remains the deliberate data-maintenance gate. The owner reviews and merges PRs in GitHub; do not merge, auto-merge, push main or manually deploy.
 
 ## Next steps
 
 1. Review the freshness artifact and resolve stale source-backed catalogue records. Expired opportunities need genuine review; unknown availability must remain unknown.
-2. Promote the offline pilot into reviewed source adapters and a persistent candidate/check artifact, preserving last good data on failed checks; do not automatically publish candidates.
+2. Extend the reviewed source-adapter pattern to additional authorised gallery and studio feeds, preserving last good data on failed checks; do not automatically publish candidates.
 3. Add promoted interstate source coverage and static national search/shards only after review; studios remain inner/outer Melbourne.
 4. Add explicit fixtures for live search-area refresh/races and failed-cache retry before expanding that surface. Retain existing desktop/mobile regressions and the editorial interface.
 5. Expand maintained programmes and regional source coverage with visible coverage/freshness distinctions. Assess a separate hosted API only if measured requirements justify its cost.

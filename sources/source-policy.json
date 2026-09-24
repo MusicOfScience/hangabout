@@ -40,5 +40,14 @@
       "reason": "Reference directory; automated reuse has not been authorised for hangabout.",
       "use": "manual cross-check until permissions/terms are reviewed"
     }
+  ],
+  "refreshSources": [
+    {
+      "id": "creative-spaces-studios",
+      "name": "Creative Spaces studio listings",
+      "host": "creativespaces.net.au",
+      "automationAllowed": true,
+      "use": "refresh explicit vacancy and pricing facts from first-party listing pages; preserve the last good record when a check fails"
+    }
   ]
 }
