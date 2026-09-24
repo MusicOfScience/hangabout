@@ -111,7 +111,8 @@ def parse_price(text: str) -> tuple[str, float, str] | None:
     amount = float(match.group(1).replace(",", ""))
     period = match.group(2).lower()
     prefix = "from " if re.search(r"from\s+|starting at\s+", match.group(0), re.I) else ""
-    return f"{prefix}A${match.group(1)}/{period} + GST", amount, period
+    basis = " + GST" if re.search(r"(?:ex|plus)\s+GST", text, re.I) else " (inc GST)" if re.search(r"(?:inc|including)\s+GST", text, re.I) else ""
+    return f"{prefix}A${match.group(1)}/{period}{basis}", amount, period
 
 
 def parse_studio_page(html: str) -> dict:

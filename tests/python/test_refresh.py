@@ -22,6 +22,11 @@ def test_parser_output_is_json_serialisable():
     json.dumps(parse_studio_page(html))
 
 
+def test_price_without_tax_basis_does_not_invent_one():
+    parsed = parse_studio_page("<p>Availability: Available</p><p>$300 per month</p>")
+    assert parsed["price"] == "A$300/month"
+
+
 def test_source_allowlist_comes_from_policy():
     hosts = load_allowed_hosts()
     assert "creativespaces.net.au" in hosts
