@@ -11,7 +11,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/the-pea-green-boat-artist-studios",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -26,7 +26,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/irene-warehouse",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -41,7 +41,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/la-fabbrica-artist-studios",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -56,7 +56,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/paper-cut-studios",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -86,7 +86,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/artist-studios-for-rent-studio-118",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -101,7 +101,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/pink-ember-studios",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -116,7 +116,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/manallack-studios-in-brunswick",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -124,14 +124,14 @@
     "premisesId": "frith-st-studios-brunswick",
     "availabilityStatus": "advertised",
     "availability": "available now",
-    "price": "from A$65/week + GST",
+    "price": "from A$70/week + GST",
     "size": "6 m²",
-    "priceAmount": 65.0,
+    "priceAmount": 70.0,
     "pricePeriod": "week",
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/frith-st-studios-brunswick-2",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -154,7 +154,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "official",
     "sourceUrl": "https://www.creativespaces.net.au/venue/river-studios",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok",
     "price": "from A$342/month",
     "priceAmount": 342.0,
@@ -198,7 +198,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/studio-9-collins-street-studios-1",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -213,7 +213,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/amegstudio",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -225,7 +225,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/artists-creatives-creators-space",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok",
     "price": "from A$125/week + GST",
     "priceAmount": 125.0,
@@ -243,7 +243,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/studio-at-brunswick-street-gallery",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok"
   },
   {
@@ -255,7 +255,7 @@
     "sourceName": "Creative Spaces",
     "sourceType": "directory",
     "sourceUrl": "https://www.creativespaces.net.au/space/the-brunswick-bower",
-    "lastVerified": "2026-09-24",
+    "lastVerified": "2026-10-16",
     "checkStatus": "ok",
     "priceAmount": 150.0,
     "pricePeriod": "month"
