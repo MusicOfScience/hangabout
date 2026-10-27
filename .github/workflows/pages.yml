@@ -25,11 +25,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: python scripts/validate_data_v3.py
-      - run: python scripts/validate_coordinates.py
-      - run: python scripts/validate_sources.py
-      - run: python scripts/validate_national_contract.py
-      - run: python scripts/ingest_fixtures.py --report generated/ingestion-review.json
+      - name: compile Python tooling
+        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_programme_data.py scripts/ical_observations.py scripts/resolve_programme_observations.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
+      - name: run Python regressions
+        run: python -m unittest discover -s tests/python
+      - name: validate data contract
+        run: python scripts/validate_data_v3.py
+      - name: validate programme data contract
+        run: python scripts/validate_programme_data.py
+      - name: validate coordinate provenance
+        run: python scripts/validate_coordinates.py
+      - name: validate source policy
+        run: python scripts/validate_sources.py
+      - name: validate statewide known art places
+        run: python scripts/validate_known_places.py
+      - name: validate national geography contract
+        run: python scripts/validate_national_contract.py
+      - name: replay offline ingestion fixtures
+        run: python scripts/ingest_fixtures.py --report generated/ingestion-review.json
+      - name: exercise programme review resolution
+        run: python scripts/resolve_programme_observations.py tests/fixtures/programme/observations.json --output generated/programme-resolution-review.json
+      - name: retain ingestion reviews
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-ingestion-reviews-pages
+          path: |
+            generated/ingestion-review.json
+            generated/programme-resolution-review.json
       - name: audit live-facing freshness
         run: python scripts/validate_freshness.py --report generated/freshness-recheck.json
       - name: retain freshness audit
@@ -38,10 +60,14 @@ jobs:
         with:
           name: hangabout-freshness-audit-pages
           path: generated/freshness-recheck.json
-      - run: npm ci --no-audit --no-fund
-      - run: npx playwright install --with-deps chromium webkit
-      - run: npm run test:e2e
-      - run: npm run build
+      - name: install frontend dependencies
+        run: npm ci --no-audit --no-fund
+      - name: install browser test runtime
+        run: npx playwright install --with-deps chromium webkit
+      - name: test desktop and mobile interactions
+        run: npm run test:e2e
+      - name: build production bundle
+        run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -52,8 +78,61 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: smoke deployed shell and application asset
+        env:
+          PAGE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          import time
+          import urllib.parse
+          import urllib.request
+
+          page_url = os.environ['PAGE_URL']
+          last_error = None
+
+          for attempt in range(1, 7):
+              try:
+                  with urllib.request.urlopen(page_url, timeout=20) as response:
+                      if response.status != 200:
+                          raise RuntimeError(f'page returned HTTP {response.status}')
+                      html = response.read().decode('utf-8')
+
+                  if 'hangabout — art around you' not in html or 'id="app"' not in html:
+                      raise RuntimeError('deployed HTML does not contain the Hangabout application shell')
+
+                  script = re.search(r'<script[^>]+src="([^"]+\.js)"', html)
+                  if not script:
+                      raise RuntimeError('deployed HTML does not reference a built JavaScript asset')
+
+                  asset_url = urllib.parse.urljoin(page_url, script.group(1))
+                  with urllib.request.urlopen(asset_url, timeout=20) as asset:
+                      if asset.status != 200:
+                          raise RuntimeError(f'application asset returned HTTP {asset.status}')
+                      if not asset.read(1):
+                          raise RuntimeError('application asset is empty')
+
+                  print(f'deployed smoke passed: {page_url}')
+                  break
+              except Exception as exc:
+                  last_error = exc
+                  if attempt == 6:
+                      raise
+                  print(f'smoke attempt {attempt} failed: {exc}; retrying')
+                  time.sleep(5)
+          else:
+              raise RuntimeError(last_error or 'deployment smoke failed')
+          PY
