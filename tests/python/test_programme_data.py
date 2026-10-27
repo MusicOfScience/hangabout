@@ -11,7 +11,7 @@ def write(path: Path, value) -> None:
 def minimal_data_dir(tmp_path: Path) -> Path:
     data = tmp_path / "data"
     data.mkdir()
-    write(data / "venues.json", [{"id": "banyule-cultural-centre"}])
+    write(data / "venues.json", [{"id": "mungga-artist-studios-ivanhoe"}])
     write(data / "venues-extra.json", [])
     write(data / "venues-major.json", [])
     write(data / "events.json", [])
@@ -26,22 +26,24 @@ def test_workshop_can_model_facilitator_registration_and_practical_notes(tmp_pat
         data / "programme-events.json",
         [
             {
-                "id": "workshop-example",
-                "venueId": "banyule-cultural-centre",
-                "title": "Workshop with Jodi Wiley",
+                "id": "jodi-wiley-found-in-nature-2026-10-24",
+                "venueId": "mungga-artist-studios-ivanhoe",
+                "title": "Found in Nature: A still life workshop",
                 "eventType": "workshop",
                 "startDate": "2026-10-24",
                 "startTime": "11:00",
                 "endDate": "2026-10-24",
                 "endTime": "12:30",
                 "people": [{"name": "Jodi Wiley", "role": "facilitator"}],
-                "admission": "unknown",
-                "registration": {"required": True, "status": "unknown"},
-                "audienceNote": "Audience requirements only when source-supported",
-                "materialsNote": "Materials information only when source-supported",
-                "sourceName": "fixture",
+                "admission": "free",
+                "registration": {
+                    "status": "fully-booked",
+                    "capacityNote": "Fully Booked",
+                },
+                "locationNote": "Mungga Artist Studios @ Ivanhoe Library and Cultural Hub",
+                "sourceName": "Jodi Wiley / Humanitix screenshot fixture",
                 "sourceType": "official",
-                "sourceUrl": "https://example.test/workshop",
+                "sourceUrl": "https://example.test/source-supplied-screenshot",
                 "lastVerified": "2026-10-24",
             }
         ],
@@ -58,7 +60,7 @@ def test_programme_person_requires_name_and_role(tmp_path, monkeypatch):
         [
             {
                 "id": "bad-workshop",
-                "venueId": "banyule-cultural-centre",
+                "venueId": "mungga-artist-studios-ivanhoe",
                 "title": "Workshop",
                 "eventType": "workshop",
                 "startDate": "2026-10-24",
