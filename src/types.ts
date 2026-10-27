@@ -86,6 +86,30 @@ export type ProgrammeEventType =
   | 'screening'
   | 'other';
 
+export type ProgrammePersonRole =
+  | 'artist'
+  | 'facilitator'
+  | 'speaker'
+  | 'curator'
+  | 'guide'
+  | 'performer'
+  | 'host'
+  | 'other';
+
+/** A named participant in a timed programme item, with their source-supported role. */
+export interface ProgrammePerson {
+  name: string;
+  role: ProgrammePersonRole | string;
+}
+
+/** Optional booking/registration facts; unknown values stay absent rather than inferred. */
+export interface ProgrammeRegistration {
+  required?: boolean;
+  url?: string;
+  status?: 'open' | 'sold-out' | 'waitlist' | 'closed' | 'unknown' | string;
+  capacityNote?: string;
+}
+
 /** A timed programme item, optionally linked to an exhibition. */
 export interface ProgrammeEvent {
   id: string;
@@ -97,10 +121,13 @@ export interface ProgrammeEvent {
   startTime?: string;
   endDate?: string;
   endTime?: string;
-  artists?: string[];
+  people?: ProgrammePerson[];
   tags?: string[];
   admission?: 'free' | 'paid' | 'unknown' | string;
-  bookingUrl?: string;
+  price?: string;
+  registration?: ProgrammeRegistration;
+  audienceNote?: string;
+  materialsNote?: string;
   status?: 'scheduled' | 'cancelled' | 'postponed' | 'rescheduled' | string;
   sourceName: string;
   sourceType: 'official' | 'directory' | 'calendar';
@@ -235,7 +262,7 @@ export interface Dataset {
   venues: Venue[];
   /** Canonical date-range shows. */
   exhibitions: Exhibition[];
-  /** Timed programme items such as openings, talks, performances and tours. */
+  /** Timed programme items such as openings, talks, workshops, performances and tours. */
   programmeEvents: ProgrammeEvent[];
   /** Legacy alias used by the current signed-off UI during migration. */
   events: Event[];
