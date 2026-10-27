@@ -67,7 +67,7 @@ function render() {
   const venueKind = document.querySelector<HTMLSelectElement>('#venueKind')?.value ?? 'all';
   const rows = dataset.programmeEvents
     .filter(event => event.status !== 'cancelled' || eventIsUpcoming(event))
-    .filter(eventIsUpcoming)
+    .filter(event => eventIsUpcoming(event))
     .filter(event => inSelectedWindow(event, selectedWindow))
     .filter(event => {
       const venue = venueById.get(event.venueId);
