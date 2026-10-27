@@ -4,13 +4,24 @@ import venuesMajor from '../../data/venues-major.json';
 import eventsBase from '../../data/events.json';
 import eventsExtra from '../../data/events-extra.json';
 import eventsMajor from '../../data/events-major.json';
+import programmeEventsBase from '../../data/programme-events.json';
 import resourcesBase from '../../data/make-resources.json';
 import resourcesExtra from '../../data/make-resources-extra.json';
 import coordinateOverlay from '../../data/venue-coordinates.json';
 import knownPlacesBase from '../../data/known-art-places.json';
 import studioVacanciesBase from '../../data/studio-vacancies.json';
 
-import type { CoordinateOverlay, Dataset, Event, KnownArtPlace, MakeResource, StudioPremise, StudioVacancy, Venue } from '../types';
+import type {
+  CoordinateOverlay,
+  Dataset,
+  Exhibition,
+  KnownArtPlace,
+  MakeResource,
+  ProgrammeEvent,
+  StudioPremise,
+  StudioVacancy,
+  Venue,
+} from '../types';
 
 function mergeById<T extends { id: string }>(...layers: T[][]): T[] {
   const byId = new Map<string, T>();
@@ -49,10 +60,20 @@ export function loadDataset(): Dataset {
     } satisfies Venue;
   });
 
-  const events = mergeById(
-    validated<Event[]>(eventsBase),
-    validated<Event[]>(eventsExtra),
-    validated<Event[]>(eventsMajor),
+  // The existing events*.json files are date-range shows. Keep their stable IDs and
+  // project them into the explicit Exhibition model while the signed-off UI continues
+  // to consume the legacy `events` alias.
+  const exhibitions = mergeById(
+    validated<Exhibition[]>(eventsBase),
+    validated<Exhibition[]>(eventsExtra),
+    validated<Exhibition[]>(eventsMajor),
+  );
+
+  // Timed programme items (openings, talks, performances, tours, etc.) now have an
+  // independent canonical layer. It starts empty so introducing the model does not
+  // alter the live product before source-backed records are reviewed.
+  const programmeEvents = mergeById(
+    validated<ProgrammeEvent[]>(programmeEventsBase),
   );
 
   const rawResources = mergeById(
@@ -107,7 +128,13 @@ export function loadDataset(): Dataset {
   );
 
   const venueIds = new Set(canonicalVenues.map(v => v.id));
-  const usableEvents = events.filter(event => venueIds.has(event.venueId));
+  const usableExhibitions = exhibitions.filter(exhibition => venueIds.has(exhibition.venueId));
+  const usableProgrammeEvents = programmeEvents.filter(event => {
+    if (!venueIds.has(event.venueId)) return false;
+    if (!event.exhibitionId) return true;
+    return usableExhibitions.some(exhibition => exhibition.id === event.exhibitionId);
+  });
+
   const studioPremises: StudioPremise[] = resources
     .filter(resource => resource.resourceType === 'studio')
     .map(resource => ({
@@ -130,7 +157,11 @@ export function loadDataset(): Dataset {
 
   return {
     venues: canonicalVenues,
-    events: usableEvents,
+    exhibitions: usableExhibitions,
+    programmeEvents: usableProgrammeEvents,
+    // Compatibility surface: existing UI code can keep using dataset.events while the
+    // v1 programme UI migrates deliberately rather than in one risky rewrite.
+    events: usableExhibitions,
     resources,
     knownPlaces,
     studioPremises,
