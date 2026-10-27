@@ -222,6 +222,7 @@ export class MakeMap {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
     this.layer = L.layerGroup().addTo(this.map);
+    window.hangaboutMakeMap = this;
   }
 
   render(resources: MakeResource[], pathwayVenues: Venue[] = []) {
@@ -300,17 +301,26 @@ export class MakeMap {
     this.map.setView(point, 13);
   }
 
+  center(): Point {
+    const c = this.map.getCenter();
+    return [c.lat, c.lng];
+  }
+
   invalidate() {
     requestAnimationFrame(() => this.map.invalidateSize());
   }
 
   show() {
     // The make-art panel is rendered while hidden on first load. Leaflet cannot
-    // calculate a useful fit until the panel has a real size, so invalidate on
-    // the first painted frame and fit the current marker set on the next one.
+    // calculate a useful fit until the panel has a real size. If the user has already
+    // shared a location, preserve that near-me context instead of snapping back to the
+    // full Melbourne resource extent when the panel becomes visible again.
     requestAnimationFrame(() => {
       this.map.invalidateSize({ animate: false });
-      requestAnimationFrame(() => this.fitCurrentMarkers());
+      requestAnimationFrame(() => {
+        if (this.locationMarker) this.map.setView(this.locationMarker.getLatLng(), 13, { animate: false });
+        else this.fitCurrentMarkers();
+      });
     });
   }
 
@@ -348,5 +358,6 @@ function escapeHtml(value: string): string {
 declare global {
   interface Window {
     hangaboutSeeMap?: SeeMap;
+    hangaboutMakeMap?: MakeMap;
   }
 }
