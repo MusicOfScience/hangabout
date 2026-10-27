@@ -1,0 +1,35 @@
+[
+  {
+    "id": "australian-print-workshop",
+    "name": "Australian Print Workshop",
+    "kind": "specialist",
+    "suburb": "Fitzroy",
+    "address": "210 Gertrude Street, Fitzroy VIC 3065",
+    "website": "https://www.australianprintworkshop.com/",
+    "hours": {
+      "2": [600, 1020],
+      "3": [600, 1020],
+      "4": [600, 1020],
+      "5": [600, 1020],
+      "6": [600, 1020]
+    },
+    "hoursVerified": true,
+    "hoursSourceUrl": "https://www.australianprintworkshop.com/about/visit-us",
+    "focus": ["printmaking", "contemporary Australian printmaking", "artist workshop", "gallery"],
+    "artistPathways": [],
+    "access": {
+      "level": "full",
+      "note": "Gallery is fully wheelchair accessible and has an accessible toilet; a designated accessible parking space is nearby on Gertrude Street.",
+      "sourceUrl": "https://www.australianprintworkshop.com/about/visit-us"
+    },
+    "sourceUrl": "https://www.australianprintworkshop.com/about/visit-us",
+    "lastVerified": "2026-10-28",
+    "countryCode": "AU",
+    "stateCode": "VIC",
+    "locality": "Fitzroy",
+    "postcode": "3065",
+    "region": "Melbourne",
+    "timeZone": "Australia/Melbourne",
+    "coverageStatus": "maintained-programme"
+  }
+]
