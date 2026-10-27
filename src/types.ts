@@ -106,7 +106,7 @@ export interface ProgrammePerson {
 export interface ProgrammeRegistration {
   required?: boolean;
   url?: string;
-  status?: 'open' | 'sold-out' | 'waitlist' | 'closed' | 'unknown' | string;
+  status?: 'open' | 'fully-booked' | 'sold-out' | 'waitlist' | 'closed' | 'unknown' | string;
   capacityNote?: string;
 }
 
@@ -128,6 +128,7 @@ export interface ProgrammeEvent {
   registration?: ProgrammeRegistration;
   audienceNote?: string;
   materialsNote?: string;
+  locationNote?: string;
   status?: 'scheduled' | 'cancelled' | 'postponed' | 'rescheduled' | string;
   sourceName: string;
   sourceType: 'official' | 'directory' | 'calendar';
