@@ -54,12 +54,21 @@ export function programmeEventFreshness(event: Pick<ProgrammeEvent, 'lastVerifie
   return freshnessFor(event, 14, today);
 }
 
+export function programmeEventIsFresh(event: Pick<ProgrammeEvent, 'lastVerified'>, today = todayMelbourne()): boolean {
+  // Timed details such as booking status and start time are volatile enough that a
+  // recheck-due record should leave the live programme at the review deadline, not
+  // linger for the second grace window used by date-range exhibitions.
+  return programmeEventFreshness(event, today).state === 'current';
+}
+
 export function venueHoursAreFresh(
   venue: Pick<Venue, 'hoursVerified' | 'lastVerified'>,
   today = todayMelbourne(),
 ): boolean {
   if (!venue.hoursVerified || !venue.lastVerified) return false;
-  return freshnessFor({ lastVerified: venue.lastVerified }, 90, today).state !== 'stale';
+  // "Open now" is a live claim. Once the 90-day review deadline passes, degrade to
+  // unverified rather than continuing to answer from old hours during a grace period.
+  return freshnessFor({ lastVerified: venue.lastVerified }, 90, today).state === 'current';
 }
 
 export function hasCurrentAvailability(resource: MakeResource, today = todayMelbourne()): boolean {
