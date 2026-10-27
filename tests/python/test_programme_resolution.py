@@ -1,3 +1,6 @@
+import json
+
+import scripts.resolve_programme_observations as programme_resolution
 from scripts.resolve_programme_observations import resolve_observations
 
 
@@ -88,3 +91,24 @@ def test_ambiguous_or_unknown_venue_stays_out_of_canonical_match():
     result = report["results"][0]
     assert result["resolution"] == "unresolved"
     assert result["selectedVenueId"] is None
+
+
+def test_current_programme_venue_layer_participates_in_resolution(tmp_path, monkeypatch):
+    for name in ("venues.json", "venues-extra.json", "venues-major.json"):
+        (tmp_path / name).write_text("[]", encoding="utf-8")
+    (tmp_path / "venues-current.json").write_text(json.dumps([{
+        "id": "australian-print-workshop",
+        "name": "Australian Print Workshop",
+        "address": "210 Gertrude Street, Fitzroy VIC 3065",
+        "suburb": "Fitzroy",
+    }]), encoding="utf-8")
+    monkeypatch.setattr(programme_resolution, "DATA", tmp_path)
+
+    loaded = programme_resolution.load_venues()
+    report = resolve_observations([{
+        "id": "obs-apw",
+        "titleRaw": "Australian Print Workshop - IMPRESSIONS opening",
+        "locationRaw": "210 Gertrude Street, Fitzroy VIC 3065",
+    }], loaded)
+
+    assert report["results"][0]["selectedVenueId"] == "australian-print-workshop"
