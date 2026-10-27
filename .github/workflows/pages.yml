@@ -78,8 +78,61 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: smoke deployed shell and application asset
+        env:
+          PAGE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          import time
+          import urllib.parse
+          import urllib.request
+
+          page_url = os.environ['PAGE_URL']
+          last_error = None
+
+          for attempt in range(1, 7):
+              try:
+                  with urllib.request.urlopen(page_url, timeout=20) as response:
+                      if response.status != 200:
+                          raise RuntimeError(f'page returned HTTP {response.status}')
+                      html = response.read().decode('utf-8')
+
+                  if 'hangabout — art around you' not in html or 'id="app"' not in html:
+                      raise RuntimeError('deployed HTML does not contain the Hangabout application shell')
+
+                  script = re.search(r'<script[^>]+src="([^"]+\.js)"', html)
+                  if not script:
+                      raise RuntimeError('deployed HTML does not reference a built JavaScript asset')
+
+                  asset_url = urllib.parse.urljoin(page_url, script.group(1))
+                  with urllib.request.urlopen(asset_url, timeout=20) as asset:
+                      if asset.status != 200:
+                          raise RuntimeError(f'application asset returned HTTP {asset.status}')
+                      if not asset.read(1):
+                          raise RuntimeError('application asset is empty')
+
+                  print(f'deployed smoke passed: {page_url}')
+                  break
+              except Exception as exc:
+                  last_error = exc
+                  if attempt == 6:
+                      raise
+                  print(f'smoke attempt {attempt} failed: {exc}; retrying')
+                  time.sleep(5)
+          else:
+              raise RuntimeError(last_error or 'deployment smoke failed')
+          PY
