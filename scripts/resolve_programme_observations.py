@@ -17,6 +17,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
+CANDIDATE_SCORE_MIN = 0.42
+REVIEW_SCORE_MIN = 0.64
+AUTO_MATCH_SCORE_MIN = 0.82
+AUTO_MATCH_MARGIN_MIN = 0.08
 
 
 TYPE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
@@ -102,7 +106,7 @@ def resolve_observations(observations: list[dict], venues: list[dict]) -> dict:
         candidates = []
         for venue in venues:
             score, evidence = venue_score(observation, venue)
-            if score >= 0.42:
+            if score >= CANDIDATE_SCORE_MIN:
                 candidates.append({
                     "venueId": venue["id"],
                     "venueName": venue["name"],
@@ -115,9 +119,9 @@ def resolve_observations(observations: list[dict], venues: list[dict]) -> dict:
         second = top[1] if len(top) > 1 else None
         margin = (best["score"] - second["score"]) if best and second else (best["score"] if best else 0.0)
 
-        if best and best["score"] >= 0.82 and margin >= 0.08:
+        if best and best["score"] >= AUTO_MATCH_SCORE_MIN and margin >= AUTO_MATCH_MARGIN_MIN:
             resolution = "matched"
-        elif best and best["score"] >= 0.64:
+        elif best and best["score"] >= REVIEW_SCORE_MIN:
             resolution = "review"
         else:
             resolution = "unresolved"
@@ -147,8 +151,11 @@ def resolve_observations(observations: list[dict], venues: list[dict]) -> dict:
 
 def load_venues() -> list[dict]:
     by_id: dict[str, dict] = {}
-    for name in ("venues.json", "venues-extra.json", "venues-major.json"):
-        for venue in json.loads((DATA / name).read_text(encoding="utf-8")):
+    for name in ("venues.json", "venues-extra.json", "venues-major.json", "venues-current.json"):
+        path = DATA / name
+        if not path.exists():
+            continue
+        for venue in json.loads(path.read_text(encoding="utf-8")):
             by_id[venue["id"]] = venue
     return list(by_id.values())
 
