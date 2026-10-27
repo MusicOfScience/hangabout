@@ -12,6 +12,7 @@ test('default see-art view contains exhibitions already on, not only upcoming sh
   await page.goto('/');
 
   await expect(page.getByRole('button', { name: 'everything', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(async () => Number(await page.locator('#resultCount').textContent())).toBeGreaterThan(8);
 
   // Current exhibitions across different venue types must be present before opening hours.
   await expect(page.locator('#event-gallery-unbound-alena-landers-wildflowers-2026')).toBeVisible();
