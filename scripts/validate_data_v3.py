@@ -36,11 +36,13 @@ def main():
         *base.load(ROOT / "data" / "venues.json"),
         *load_optional("venues-extra.json"),
         *load_optional("venues-major.json"),
+        *load_optional("venues-current.json"),
     ]
     events = [
         *base.load(ROOT / "data" / "events.json"),
         *load_optional("events-extra.json"),
         *load_optional("events-major.json"),
+        *load_optional("events-current.json"),
     ]
     resources = [
         *load_optional("make-resources.json"),
