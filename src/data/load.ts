@@ -1,9 +1,11 @@
 import venuesBase from '../../data/venues.json';
 import venuesExtra from '../../data/venues-extra.json';
 import venuesMajor from '../../data/venues-major.json';
+import venuesCurrent from '../../data/venues-current.json';
 import eventsBase from '../../data/events.json';
 import eventsExtra from '../../data/events-extra.json';
 import eventsMajor from '../../data/events-major.json';
+import eventsCurrent from '../../data/events-current.json';
 import programmeEventsBase from '../../data/programme-events.json';
 import resourcesBase from '../../data/make-resources.json';
 import resourcesExtra from '../../data/make-resources-extra.json';
@@ -42,6 +44,7 @@ export function loadDataset(): Dataset {
     validated<Venue[]>(venuesBase),
     validated<Venue[]>(venuesExtra),
     validated<Venue[]>(venuesMajor),
+    validated<Venue[]>(venuesCurrent),
   );
 
   const overlays = new Map(
@@ -60,18 +63,16 @@ export function loadDataset(): Dataset {
     } satisfies Venue;
   });
 
-  // The existing events*.json files are date-range shows. Keep their stable IDs and
-  // project them into the explicit Exhibition model while the signed-off UI continues
-  // to consume the legacy `events` alias.
+  // The existing events*.json files are date-range shows. The current layer is a
+  // deliberately small, first-party-verified programme that can be refreshed without
+  // rewriting the historical catalogue.
   const exhibitions = mergeById(
     validated<Exhibition[]>(eventsBase),
     validated<Exhibition[]>(eventsExtra),
     validated<Exhibition[]>(eventsMajor),
+    validated<Exhibition[]>(eventsCurrent),
   );
 
-  // Timed programme items (openings, talks, performances, tours, etc.) now have an
-  // independent canonical layer. It starts empty so introducing the model does not
-  // alter the live product before source-backed records are reviewed.
   const programmeEvents = mergeById(
     validated<ProgrammeEvent[]>(programmeEventsBase),
   );
@@ -105,20 +106,17 @@ export function loadDataset(): Dataset {
       ...resource,
       premisesId: resource.id,
       vacancyId: vacancy?.id,
-      // A vacancy check is the authoritative freshness signal for the
-      // listing projected onto this durable studio premise. Keep the
-      // premise itself even when the listing is stale or a refresh fails.
       lastVerified: vacancy?.lastVerified ?? resource.lastVerified,
       availability: vacancy?.availability ?? resource.availability,
       price: vacancy?.price ?? resource.price,
       size: vacancy?.size ?? resource.size,
-      availabilityStatus: vacancy?.availabilityStatus ?? 'unknown',
+      availabilityStatus: vacancy?.availabilityStatus ?? resource.availabilityStatus ?? 'unknown',
       availableFrom: vacancy?.availableFrom,
       priceAmount: vacancy?.priceAmount,
       pricePeriod: vacancy?.pricePeriod,
       premisesStatus: 'active',
       coordinatePrecision: resource.coordinatePrecision ?? (resource.lat != null && resource.lng != null ? 'building' : 'locality'),
-      practiceTypes: resource.tags?.filter(tag => !['available-now', '24/7', 'wash-up', 'natural-light', 'accessible'].includes(tag)),
+      practiceTypes: resource.practiceTypes ?? resource.tags?.filter(tag => !['available-now', '24/7', 'wash-up', 'natural-light', 'accessible'].includes(tag)),
       features,
     } satisfies MakeResource;
   });

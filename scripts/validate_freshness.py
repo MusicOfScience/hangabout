@@ -20,7 +20,7 @@ def check(records: list[dict], label: str, maximum_days: int, today: date, *, ac
     stale: list[str] = []
     checked = 0
     for record in records:
-        if active_only and record.get("endDate", "") < today.isoformat():
+        if active_only and record.get("endDate", record.get("startDate", "")) < today.isoformat():
             continue
         checked += 1
         verified = date.fromisoformat(record["lastVerified"])
@@ -49,15 +49,17 @@ def main() -> None:
     args = parser.parse_args()
     queue: list[dict] = []
     today = datetime.now(ZoneInfo("Australia/Melbourne")).date()
-    events = [*load("events.json"), *load("events-extra.json"), *load("events-major.json")]
-    venues = [*load("venues.json"), *load("venues-extra.json"), *load("venues-major.json")]
+    events = [*load("events.json"), *load("events-extra.json"), *load("events-major.json"), *load("events-current.json")]
+    programme_events = load("programme-events.json")
+    venues = [*load("venues.json"), *load("venues-extra.json"), *load("venues-major.json"), *load("venues-current.json")]
     resources = [*load("make-resources.json"), *load("make-resources-extra.json")]
 
     volatile = [row for row in resources if row.get("resourceType") in {"studio", "opportunity"}]
     slower = [row for row in resources if row.get("resourceType") in {"workspace", "finder"}]
 
     stale = [
-        *check(events, "current/upcoming event", 14, today, active_only=True, queue=queue),
+        *check(events, "current/upcoming exhibition", 14, today, active_only=True, queue=queue),
+        *check(programme_events, "current/upcoming programme event", 14, today, active_only=True, queue=queue),
         *check(volatile, "studio/opportunity", 14, today, queue=queue),
         *check(slower, "workspace/finder", 60, today, queue=queue),
         *check(venues, "venue", 90, today, queue=queue),

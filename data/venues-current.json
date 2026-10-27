@@ -1,0 +1,66 @@
+[
+  {
+    "id": "australian-print-workshop",
+    "name": "Australian Print Workshop",
+    "kind": "specialist",
+    "suburb": "Fitzroy",
+    "address": "210 Gertrude Street, Fitzroy VIC 3065",
+    "website": "https://www.australianprintworkshop.com/",
+    "hours": {
+      "2": [600, 1020],
+      "3": [600, 1020],
+      "4": [600, 1020],
+      "5": [600, 1020],
+      "6": [600, 1020]
+    },
+    "hoursVerified": true,
+    "hoursSourceUrl": "https://www.australianprintworkshop.com/about/visit-us",
+    "focus": ["printmaking", "contemporary Australian printmaking", "artist workshop", "gallery"],
+    "artistPathways": [],
+    "access": {
+      "level": "full",
+      "note": "Gallery is fully wheelchair accessible and has an accessible toilet; a designated accessible parking space is nearby on Gertrude Street.",
+      "sourceUrl": "https://www.australianprintworkshop.com/about/visit-us"
+    },
+    "sourceUrl": "https://www.australianprintworkshop.com/about/visit-us",
+    "lastVerified": "2026-10-28",
+    "countryCode": "AU",
+    "stateCode": "VIC",
+    "locality": "Fitzroy",
+    "postcode": "3065",
+    "region": "Melbourne",
+    "timeZone": "Australia/Melbourne",
+    "coverageStatus": "maintained-programme"
+  },
+  {
+    "id": "australian-tapestry-workshop",
+    "name": "Australian Tapestry Workshop",
+    "kind": "specialist",
+    "suburb": "South Melbourne",
+    "address": "262-266 Park Street, South Melbourne VIC 3205",
+    "website": "https://www.austapestry.com.au/",
+    "hours": {
+      "4": [600, 1020],
+      "5": [600, 1020],
+      "6": [600, 1020]
+    },
+    "hoursVerified": true,
+    "hoursSourceUrl": "https://www.austapestry.com.au/contact",
+    "focus": ["tapestry", "textile art", "weaving", "contemporary art", "gallery"],
+    "artistPathways": [],
+    "access": {
+      "level": "partial",
+      "note": "Shop and exhibitions are ramp accessible and an accessible bathroom is available; the mezzanine viewing level is not wheelchair accessible.",
+      "sourceUrl": "https://www.austapestry.com.au/contact"
+    },
+    "sourceUrl": "https://www.austapestry.com.au/contact",
+    "lastVerified": "2026-10-28",
+    "countryCode": "AU",
+    "stateCode": "VIC",
+    "locality": "South Melbourne",
+    "postcode": "3205",
+    "region": "Melbourne",
+    "timeZone": "Australia/Melbourne",
+    "coverageStatus": "maintained-programme"
+  }
+]
