@@ -32,6 +32,35 @@ ProgrammeSource
 
 An external observation never becomes canonical merely because a parser can read it.
 
+## Workshops are first-class programme events
+
+A workshop is not an exhibition and should not be reduced to an undifferentiated "opportunity". It is a timed event that may be associated with an artist residency, exhibition, public programme or venue without requiring any of those relationships.
+
+Timed events therefore support named people with explicit source-backed roles such as `facilitator`, `speaker`, `guide`, `curator`, `performer`, `artist` and `host`. Workshop-specific practical information is optional and factual: registration requirements/status, price text, audience notes and materials notes are stored only when a source supports them.
+
+A workshop-shaped record can therefore look like:
+
+```json
+{
+  "eventType": "workshop",
+  "startDate": "2026-10-24",
+  "startTime": "11:00",
+  "endDate": "2026-10-24",
+  "endTime": "12:30",
+  "people": [
+    { "name": "Jodi Wiley", "role": "facilitator" }
+  ],
+  "registration": {
+    "required": true,
+    "status": "unknown"
+  }
+}
+```
+
+This is an example of the data shape, not a claim that every field has been independently verified for that particular session.
+
+If a workshop repeats on multiple dates/times, each independently attendable or bookable session should normally be a separate `ProgrammeEvent`. A later series/group identifier can connect sessions if the product needs it; v1 does not need a new `ProgrammeSeries` entity merely to represent recurrence.
+
 ## Charles Art Openings pilot
 
 The first intended calendar-source pilot is Charles's Melbourne art-openings calendar, identified as `charles-art-openings`.
@@ -77,3 +106,4 @@ Charles's calendar is useful discovery evidence, not automatic authority for eve
 5. Time-zone parameters are not discarded during ingestion.
 6. Cancellation/status evidence is preserved without automatically mutating canonical data.
 7. A later review step can promote an observation to a `ProgrammeEvent` without altering the stored observation.
+8. Workshop-shaped events can represent facilitator and registration/practical metadata without overloading exhibition `artists`.
