@@ -1,5 +1,5 @@
 import { todayMelbourne } from './time';
-import type { Event, MakeResource } from './types';
+import type { Event, MakeResource, ProgrammeEvent, Venue } from './types';
 
 export type FreshnessState = 'current' | 'recheck' | 'stale';
 
@@ -22,11 +22,11 @@ function dayNumber(iso: string): number {
 }
 
 function freshnessFor(
-  resource: Pick<MakeResource, 'resourceType' | 'lastVerified'>,
+  record: { lastVerified: string },
   reviewDays: number,
   today: string,
 ): Freshness {
-  const ageDays = Math.max(0, dayNumber(today) - dayNumber(resource.lastVerified));
+  const ageDays = Math.max(0, dayNumber(today) - dayNumber(record.lastVerified));
   const state: FreshnessState = ageDays <= reviewDays
     ? 'current'
     : ageDays <= reviewDays * 2
@@ -47,7 +47,19 @@ export function resourceFreshness(resource: Pick<MakeResource, 'resourceType' | 
 }
 
 export function eventFreshness(event: Event, today = todayMelbourne()): Freshness {
-  return freshnessFor({ resourceType: 'opportunity', lastVerified: event.lastVerified }, 14, today);
+  return freshnessFor(event, 14, today);
+}
+
+export function programmeEventFreshness(event: Pick<ProgrammeEvent, 'lastVerified'>, today = todayMelbourne()): Freshness {
+  return freshnessFor(event, 14, today);
+}
+
+export function venueHoursAreFresh(
+  venue: Pick<Venue, 'hoursVerified' | 'lastVerified'>,
+  today = todayMelbourne(),
+): boolean {
+  if (!venue.hoursVerified || !venue.lastVerified) return false;
+  return freshnessFor({ lastVerified: venue.lastVerified }, 90, today).state !== 'stale';
 }
 
 export function hasCurrentAvailability(resource: MakeResource, today = todayMelbourne()): boolean {
