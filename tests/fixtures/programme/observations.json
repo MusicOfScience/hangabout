@@ -1,0 +1,23 @@
+[
+  {
+    "id": "fixture-harlow",
+    "sourceId": "fixture",
+    "observedAt": "2026-10-28T00:00:00+11:00",
+    "titleRaw": "Harlow Gallery - Chris Bilby",
+    "locationRaw": "355 Sydney Rd, Brunswick"
+  },
+  {
+    "id": "fixture-acca-tour",
+    "sourceId": "fixture",
+    "observedAt": "2026-10-28T00:00:00+11:00",
+    "titleRaw": "ACCA - Audio Described and Tactile Tour : NEW26",
+    "locationRaw": "111 Sturt St Southbank"
+  },
+  {
+    "id": "fixture-unknown",
+    "sourceId": "fixture",
+    "observedAt": "2026-10-28T00:00:00+11:00",
+    "titleRaw": "Unlisted Project - Opening",
+    "locationRaw": "Unknown address"
+  }
+]
