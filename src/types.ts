@@ -135,6 +135,7 @@ export interface SourceObservation {
   endRaw?: string;
   locationRaw?: string;
   urlRaw?: string;
+  calendarStatusRaw?: string;
   status?: 'observed' | 'matched' | 'unresolved' | 'rejected' | string;
   payloadHash?: string;
 }
