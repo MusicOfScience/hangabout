@@ -24,7 +24,10 @@ def read_json(path: Path):
 def merged_records(*names: str) -> list[dict]:
     by_id: dict[str, dict] = {}
     for name in names:
-        for item in read_json(DATA / name):
+        path = DATA / name
+        if not path.exists():
+            continue
+        for item in read_json(path):
             by_id[item["id"]] = item
     return list(by_id.values())
 
@@ -41,8 +44,8 @@ def valid_date(value: object) -> bool:
 
 def validate() -> list[str]:
     errors: list[str] = []
-    venues = {item["id"]: item for item in merged_records("venues.json", "venues-extra.json", "venues-major.json")}
-    exhibitions = {item["id"]: item for item in merged_records("events.json", "events-extra.json", "events-major.json")}
+    venues = {item["id"]: item for item in merged_records("venues.json", "venues-extra.json", "venues-major.json", "venues-current.json")}
+    exhibitions = {item["id"]: item for item in merged_records("events.json", "events-extra.json", "events-major.json", "events-current.json")}
     programme_events = read_json(DATA / "programme-events.json")
 
     if not isinstance(programme_events, list):
@@ -118,7 +121,7 @@ def validate() -> list[str]:
                     if field in registration and (not isinstance(registration[field], str) or not registration[field].strip()):
                         errors.append(f"{label}: registration.{field} must be a non-empty string")
 
-        for field in ("price", "audienceNote", "materialsNote"):
+        for field in ("price", "audienceNote", "materialsNote", "locationNote"):
             if field in event and (not isinstance(event[field], str) or not event[field].strip()):
                 errors.append(f"{label}: {field} must be a non-empty string")
 
