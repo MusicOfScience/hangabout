@@ -6,9 +6,9 @@ A Melbourne-first art discovery service for people who see art and people who ma
 
 `hangabout` answers practical questions that art listings often leave fragmented: **what can I see, what is happening soon, where is it, what else is nearby, and how do I get there?** It treats artist-run initiatives, First Nations-led spaces, public institutions, commercial galleries, university galleries, specialist organisations and independents as parts of one ecology.
 
-## v1 release candidate
+## v1.0
 
-The v1 candidate includes:
+v1.0 includes:
 
 - current exhibition discovery as a map + list surface
 - a separate timed programme for openings, talks, tours, workshops, performances and other independently attendable art events
@@ -97,6 +97,8 @@ Useful project documents:
 
 - [Current handover](docs/HANDOVER.md)
 - [v1 programme model](docs/V1_PROGRAMME_MODEL.md)
+- [v1 release contract](docs/V1_RELEASE_CONTRACT.md)
+- [v1 release notes](docs/V1_RELEASE_NOTES.md)
 - [Coverage and freshness](docs/coverage-and-freshness.md)
 - [National discovery plan](docs/NATIONAL_DISCOVERY_PLAN.md) — post-v1 expansion planning, not the current release milestone
 
@@ -106,7 +108,7 @@ The offline ingestion pilot produces review artifacts only; it does not promote 
 
 ### Venue
 
-A venue has a stable ID, controlled kind, canonical address, website, focus tags and provenance. Coordinates are optional. Hours only drive **open now / open today / weekend** behaviour when they have been verified against a source.
+A venue has a stable ID, controlled kind, canonical address, website, focus tags and provenance. Coordinates are optional. Hours only drive **open now / open today / weekend** behaviour when they have been verified against a source and remain within their live-claim verification window.
 
 ### Exhibition
 
@@ -114,7 +116,7 @@ An exhibition is a date-range art presentation with venue, artists, dates, tags/
 
 ### ProgrammeEvent
 
-A programme event is independently attendable at a specific date/time and can optionally link to an exhibition. It can carry named people with roles, admission/price, booking status, practical audience/material notes and event status.
+A programme event is independently attendable at a specific date/time and can optionally link to an exhibition. It can carry named people with roles, admission/price, booking status, practical audience/material notes and event status. Timed events leave the live programme once their verification deadline passes, even when their scheduled date is still in the future.
 
 ### SourceObservation
 
