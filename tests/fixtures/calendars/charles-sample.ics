@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Hangabout fixture//EN
+BEGIN:VEVENT
+UID:hangabout-fixture-001@example.test
+DTSTAMP:20260930T230000Z
+DTSTART;TZID=Australia/Melbourne:20261001T173000
+DTEND;TZID=Australia/Melbourne:20261001T200000
+SUMMARY:Oigall Projects – Thomas Guida\; Morgan Stokes + Matthew Allen
+LOCATION:122 Gertrude St\, Fitzroy VIC 3065
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:hangabout-fixture-002@example.test
+DTSTAMP:20260930T230000Z
+DTSTART;TZID=Australia/Melbourne:20261008T180000
+DTEND;TZID=Australia/Melbourne:20261008T200000
+SUMMARY:Example Gallery – Artist opening
+LOCATION:30 Royal Parade\, Parkville VIC 3052
+STATUS:CANCELLED
+END:VEVENT
+END:VCALENDAR
