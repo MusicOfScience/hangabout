@@ -39,12 +39,12 @@ def unescape_text(value: str) -> str:
     )
 
 
-def split_property(line: str) -> tuple[str, str] | None:
+def split_property(line: str) -> tuple[str, str, str] | None:
     if ":" not in line:
         return None
     head, value = line.split(":", 1)
     name = head.split(";", 1)[0].upper()
-    return name, value
+    return name, head, value
 
 
 def event_blocks(lines: Iterable[str]) -> list[list[str]]:
@@ -73,23 +73,30 @@ def stable_observation_id(source_id: str, external_id: str, raw_block: str) -> s
 def parse_ical(text: str, *, source_id: str, observed_at: str) -> list[dict[str, str]]:
     observations: list[dict[str, str]] = []
     for block in event_blocks(unfold_lines(text)):
-        props: dict[str, str] = {}
+        props: dict[str, tuple[str, str]] = {}
         for line in block:
             parsed = split_property(line)
             if not parsed:
                 continue
-            name, value = parsed
+            name, head, value = parsed
             # Preserve the first value for canonical single-value properties.
-            props.setdefault(name, value)
+            props.setdefault(name, (head, value))
 
-        title_raw = unescape_text(props.get("SUMMARY", "")).strip()
+        def value(name: str) -> str:
+            return props.get(name, ("", ""))[1]
+
+        def raw(name: str) -> str:
+            head, property_value = props.get(name, ("", ""))
+            return f"{head}:{property_value}" if head else ""
+
+        title_raw = unescape_text(value("SUMMARY")).strip()
         if not title_raw:
             # An observation without a title is not useful for human review, but the
             # parser must not guess one from another property.
             continue
 
         raw_block = "\n".join(block)
-        external_id = props.get("UID", "").strip()
+        external_id = value("UID").strip()
         observation: dict[str, str] = {
             "id": stable_observation_id(source_id, external_id, raw_block),
             "sourceId": source_id,
@@ -100,16 +107,16 @@ def parse_ical(text: str, *, source_id: str, observed_at: str) -> list[dict[str,
         }
         if external_id:
             observation["externalId"] = external_id
-        if props.get("DTSTART"):
-            observation["startRaw"] = props["DTSTART"].strip()
-        if props.get("DTEND"):
-            observation["endRaw"] = props["DTEND"].strip()
-        if props.get("LOCATION"):
-            observation["locationRaw"] = unescape_text(props["LOCATION"]).strip()
-        if props.get("URL"):
-            observation["urlRaw"] = props["URL"].strip()
-        if props.get("STATUS"):
-            observation["calendarStatusRaw"] = props["STATUS"].strip()
+        if raw("DTSTART"):
+            observation["startRaw"] = raw("DTSTART")
+        if raw("DTEND"):
+            observation["endRaw"] = raw("DTEND")
+        if value("LOCATION"):
+            observation["locationRaw"] = unescape_text(value("LOCATION")).strip()
+        if value("URL"):
+            observation["urlRaw"] = value("URL").strip()
+        if value("STATUS"):
+            observation["calendarStatusRaw"] = value("STATUS").strip()
         observations.append(observation)
 
     return observations
