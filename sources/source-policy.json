@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "principles": [
     "First-party venue and institution sources are canonical where available.",
     "Automated discovery only runs against sources explicitly marked automationAllowed=true.",
@@ -8,6 +8,14 @@
     "Reference directories can identify gaps in the venue universe but are not automatically ingested when their terms prohibit or restrict reuse."
   ],
   "referenceSources": [
+    {
+      "id": "charles-art-openings",
+      "name": "Art Openings Melbourne calendar",
+      "url": "https://calendar.google.com/calendar/u/0/r?cid=charles.artopenings@gmail.com",
+      "automationAllowed": false,
+      "reason": "Useful public discovery calendar, but permanent automated reuse/redistribution has not been authorised for hangabout.",
+      "use": "manual event discovery and corroboration against first-party venue or institution sources; seek permission before scheduled ingestion or redistribution"
+    },
     {
       "id": "ocula-melbourne",
       "name": "Ocula Melbourne exhibitions",
