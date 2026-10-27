@@ -93,6 +93,35 @@ def validate() -> list[str]:
             if value is not None and (not isinstance(value, str) or not TIME_RE.match(value)):
                 errors.append(f"{label}: {field} must be HH:MM in 24-hour local time")
 
+        people = event.get("people")
+        if people is not None:
+            if not isinstance(people, list):
+                errors.append(f"{label}: people must be an array")
+            else:
+                for person_index, person in enumerate(people):
+                    if not isinstance(person, dict):
+                        errors.append(f"{label}: people[{person_index}] must be an object")
+                        continue
+                    if not isinstance(person.get("name"), str) or not person["name"].strip():
+                        errors.append(f"{label}: people[{person_index}].name must be a non-empty string")
+                    if not isinstance(person.get("role"), str) or not person["role"].strip():
+                        errors.append(f"{label}: people[{person_index}].role must be a non-empty string")
+
+        registration = event.get("registration")
+        if registration is not None:
+            if not isinstance(registration, dict):
+                errors.append(f"{label}: registration must be an object")
+            else:
+                if "required" in registration and not isinstance(registration["required"], bool):
+                    errors.append(f"{label}: registration.required must be boolean")
+                for field in ("url", "status", "capacityNote"):
+                    if field in registration and (not isinstance(registration[field], str) or not registration[field].strip()):
+                        errors.append(f"{label}: registration.{field} must be a non-empty string")
+
+        for field in ("price", "audienceNote", "materialsNote"):
+            if field in event and (not isinstance(event[field], str) or not event[field].strip()):
+                errors.append(f"{label}: {field} must be a non-empty string")
+
         source_type = event.get("sourceType")
         if isinstance(source_type, str) and source_type not in SOURCE_TYPES:
             errors.append(f"{label}: unsupported sourceType {source_type}")
