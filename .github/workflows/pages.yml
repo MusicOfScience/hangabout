@@ -25,11 +25,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: python scripts/validate_data_v3.py
-      - run: python scripts/validate_coordinates.py
-      - run: python scripts/validate_sources.py
-      - run: python scripts/validate_national_contract.py
-      - run: python scripts/ingest_fixtures.py --report generated/ingestion-review.json
+      - name: compile Python tooling
+        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_programme_data.py scripts/ical_observations.py scripts/resolve_programme_observations.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
+      - name: run Python regressions
+        run: python -m unittest discover -s tests/python
+      - name: validate data contract
+        run: python scripts/validate_data_v3.py
+      - name: validate programme data contract
+        run: python scripts/validate_programme_data.py
+      - name: validate coordinate provenance
+        run: python scripts/validate_coordinates.py
+      - name: validate source policy
+        run: python scripts/validate_sources.py
+      - name: validate statewide known art places
+        run: python scripts/validate_known_places.py
+      - name: validate national geography contract
+        run: python scripts/validate_national_contract.py
+      - name: replay offline ingestion fixtures
+        run: python scripts/ingest_fixtures.py --report generated/ingestion-review.json
+      - name: exercise programme review resolution
+        run: python scripts/resolve_programme_observations.py tests/fixtures/programme/observations.json --output generated/programme-resolution-review.json
+      - name: retain ingestion reviews
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-ingestion-reviews-pages
+          path: |
+            generated/ingestion-review.json
+            generated/programme-resolution-review.json
       - name: audit live-facing freshness
         run: python scripts/validate_freshness.py --report generated/freshness-recheck.json
       - name: retain freshness audit
@@ -38,10 +60,14 @@ jobs:
         with:
           name: hangabout-freshness-audit-pages
           path: generated/freshness-recheck.json
-      - run: npm ci --no-audit --no-fund
-      - run: npx playwright install --with-deps chromium webkit
-      - run: npm run test:e2e
-      - run: npm run build
+      - name: install frontend dependencies
+        run: npm ci --no-audit --no-fund
+      - name: install browser test runtime
+        run: npx playwright install --with-deps chromium webkit
+      - name: test desktop and mobile interactions
+        run: npm run test:e2e
+      - name: build production bundle
+        run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
