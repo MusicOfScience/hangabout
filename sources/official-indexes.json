@@ -2,10 +2,10 @@
   {
     "venueId": "gallery-unbound",
     "name": "Gallery Unbound",
-    "indexUrl": "https://galleryunbound.com.au/exhibitions-coming-soon/",
+    "indexUrl": "https://galleryunbound.com.au/current-exhibition-at-gallery-unbound/",
     "automationAllowed": true,
     "sameDomainOnly": true,
-    "includePathPatterns": ["/exhibition", "/exhibitions"]
+    "includePathPatterns": ["/exhibition", "/exhibitions", "/current-exhibition"]
   },
   {
     "venueId": "brunswick-street-gallery",
