@@ -125,10 +125,10 @@ test('recently checked vacancies still qualify as available now', async ({ page 
   await expect(page.locator('#resource-brunswick-street-gallery-studio')).toHaveCount(0);
 });
 
-test('stale exhibition programmes show a recheck notice on the card', async ({ page }) => {
+test('stale exhibition programmes leave the live discovery surface until reverified', async ({ page }) => {
   await page.clock.setSystemTime(new Date('2026-09-23T02:00:00Z'));
   await page.goto('/');
-  await expect(page.locator('#event-ngv-art-of-the-pacific')).toContainText('programme needs rechecking');
+  await expect(page.locator('#event-ngv-art-of-the-pacific')).toHaveCount(0);
 });
 
 const candidate = (name: string) => ({ elements: [{

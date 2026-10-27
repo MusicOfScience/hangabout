@@ -13,6 +13,7 @@ import coordinateOverlay from '../../data/venue-coordinates.json';
 import knownPlacesBase from '../../data/known-art-places.json';
 import studioVacanciesBase from '../../data/studio-vacancies.json';
 
+import { eventFreshness } from '../freshness';
 import type {
   CoordinateOverlay,
   Dataset,
@@ -127,6 +128,7 @@ export function loadDataset(): Dataset {
 
   const venueIds = new Set(canonicalVenues.map(v => v.id));
   const usableExhibitions = exhibitions.filter(exhibition => venueIds.has(exhibition.venueId));
+  const liveExhibitions = usableExhibitions.filter(exhibition => eventFreshness(exhibition).state !== 'stale');
   const usableProgrammeEvents = programmeEvents.filter(event => {
     if (!venueIds.has(event.venueId)) return false;
     if (!event.exhibitionId) return true;
@@ -155,11 +157,12 @@ export function loadDataset(): Dataset {
 
   return {
     venues: canonicalVenues,
+    // The archive remains complete; the legacy `events` compatibility surface is the
+    // live discovery catalogue and therefore excludes programme records older than the
+    // stale threshold until they are reverified.
     exhibitions: usableExhibitions,
     programmeEvents: usableProgrammeEvents,
-    // Compatibility surface: existing UI code can keep using dataset.events while the
-    // v1 programme UI migrates deliberately rather than in one risky rewrite.
-    events: usableExhibitions,
+    events: liveExhibitions,
     resources,
     knownPlaces,
     studioPremises,
