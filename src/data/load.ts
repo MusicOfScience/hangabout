@@ -13,7 +13,7 @@ import coordinateOverlay from '../../data/venue-coordinates.json';
 import knownPlacesBase from '../../data/known-art-places.json';
 import studioVacanciesBase from '../../data/studio-vacancies.json';
 
-import { eventFreshness, programmeEventIsFresh, venueHoursAreFresh } from '../freshness';
+import { eventFreshness, programmeEventIsFresh, resourceFreshness, venueHoursAreFresh } from '../freshness';
 import type {
   CoordinateOverlay,
   Dataset,
@@ -101,7 +101,7 @@ export function loadDataset(): Dataset {
   // A studio premise is durable; a vacancy is an independently refreshed listing.
   // Project the latest known vacancy onto the existing resource shape so the signed-off
   // cards and deep links remain stable while callers can use the structured fields.
-  const resources = rawResources.map(resource => {
+  const projectedResources = rawResources.map(resource => {
     if (resource.resourceType !== 'studio') return resource;
     const vacancy = vacancyByPremise.get(resource.id);
     const features = Object.fromEntries([
@@ -129,6 +129,23 @@ export function loadDataset(): Dataset {
       features,
     } satisfies MakeResource;
   });
+
+  // A durable studio/workspace can remain useful after its availability claim goes
+  // stale, but a dated opportunity cannot safely remain in a live opportunity feed.
+  // Also demote stale "available now" copy before the card adds its historical prefix;
+  // "previously listed: available now" is internally contradictory.
+  const resources = projectedResources
+    .filter(resource => resource.resourceType !== 'opportunity' || resourceFreshness(resource).state !== 'stale')
+    .map(resource => {
+      const availability = resource.availability?.trim();
+      if (resourceFreshness(resource).state !== 'stale' || !availability || !/^available now\b/i.test(availability)) {
+        return resource;
+      }
+      return {
+        ...resource,
+        availability: availability.replace(/^available now\b/i, 'advertised as available'),
+      } satisfies MakeResource;
+    });
 
   const knownPlaces = mergeById(
     validated<KnownArtPlace[]>(knownPlacesBase),
