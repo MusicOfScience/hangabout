@@ -70,6 +70,7 @@ function boot(attempt = 0) {
 
   let currentAreaLabel: string | null = 'Melbourne';
   let searchSequence = 0;
+  let lastSearchBoundsKey: string | null = null;
 
   const clearLive = (message = '') => {
     map.clearDiscoveries();
@@ -80,6 +81,12 @@ function boot(attempt = 0) {
   };
 
   window.addEventListener('hangabout:see-map-moved', () => {
+    const movedBoundsKey = boundsKey(map.bounds());
+    // Leaflet can emit a second moveend for the same settled viewport on mobile.
+    // Do not let that stale event erase a completed search result or error state.
+    if (lastSearchBoundsKey === movedBoundsKey) return;
+
+    lastSearchBoundsKey = null;
     searchSequence += 1;
     currentAreaLabel = null;
     webArea.textContent = 'this map area';
@@ -88,6 +95,7 @@ function boot(attempt = 0) {
   });
 
   clearArea.addEventListener('click', () => {
+    lastSearchBoundsKey = null;
     searchSequence += 1;
     currentAreaLabel = 'Melbourne';
     webArea.textContent = 'Melbourne';
@@ -95,6 +103,7 @@ function boot(attempt = 0) {
   });
 
   fitMap.addEventListener('click', () => {
+    lastSearchBoundsKey = null;
     searchSequence += 1;
     currentAreaLabel = 'Melbourne';
     webArea.textContent = 'Melbourne';
@@ -104,6 +113,7 @@ function boot(attempt = 0) {
   searchArea.addEventListener('click', async () => {
     const sequence = ++searchSequence;
     const bounds = map.bounds();
+    lastSearchBoundsKey = boundsKey(bounds);
     const center = map.center();
     const span = viewportSpan(bounds);
 
