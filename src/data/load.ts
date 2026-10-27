@@ -13,7 +13,7 @@ import coordinateOverlay from '../../data/venue-coordinates.json';
 import knownPlacesBase from '../../data/known-art-places.json';
 import studioVacanciesBase from '../../data/studio-vacancies.json';
 
-import { eventFreshness } from '../freshness';
+import { eventFreshness, programmeEventIsFresh, venueHoursAreFresh } from '../freshness';
 import type {
   CoordinateOverlay,
   Dataset,
@@ -54,14 +54,22 @@ export function loadDataset(): Dataset {
 
   const canonicalVenues = venues.map(venue => {
     const overlay = overlays.get(venue.id);
-    if (!overlay) return venue;
-    return {
-      ...venue,
-      lat: overlay.lat,
-      lng: overlay.lng,
-      coordinatePrecision: overlay.precision,
-      coordinateSourceName: overlay.sourceName,
-    } satisfies Venue;
+    const withCoordinates = overlay
+      ? {
+          ...venue,
+          lat: overlay.lat,
+          lng: overlay.lng,
+          coordinatePrecision: overlay.precision,
+          coordinateSourceName: overlay.sourceName,
+        } satisfies Venue
+      : venue;
+
+    // Keep historical hours as evidence, but stop using them for live open/closed
+    // claims once the venue's verification deadline has passed.
+    if (withCoordinates.hoursVerified && !venueHoursAreFresh(withCoordinates)) {
+      return { ...withCoordinates, hoursVerified: false } satisfies Venue;
+    }
+    return withCoordinates;
   });
 
   // The existing events*.json files are date-range shows. The current layer is a
@@ -131,6 +139,7 @@ export function loadDataset(): Dataset {
   const liveExhibitions = usableExhibitions.filter(exhibition => eventFreshness(exhibition).state !== 'stale');
   const usableProgrammeEvents = programmeEvents.filter(event => {
     if (!venueIds.has(event.venueId)) return false;
+    if (!programmeEventIsFresh(event)) return false;
     if (!event.exhibitionId) return true;
     return usableExhibitions.some(exhibition => exhibition.id === event.exhibitionId);
   });
