@@ -35,11 +35,16 @@ test('tonight uses an honest incomplete-coverage empty state', async ({ page }) 
   await expect(page.locator('#programmeList')).toContainText('coverage is incomplete');
 });
 
-test('programme search includes workshops and practical booking facts', async ({ page }) => {
+test('programme search spans event details and venue names while preserving practical workshop facts', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'all upcoming', exact: true }).click();
   await page.locator('#searchInput').fill('workshop');
-  await expect(page.locator('#programmeList .programme-card')).toHaveCount(3);
+
+  // Global programme search intentionally includes venue names, so the Australian
+  // Print Workshop opening matches alongside the three events whose type/title is workshop.
+  await expect(page.locator('#programmeList .programme-card')).toHaveCount(4);
+  await expect(page.locator('#programme-apw-impressions-45-years-opening-2026-11-06')).toBeVisible();
+
   const miniMe = page.locator('#programme-glen-eira-mini-me-makers-2026-11-08');
   await expect(miniMe).toContainText('Yasmin Gaté née del Mar · facilitator');
   await expect(miniMe).toContainText('$7');
