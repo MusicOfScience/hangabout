@@ -66,3 +66,16 @@ test('unknown programme end time stays unknown rather than receiving an invented
   await expect(apw).toContainText('Fri, 6 Nov · 6:00pm');
   await expect(apw).not.toContainText('8:00pm');
 });
+
+test('timed programme leaves the live surface after its verification deadline', async ({ page }) => {
+  // The current timed records were verified on 27 Oct. By 12 Nov they are more than
+  // 14 days old, even though some source event dates are still in the future.
+  await page.clock.setFixedTime(new Date('2026-11-11T13:22:00Z')); // 12 Nov, 00:22 AEDT
+  await page.goto('/');
+  await page.getByRole('button', { name: 'all upcoming', exact: true }).click();
+
+  await expect(page.locator('#programmeCount')).toHaveText('0');
+  await expect(page.locator('#programmeList .programme-card')).toHaveCount(0);
+  await expect(page.locator('#programmeList')).toContainText('No upcoming timed programme is verified yet.');
+  await expect(page.locator('#programmeList')).toContainText('coverage is incomplete');
+});
