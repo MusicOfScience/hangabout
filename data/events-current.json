@@ -3,11 +3,27 @@
     "id": "acca-new26",
     "venueId": "acca",
     "title": "NEW26",
-    "artists": ["Amanda Bell", "Amanda Bennetts", "Nicholas Currie", "Naveed Farro", "Caesar Florence-Howard", "Diego Ramírez", "EJ Son"],
+    "artists": [
+      "Amanda Bell",
+      "Amanda Bennetts",
+      "Nicholas Currie",
+      "Naveed Farro",
+      "Caesar Florence-Howard",
+      "Diego Ramírez",
+      "EJ Son"
+    ],
     "startDate": "2026-09-18",
     "endDate": "2026-11-22",
     "eventType": "group exhibition",
-    "tags": ["contemporary art", "commissions", "painting", "moving image", "ceramics", "sound", "installation"],
+    "tags": [
+      "contemporary art",
+      "commissions",
+      "painting",
+      "moving image",
+      "ceramics",
+      "sound",
+      "installation"
+    ],
     "admission": "free",
     "sourceName": "ACCA",
     "sourceType": "official",
@@ -18,11 +34,18 @@
     "id": "buxton-a-part-hoda-afshar",
     "venueId": "buxton-contemporary",
     "title": "a/part: Hoda Afshar",
-    "artists": ["Hoda Afshar"],
+    "artists": [
+      "Hoda Afshar"
+    ],
     "startDate": "2026-10-30",
     "endDate": "2027-04-24",
     "eventType": "solo exhibition",
-    "tags": ["photography", "moving image", "contemporary art", "institutional power"],
+    "tags": [
+      "photography",
+      "moving image",
+      "contemporary art",
+      "institutional power"
+    ],
     "admission": "free",
     "sourceName": "Buxton Contemporary",
     "sourceType": "official",
@@ -33,11 +56,32 @@
     "id": "gertrude-et-cetera-2026",
     "venueId": "gertrude-contemporary",
     "title": "Et cetera",
-    "artists": ["Tarik Ahlip", "Gabi Briggs", "Renee Cosgrave", "David Egan", "Erin Hallyburton", "Jordan Halsall", "Nadia Hernández", "Hootan Heydari", "Kait James", "Spencer Lai", "Beth Maslen", "Callum McGrath", "Tommaso Nervegna-Reed", "Roberta Joy Rich", "Jahkarli Romanis", "Azza Zein"],
+    "artists": [
+      "Tarik Ahlip",
+      "Gabi Briggs",
+      "Renee Cosgrave",
+      "David Egan",
+      "Erin Hallyburton",
+      "Jordan Halsall",
+      "Nadia Hernández",
+      "Hootan Heydari",
+      "Kait James",
+      "Spencer Lai",
+      "Beth Maslen",
+      "Callum McGrath",
+      "Tommaso Nervegna-Reed",
+      "Roberta Joy Rich",
+      "Jahkarli Romanis",
+      "Azza Zein"
+    ],
     "startDate": "2026-11-07",
     "endDate": "2026-12-12",
     "eventType": "group exhibition",
-    "tags": ["contemporary art", "Gertrude Studio Program", "new commissions"],
+    "tags": [
+      "contemporary art",
+      "Gertrude Studio Program",
+      "new commissions"
+    ],
     "admission": "unknown",
     "sourceName": "Gertrude",
     "sourceType": "official",
@@ -48,11 +92,17 @@
     "id": "linden-gian-manik-fantasy-chamber",
     "venueId": "linden-new-art",
     "title": "Fantasy Chamber",
-    "artists": ["Gian Manik"],
+    "artists": [
+      "Gian Manik"
+    ],
     "startDate": "2026-08-20",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
-    "tags": ["painting", "Juncture Art Prize", "contemporary art"],
+    "tags": [
+      "painting",
+      "Juncture Art Prize",
+      "contemporary art"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -63,11 +113,16 @@
     "id": "linden-sarah-crowest-one-thing-becomes-another-again",
     "venueId": "linden-new-art",
     "title": "one thing becomes another again",
-    "artists": ["Sarah CrowEST"],
+    "artists": [
+      "Sarah CrowEST"
+    ],
     "startDate": "2026-08-20",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
-    "tags": ["Juncture Art Prize", "contemporary art"],
+    "tags": [
+      "Juncture Art Prize",
+      "contemporary art"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -78,11 +133,18 @@
     "id": "linden-natascha-stellmach-letting-go",
     "venueId": "linden-new-art",
     "title": "THE LETTING GO (2012-2026)",
-    "artists": ["Natascha Stellmach"],
+    "artists": [
+      "Natascha Stellmach"
+    ],
     "startDate": "2026-08-20",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
-    "tags": ["performance", "photography", "mixed media", "participatory art"],
+    "tags": [
+      "performance",
+      "photography",
+      "mixed media",
+      "participatory art"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -93,11 +155,16 @@
     "id": "linden-heidi-holmes-kwik-kwik-kwik",
     "venueId": "linden-new-art",
     "title": "Kwik-Kwik-Kwik",
-    "artists": ["Heidi Holmes"],
+    "artists": [
+      "Heidi Holmes"
+    ],
     "startDate": "2026-10-01",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
-    "tags": ["contemporary art", "Linden Projects Space"],
+    "tags": [
+      "contemporary art",
+      "Linden Projects Space"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -108,11 +175,17 @@
     "id": "linden-leo-swan-bay-dreaming",
     "venueId": "linden-new-art",
     "title": "Swan Bay Dreaming",
-    "artists": ["Leo"],
+    "artists": [
+      "Leo"
+    ],
     "startDate": "2026-10-03",
     "endDate": "2026-11-15",
     "eventType": "solo exhibition",
-    "tags": ["Little Linden", "young artist", "community"],
+    "tags": [
+      "Little Linden",
+      "young artist",
+      "community"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -123,11 +196,16 @@
     "id": "linden-catherine-bell-outlier",
     "venueId": "linden-new-art",
     "title": "OUTLIER",
-    "artists": ["Catherine Bell"],
+    "artists": [
+      "Catherine Bell"
+    ],
     "startDate": "2026-11-21",
     "endDate": "2027-02-07",
     "eventType": "survey exhibition",
-    "tags": ["contemporary art", "mid-career survey"],
+    "tags": [
+      "contemporary art",
+      "mid-career survey"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -138,11 +216,16 @@
     "id": "linden-wanda-gillespie-weight-of-being",
     "venueId": "linden-new-art",
     "title": "The Weight of Being",
-    "artists": ["Wanda Gillespie"],
+    "artists": [
+      "Wanda Gillespie"
+    ],
     "startDate": "2026-11-21",
     "endDate": "2026-12-24",
     "eventType": "solo exhibition",
-    "tags": ["contemporary art", "Linden Projects Space"],
+    "tags": [
+      "contemporary art",
+      "Linden Projects Space"
+    ],
     "admission": "free",
     "sourceName": "Linden New Art",
     "sourceType": "official",
@@ -153,11 +236,28 @@
     "id": "glen-eira-fabulous-70s-fashion",
     "venueId": "glen-eira-gallery",
     "title": "Fabulous 70s: a celebration of Melbourne fashion",
-    "artists": ["Prue Acton", "Jenny Bannister", "Sally Browne", "Clarence Chai", "Mr Simon", "Miss Hartnell", "Leon Haskin", "Elvie Hill", "Van Roth", "Norma Tullo"],
+    "artists": [
+      "Prue Acton",
+      "Jenny Bannister",
+      "Sally Browne",
+      "Clarence Chai",
+      "Mr Simon",
+      "Miss Hartnell",
+      "Leon Haskin",
+      "Elvie Hill",
+      "Van Roth",
+      "Norma Tullo"
+    ],
     "startDate": "2026-10-09",
     "endDate": "2026-12-20",
     "eventType": "fashion exhibition",
-    "tags": ["fashion", "Melbourne", "1970s", "photography", "archives"],
+    "tags": [
+      "fashion",
+      "Melbourne",
+      "1970s",
+      "photography",
+      "archives"
+    ],
     "admission": "unknown",
     "sourceName": "Glen Eira City Council",
     "sourceType": "official",
@@ -168,11 +268,18 @@
     "id": "australian-tapestry-workshop-kate-derum-irene-davies-2026",
     "venueId": "australian-tapestry-workshop",
     "title": "2026 Kate Derum & Irene Davies Awards exhibition",
-    "artists": ["2026 award finalists"],
+    "artists": [
+      "2026 award finalists"
+    ],
     "startDate": "2026-10-29",
     "endDate": "2027-01-16",
     "eventType": "award exhibition",
-    "tags": ["tapestry", "textile art", "awards", "international"],
+    "tags": [
+      "tapestry",
+      "textile art",
+      "awards",
+      "international"
+    ],
     "admission": "unknown",
     "sourceName": "Australian Tapestry Workshop",
     "sourceType": "official",
@@ -183,7 +290,9 @@
     "id": "gallery-unbound-alena-landers-wildflowers-2026",
     "venueId": "gallery-unbound",
     "title": "Where the Wildflowers Bloom",
-    "artists": ["Alena Landers"],
+    "artists": [
+      "Alena Landers"
+    ],
     "startDate": "2026-10-14",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -197,7 +306,9 @@
     "id": "gallery-unbound-amelie-smith-look-closer-2026",
     "venueId": "gallery-unbound",
     "title": "Look Closer",
-    "artists": ["Amélie Smith"],
+    "artists": [
+      "Amélie Smith"
+    ],
     "startDate": "2026-10-14",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -211,7 +322,9 @@
     "id": "gallery-unbound-dieter-kraus-retrospective-2026",
     "venueId": "gallery-unbound",
     "title": "96 – 26 Retrospective",
-    "artists": ["Dieter Kraus"],
+    "artists": [
+      "Dieter Kraus"
+    ],
     "startDate": "2026-10-14",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -225,7 +338,9 @@
     "id": "gallery-unbound-rebecca-abbey-growing-towards-light-2026",
     "venueId": "gallery-unbound",
     "title": "Growing Towards the Light",
-    "artists": ["Rebecca Abbey"],
+    "artists": [
+      "Rebecca Abbey"
+    ],
     "startDate": "2026-10-14",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -239,7 +354,9 @@
     "id": "gallery-unbound-sally-darlison-water-stone-2026",
     "venueId": "gallery-unbound",
     "title": "water & stone",
-    "artists": ["Sally Darlison"],
+    "artists": [
+      "Sally Darlison"
+    ],
     "startDate": "2026-10-14",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -253,7 +370,9 @@
     "id": "bsg-our-seasons-our-time-2026",
     "venueId": "brunswick-street-gallery",
     "title": "Ŋanapurruŋgu Walumalaynha (Our Seasons, Our Time)",
-    "artists": ["Artists of Buku-Larrŋgay Mulka"],
+    "artists": [
+      "Artists of Buku-Larrŋgay Mulka"
+    ],
     "startDate": "2026-10-22",
     "endDate": "2026-11-08",
     "eventType": "group exhibition",
@@ -267,7 +386,9 @@
     "id": "bsg-peter-tankey-nightshift-2026",
     "venueId": "brunswick-street-gallery",
     "title": "Nightshift",
-    "artists": ["Peter Tankey"],
+    "artists": [
+      "Peter Tankey"
+    ],
     "startDate": "2026-10-22",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -281,7 +402,9 @@
     "id": "bsg-louise-kyriakou-everyone-ive-ever-met-2026",
     "venueId": "brunswick-street-gallery",
     "title": "Everyone I've Ever Met",
-    "artists": ["Louise Kyriakou"],
+    "artists": [
+      "Louise Kyriakou"
+    ],
     "startDate": "2026-10-22",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -295,7 +418,10 @@
     "id": "bsg-precarities-mughal-gardens-2026",
     "venueId": "brunswick-street-gallery",
     "title": "Precarities & Revisiting The Mughal Gardens",
-    "artists": ["Tineke Van der Eecken", "Sultana Shamshi"],
+    "artists": [
+      "Tineke Van der Eecken",
+      "Sultana Shamshi"
+    ],
     "startDate": "2026-10-22",
     "endDate": "2026-11-08",
     "eventType": "two-person exhibition",
@@ -309,7 +435,9 @@
     "id": "bsg-lana-eileen-understory-2026",
     "venueId": "brunswick-street-gallery",
     "title": "Understory",
-    "artists": ["Lana Eileen"],
+    "artists": [
+      "Lana Eileen"
+    ],
     "startDate": "2026-10-22",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -323,7 +451,9 @@
     "id": "kings-parker-lev-dupain-bird-in-space-2026",
     "venueId": "kings-artist-run",
     "title": "Bird in Space",
-    "artists": ["Parker Lev Dupain"],
+    "artists": [
+      "Parker Lev Dupain"
+    ],
     "startDate": "2026-10-15",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -337,7 +467,9 @@
     "id": "kings-anna-mcdermott-play-mistake-2026",
     "venueId": "kings-artist-run",
     "title": "A play and a mistake",
-    "artists": ["Anna McDermott"],
+    "artists": [
+      "Anna McDermott"
+    ],
     "startDate": "2026-10-15",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -351,7 +483,9 @@
     "id": "kings-elijah-cristiano-fresh-blood-washings-2026",
     "venueId": "kings-artist-run",
     "title": "Fresh Blood Washings",
-    "artists": ["Elijah Cristiano"],
+    "artists": [
+      "Elijah Cristiano"
+    ],
     "startDate": "2026-10-15",
     "endDate": "2026-11-08",
     "eventType": "solo exhibition",
@@ -365,7 +499,9 @@
     "id": "heide-brassai-secret-paris-2026",
     "venueId": "heide-museum-modern-art",
     "title": "Secret Paris",
-    "artists": ["Brassaï"],
+    "artists": [
+      "Brassaï"
+    ],
     "startDate": "2026-07-25",
     "endDate": "2026-11-15",
     "eventType": "solo exhibition",
@@ -379,7 +515,10 @@
     "id": "heide-whisson-foubister-going-back-in-2026",
     "venueId": "heide-museum-modern-art",
     "title": "Going Back In",
-    "artists": ["Ken Whisson", "John Foubister"],
+    "artists": [
+      "Ken Whisson",
+      "John Foubister"
+    ],
     "startDate": "2026-08-22",
     "endDate": "2026-11-22",
     "eventType": "two-person exhibition",
@@ -393,7 +532,11 @@
     "id": "craft-lean-in-2026",
     "venueId": "craft-victoria",
     "title": "Lean In",
-    "artists": ["Laura Deakin", "Dr Marian Hosking", "Dr Blanche Tilden"],
+    "artists": [
+      "Laura Deakin",
+      "Dr Marian Hosking",
+      "Dr Blanche Tilden"
+    ],
     "startDate": "2026-09-05",
     "endDate": "2026-10-31",
     "eventType": "group exhibition",
@@ -407,7 +550,9 @@
     "id": "craft-flawed-julienne-lewis-2026",
     "venueId": "craft-victoria",
     "title": "Flawed",
-    "artists": ["Julienne Lewis"],
+    "artists": [
+      "Julienne Lewis"
+    ],
     "startDate": "2026-10-06",
     "endDate": "2026-11-07",
     "eventType": "solo exhibition",
@@ -421,7 +566,9 @@
     "id": "craft-neutroportal-bronwyn-sargeson-2026",
     "venueId": "craft-victoria",
     "title": "neutroportal",
-    "artists": ["Bronwyn Sargeson"],
+    "artists": [
+      "Bronwyn Sargeson"
+    ],
     "startDate": "2026-09-29",
     "endDate": "2026-11-07",
     "eventType": "solo exhibition",
@@ -435,7 +582,9 @@
     "id": "muma-pitcha-makin-fellas-long-time-coming-2026",
     "venueId": "muma",
     "title": "Long time coming, not finished yet",
-    "artists": ["Pitcha Makin Fellas"],
+    "artists": [
+      "Pitcha Makin Fellas"
+    ],
     "startDate": "2026-10-10",
     "endDate": "2026-12-05",
     "eventType": "exhibition",
@@ -449,7 +598,9 @@
     "id": "charles-nodrum-jan-murray-rapt-2026",
     "venueId": "charles-nodrum-gallery",
     "title": "Rapt",
-    "artists": ["Jan Murray"],
+    "artists": [
+      "Jan Murray"
+    ],
     "startDate": "2026-10-10",
     "endDate": "2026-10-31",
     "eventType": "solo exhibition",
