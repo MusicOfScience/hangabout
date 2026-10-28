@@ -12,8 +12,16 @@ test('default see-art view contains exhibitions already on, not only upcoming sh
   await page.goto('/');
 
   await expect(page.getByRole('button', { name: 'everything', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(async () => Number(await page.locator('#resultCount').textContent())).toBeGreaterThan(8);
+
+  // Current exhibitions across different venue types must be present before opening hours.
   await expect(page.locator('#event-gallery-unbound-alena-landers-wildflowers-2026')).toBeVisible();
-  await expect(page.locator('#event-gallery-unbound-dieter-kraus-retrospective-2026')).toBeVisible();
+  await expect(page.locator('#event-bsg-lana-eileen-understory-2026')).toBeVisible();
+  await expect(page.locator('#event-kings-parker-lev-dupain-bird-in-space-2026')).toBeVisible();
+  await expect(page.locator('#event-craft-flawed-julienne-lewis-2026')).toBeVisible();
+  await expect(page.locator('#event-muma-pitcha-makin-fellas-long-time-coming-2026')).toBeVisible();
+  await expect(page.locator('#event-charles-nodrum-jan-murray-rapt-2026')).toBeVisible();
+  await expect(page.locator('#event-heide-brassai-secret-paris-2026')).toBeVisible();
   await expect(page.locator('#event-acca-new26')).toBeVisible();
 
   // Upcoming records can coexist with current records; the default catalogue is not
