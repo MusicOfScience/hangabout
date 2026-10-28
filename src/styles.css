@@ -106,8 +106,8 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
 .leaflet-popup-content .popup-listings { max-height: min(48vh, 360px); overflow-y: auto; overscroll-behavior: contain; }
 .popup-listings li { display: grid; gap: .2rem; padding-top: .5rem; border-top: 1px solid rgba(23, 24, 23, .18); }
 .popup-links { display: flex; gap: .7rem; flex-wrap: wrap; }
-.event-card, .resource-card { scroll-margin-top: 4rem; }
-.event-card:target, .event-card:focus, .resource-card:target, .resource-card:focus { background: color-mix(in srgb, var(--accent) 28%, var(--panel)); }
+.event-card, .resource-card, .exhibition-entry { scroll-margin-top: 4rem; }
+.resource-card:target, .resource-card:focus, .exhibition-entry:target, .exhibition-entry:focus { background: color-mix(in srgb, var(--accent) 28%, var(--panel)); }
 
 .results { min-width: 0; }
 .results-head {
@@ -133,6 +133,17 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
   border: 1px solid var(--line); padding: .25rem .4rem; font-size: .68rem; text-transform: uppercase;
 }
 .card-actions { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+.venue-card > h3 { margin-bottom: .25rem; }
+.venue-card > .venue-line { margin: 0; }
+.venue-meta { margin-bottom: .75rem; }
+.venue-exhibitions { margin-top: .85rem; border-top: 1px solid var(--line); }
+.exhibition-entry { padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.exhibition-entry:last-child { border-bottom: 0; padding-bottom: .2rem; }
+.exhibition-entry:focus { outline: 0; padding-inline: .45rem; margin-inline: -.45rem; }
+.exhibition-date { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; }
+.exhibition-entry h4 { margin: .45rem 0 .25rem; font-size: clamp(1.25rem, 2.4vw, 1.8rem); line-height: 1.05; letter-spacing: -.025em; }
+.exhibition-entry .artists { margin-bottom: .55rem; }
+.exhibition-entry .freshness { margin-bottom: .2rem; }
 .empty { padding: 3rem 1rem; display: grid; gap: .4rem; }
 .empty strong { font-size: 2rem; }
 

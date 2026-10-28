@@ -10,6 +10,7 @@ import { MakeMap, SeeMap } from './map';
 import { writeIds } from './storage';
 import { eventFreshness, hasCurrentAvailability, resourceFreshness } from './freshness';
 import { matchesStudioQuery, studioMonthlyAmount, studioRelevance } from './studio-search';
+import { groupEventsByVenue, type VenueEventGroup } from './venue-cards';
 
 const dataset = loadDataset();
 const venueById = new Map(dataset.venues.map(venue => [venue.id, venue]));
@@ -507,6 +508,7 @@ function filteredEvents(): Event[] {
 
 function renderSee(focusMap = false) {
   const rows = filteredEvents();
+  const groups = groupEventsByVenue(rows, venueById);
   els.resultCount.textContent = String(rows.length);
 
   const exactMapped = new Set(
@@ -515,7 +517,7 @@ function renderSee(focusMap = false) {
       .map(venue => venue.id)
   ).size;
   const approximate = new Set(rows.map(event => venueById.get(event.venueId)).filter(Boolean).filter(v => v!.lat == null || v!.lng == null)).size;
-  els.mappedCount.textContent = `· ${exactMapped} exact pins${approximate ? ` · ${approximate} area-matched spaces` : ''}`;
+  els.mappedCount.textContent = `· ${groups.length} ${groups.length === 1 ? 'venue' : 'venues'} · ${exactMapped} exact pins${approximate ? ` · ${approximate} area-matched spaces` : ''}`;
 
   if (state.quick === 'nearby' && !state.userLocation) {
     els.status.textContent = 'location needed for within 5 km';
@@ -525,7 +527,7 @@ function renderSee(focusMap = false) {
     els.status.textContent = '';
   }
 
-  els.results.innerHTML = rows.map(eventCard).join('') ||
+  els.results.innerHTML = groups.map(venueCard).join('') ||
     `<div class="empty"><strong>nothing there.</strong><span>Try another filter or clear the map area.</span></div>`;
 
   seeMap.render(rows, dataset, focusMap);
@@ -558,27 +560,41 @@ function clearAreaDiscovery() {
   els.liveAreaResults.innerHTML = '';
 }
 
-function eventCard(event: Event): string {
-  const venue = venueById.get(event.venueId)!;
-  const freshness = eventFreshness(event);
-  const saved = state.saved.has(event.id);
-  const inCrawl = state.crawl.has(event.id);
+function venueCard(group: VenueEventGroup): string {
+  const { venue, events } = group;
   const distance = state.userLocation && venuePoint(venue)
     ? `${haversine(state.userLocation, venuePoint(venue)!).toFixed(1)} km`
     : '';
   return `
-    <article class="event-card" id="event-${esc(event.id)}" tabindex="-1">
+    <article class="event-card venue-card" data-venue="${esc(venue.id)}">
       <div class="card-top">
         <span class="kind">${esc(venue.kind.replaceAll('-', ' '))}</span>
-        <span>${esc(formatDateRange(event.startDate, event.endDate))}</span>
+        <span>${events.length} ${events.length === 1 ? 'exhibition' : 'exhibitions'}</span>
       </div>
-      <h3>${esc(event.title)}</h3>
+      <h3>${esc(venue.name)}</h3>
+      <p class="venue-line">${esc(venue.suburb)}${distance ? ` · ${distance}` : ''}</p>
+      <div class="meta venue-meta">
+        ${venue.lat != null ? '<span>exact pin</span>' : '<span>area location</span>'}
+      </div>
+      <div class="venue-exhibitions">
+        ${events.map(event => exhibitionEntry(event)).join('')}
+      </div>
+    </article>
+  `;
+}
+
+function exhibitionEntry(event: Event): string {
+  const freshness = eventFreshness(event);
+  const saved = state.saved.has(event.id);
+  const inCrawl = state.crawl.has(event.id);
+  return `
+    <section class="exhibition-entry" id="event-${esc(event.id)}" tabindex="-1">
+      <div class="exhibition-date">${esc(formatDateRange(event.startDate, event.endDate))}</div>
+      <h4>${esc(event.title)}</h4>
       <p class="artists">${esc(event.artists.join(', '))}</p>
-      <p class="venue-line"><strong>${esc(venue.name)}</strong> · ${esc(venue.suburb)}${distance ? ` · ${distance}` : ''}</p>
       <div class="meta">
         <span>${event.sourceType === 'official' ? 'official source' : 'directory source'}</span>
         ${event.admission === 'free' ? '<span>free</span>' : ''}
-        ${venue.lat != null ? '<span>exact pin</span>' : '<span>area location</span>'}
       </div>
       <p class="freshness freshness-${freshness.state}">checked ${esc(formatChecked(event.lastVerified))} · ${freshness.state === 'stale' ? 'programme needs rechecking — confirm with the source' : freshness.relativeLabel}</p>
       <div class="card-actions">
@@ -586,7 +602,7 @@ function eventCard(event: Event): string {
         <button class="text-link" data-save="${esc(event.id)}" aria-label="${saved ? 'remove saved' : 'save'} ${esc(event.title)}">${saved ? 'saved ✓' : 'save'}</button>
         <button class="text-link" data-crawl="${esc(event.id)}" aria-label="${inCrawl ? 'remove from crawl' : 'add to crawl'} ${esc(event.title)}">${inCrawl ? 'in crawl ✓' : 'add to crawl'}</button>
       </div>
-    </article>
+    </section>
   `;
 }
 

@@ -28,3 +28,16 @@ test('default see-art view contains exhibitions already on, not only upcoming sh
   // a "new only" feed.
   await expect(page.locator('#event-buxton-a-part-hoda-afshar')).toBeVisible();
 });
+
+
+test('multiple exhibitions at one gallery share one venue card', async ({ page }) => {
+  await page.goto('/');
+
+  const unboundCard = page.locator('.event-card', {
+    has: page.locator('#event-gallery-unbound-alena-landers-wildflowers-2026'),
+  });
+  await expect(unboundCard).toHaveCount(1);
+  await expect(unboundCard).toContainText('Gallery Unbound');
+  await expect(unboundCard.locator('.exhibition-entry')).toHaveCount(5);
+  await expect(unboundCard.locator('#event-gallery-unbound-alena-landers-wildflowers-2026')).toBeVisible();
+});
