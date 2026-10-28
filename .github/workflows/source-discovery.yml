@@ -2,7 +2,9 @@ name: source discovery
 
 on:
   schedule:
-    - cron: '17 19 * * 1'
+    # Run daily after the source refresh window so new/current programme links
+    # are discovered promptly rather than waiting for a weekly sweep.
+    - cron: '47 18 * * *'
   workflow_dispatch:
 
 permissions:

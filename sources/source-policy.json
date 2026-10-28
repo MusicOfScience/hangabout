@@ -1,9 +1,10 @@
 {
-  "version": 2,
+  "version": 3,
   "principles": [
     "First-party venue and institution sources are canonical where available.",
     "Automated discovery only runs against sources explicitly marked automationAllowed=true.",
     "Automated discovery records URLs and factual link metadata only; it does not republish page copy or images.",
+    "Canonical first-party source URLs already curated into Hangabout may be revisited for narrow reverification of existing facts; failed or ambiguous checks preserve the last-good record.",
     "robots.txt and source-specific terms are checked before fetching.",
     "Reference directories can identify gaps in the venue universe but are not automatically ingested when their terms prohibit or restrict reuse."
   ],
