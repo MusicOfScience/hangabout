@@ -67,7 +67,7 @@ test('map popups navigate to their visible list result', async ({ page }) => {
 test('saved exhibitions and studio feature filters remain functional', async ({ page }) => {
   await page.goto('/');
   const firstCard = page.locator('.event-card').first();
-  await firstCard.getByRole('button', { name: /^save / }).click();
+  await firstCard.getByRole('button', { name: /^save / }).first().click();
   await page.getByRole('button', { name: 'saved', exact: true }).click();
   await expect(page.locator('.event-card')).toHaveCount(1);
 
