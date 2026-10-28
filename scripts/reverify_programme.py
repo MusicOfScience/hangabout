@@ -64,6 +64,19 @@ def page_contains_title(page_text: str, title: str) -> bool:
     return bool(wanted) and wanted in haystack
 
 
+def source_host(url: str) -> str:
+    return urlparse(url).netloc.lower().removeprefix("www.")
+
+
+def load_blocked_reference_hosts() -> set[str]:
+    policy = json.loads((ROOT / "sources" / "source-policy.json").read_text(encoding="utf-8"))
+    return {
+        source_host(str(source.get("url", "")))
+        for source in policy.get("referenceSources", [])
+        if source.get("automationAllowed") is False and source.get("url")
+    }
+
+
 def robots_allows(url: str) -> tuple[bool, str]:
     parsed = urlparse(url)
     robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
@@ -95,8 +108,17 @@ def needs_verification(last_verified: object, checked: str) -> bool:
         return True
 
 
-def reverify(events: list[dict], checked: str, *, fetcher=fetch_page_text, robots=robots_allows, delay: float = 0.0) -> list[dict]:
+def reverify(
+    events: list[dict],
+    checked: str,
+    *,
+    fetcher=fetch_page_text,
+    robots=robots_allows,
+    delay: float = 0.0,
+    blocked_hosts: set[str] | None = None,
+) -> list[dict]:
     today = date.fromisoformat(checked)
+    blocked = blocked_hosts if blocked_hosts is not None else load_blocked_reference_hosts()
     page_cache: dict[str, tuple[str, str]] = {}
     robots_cache: dict[str, tuple[bool, str]] = {}
     results: list[dict] = []
@@ -112,6 +134,11 @@ def reverify(events: list[dict], checked: str, *, fetcher=fetch_page_text, robot
     for index, event in enumerate(candidates):
         url = event["sourceUrl"]
         result = {"id": event.get("id"), "sourceUrl": url, "status": "unknown", "changed": False}
+
+        if source_host(url) in blocked:
+            result["status"] = "skipped-policy"
+            results.append(result)
+            continue
 
         if url not in robots_cache:
             robots_cache[url] = robots(url)
@@ -169,7 +196,7 @@ def main() -> int:
     payload = {
         "generatedAt": args.now,
         "mode": "apply" if args.apply else "report-only",
-        "policy": "canonical first-party source URLs only; title-presence reverification; preserve on ambiguity",
+        "policy": "canonical first-party source URLs only; reference-only hosts blocked; title-presence reverification; preserve on ambiguity",
         "summary": {
             "checked": len(results),
             "verified": sum(item["status"] == "verified" for item in results),
