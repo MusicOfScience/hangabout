@@ -1,5 +1,38 @@
 [
   {
+    "id": "firestation-workshop-access",
+    "name": "Firestation Print Studio — workshop access",
+    "resourceType": "workspace",
+    "suburb": "Armadale",
+    "address": "2 Willis Street, Armadale VIC 3143",
+    "summary": "Community printmaking facility with presses, workshops, print clubs and member access. Qualified members can use the studio outside public opening hours.",
+    "availability": "membership / access sessions",
+    "tags": ["printmaking", "presses", "workshops", "print clubs", "24/7 qualified access"],
+    "website": "https://www.fps.org.au/read-me",
+    "sourceName": "Firestation Print Studio",
+    "sourceType": "official",
+    "lastVerified": "2026-11-03",
+    "studioType": "workshop",
+    "practiceTypes": ["printmaking", "etching", "relief printing", "letterpress"]
+  },
+  {
+    "id": "firestation-artist-studios",
+    "name": "Firestation Print Studio — artist studios",
+    "resourceType": "studio",
+    "suburb": "Armadale",
+    "address": "2 Willis Street, Armadale VIC 3143",
+    "summary": "Ten artist-in-residence studios within Firestation Print Studio. Studios become available from time to time; interested artists can register their interest and join the waiting-list process.",
+    "availability": "waiting list / register interest",
+    "tags": ["artist studios", "printmaking", "waiting list", "community", "24/7 qualified access"],
+    "website": "https://www.fps.org.au/project-1",
+    "sourceName": "Firestation Print Studio",
+    "sourceType": "official",
+    "lastVerified": "2026-11-03",
+    "studioType": "private",
+    "practiceTypes": ["printmaking", "visual art"],
+    "premisesStatus": "active"
+  },
+  {
     "id": "troppo-print-studio-open-access",
     "name": "Troppo Print Studio — open-access screenprinting",
     "resourceType": "workspace",
@@ -14,7 +47,6 @@
     "lastVerified": "2026-11-03",
     "studioType": "workshop",
     "practiceTypes": ["screenprinting"],
-    "premisesStatus": "active",
-    "coordinatePrecision": "building"
+    "premisesStatus": "active"
   }
 ]
