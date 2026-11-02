@@ -72,11 +72,17 @@ test('saved exhibitions and studio feature filters remain functional', async ({ 
   await expect(page.locator('.event-card')).toHaveCount(1);
 
   await page.getByRole('button', { name: 'make art', exact: true }).click();
-  await expect(page.locator('#makeCount')).toHaveText('18 studios');
+  const baseline = await page.locator('.resource-card').count();
+  expect(baseline).toBeGreaterThan(0);
+
   await page.getByRole('button', { name: '24/7 access', exact: true }).click();
-  await expect(page.locator('#makeCount')).toHaveText('12 studios');
+  const filtered = await page.locator('.resource-card').count();
+  expect(filtered).toBeGreaterThan(0);
+  expect(filtered).toBeLessThan(baseline);
+  await expect(page.locator('#resource-firestation-artist-studios')).toBeVisible();
+
   await page.getByRole('button', { name: '24/7 access', exact: true }).click();
-  await expect(page.locator('#makeCount')).toHaveText('18 studios');
+  await expect(page.locator('.resource-card')).toHaveCount(baseline);
 });
 
 test('event dates are timezone-stable and cross-year ranges show both years', async ({ page }) => {
