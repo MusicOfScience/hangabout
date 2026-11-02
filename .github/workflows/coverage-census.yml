@@ -1,0 +1,37 @@
+name: programme coverage census
+
+on:
+  schedule:
+    # Runs after the daily source refresh and source discovery windows.
+    - cron: '2 19 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'data/known-art-places.json'
+      - 'data/venues*.json'
+      - 'data/events-current.json'
+      - 'sources/official-indexes.json'
+      - 'scripts/audit_programme_coverage.py'
+      - '.github/workflows/coverage-census.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: audit programme coverage
+        run: python scripts/audit_programme_coverage.py --strict --report generated/programme-coverage.json
+      - name: retain coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-programme-coverage-${{ github.run_id }}
+          path: generated/programme-coverage.json
+          if-no-files-found: warn
+          retention-days: 30
