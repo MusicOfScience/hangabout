@@ -1,0 +1,20 @@
+[
+  {
+    "id": "troppo-print-studio-open-access",
+    "name": "Troppo Print Studio — open-access screenprinting",
+    "resourceType": "workspace",
+    "suburb": "Coburg",
+    "address": "503 Sydney Road, Coburg VIC 3058",
+    "summary": "Artist-run open-access screenprint studio offering workshops, membership access and collaborative printmaking events.",
+    "availability": "membership / workshops",
+    "tags": ["screenprinting", "open access", "workshops", "membership", "artist-run"],
+    "website": "https://www.troppoprintstudio.com/",
+    "sourceName": "Troppo Print Studio",
+    "sourceType": "official",
+    "lastVerified": "2026-11-03",
+    "studioType": "workshop",
+    "practiceTypes": ["screenprinting"],
+    "premisesStatus": "active",
+    "coordinatePrecision": "building"
+  }
+]
