@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 SOURCES = ROOT / "sources"
 VENUE_FILES = ("venues.json", "venues-extra.json", "venues-major.json", "venues-current.json")
+CURRENT_EVENT_FILES = ("events-current.json", "events-current-coverage.json")
 
 
 def load(path: Path):
@@ -39,6 +40,15 @@ def merged_venues() -> dict[str, dict]:
     return result
 
 
+def current_exhibitions() -> list[dict]:
+    records: list[dict] = []
+    for name in CURRENT_EVENT_FILES:
+        path = DATA / name
+        if path.exists():
+            records.extend(load(path))
+    return records
+
+
 def norm(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", value.lower()).strip()
 
@@ -51,7 +61,7 @@ def main() -> int:
 
     venues = merged_venues()
     indexes = load(SOURCES / "official-indexes.json")
-    exhibitions = load(DATA / "events-current.json")
+    exhibitions = current_exhibitions()
     known_places = load(DATA / "known-art-places.json")
 
     monitored = {item["venueId"] for item in indexes if item.get("automationAllowed") is True}
