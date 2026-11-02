@@ -2,14 +2,14 @@ name: apply coverage repair
 
 on:
   push:
-    branches: [coverage/programme-census]
+    branches:
+      - coverage/programme-census
 
 permissions:
   contents: write
 
 jobs:
   patch:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,241 +18,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: patch coverage data and date precision support
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import json
-
-          def read(path):
-              return json.loads(Path(path).read_text(encoding='utf-8'))
-
-          def write(path, value):
-              Path(path).write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
-
-          # Current/upcoming exhibitions: repair known omissions from first-party sources.
-          events_path = 'data/events-current.json'
-          events = read(events_path)
-          by_id = {item['id']: item for item in events}
-          repairs = [
-              {
-                  'id': 'apw-impressions-45-years-in-print-2026',
-                  'venueId': 'australian-print-workshop',
-                  'title': 'IMPRESSIONS: 45 Years in Print',
-                  'artists': ['More than 140 Australian Print Workshop alumni artists'],
-                  'startDate': '2026-11-06',
-                  # Computational upper boundary only. UI displays month precision and
-                  # must never claim that 28 February is the sourced closing day.
-                  'endDate': '2027-02-28',
-                  'endDatePrecision': 'month',
-                  'eventType': 'group exhibition',
-                  'tags': ['printmaking', 'fundraising exhibition', 'contemporary Australian printmaking', '45th anniversary'],
-                  'admission': 'unknown',
-                  'opening': {'date': '2026-11-06', 'start': '18:00'},
-                  'sourceName': 'Australian Print Workshop',
-                  'sourceType': 'official',
-                  'sourceUrl': 'https://www.australianprintworkshop.com/projects/special-projects/impressions-45-years-print',
-                  'lastVerified': '2026-11-03',
-              },
-              {
-                  'id': 'firestation-lindesay-dresdon-2026',
-                  'venueId': 'firestation-print-studio',
-                  'title': 'Solo Exhibition',
-                  'artists': ['Lindesay Dresdon'],
-                  'startDate': '2026-10-28',
-                  'endDate': '2026-11-14',
-                  'eventType': 'solo exhibition',
-                  'tags': ['printmaking', 'artist-run', 'community print studio'],
-                  'admission': 'unknown',
-                  'opening': {'date': '2026-10-29', 'start': '18:00', 'end': '20:00'},
-                  'sourceName': 'Firestation Print Studio',
-                  'sourceType': 'official',
-                  'sourceUrl': 'https://www.fps.org.au/fps-gallery',
-                  'lastVerified': '2026-11-03',
-              },
-              {
-                  'id': 'atw-lara-tilbrook-2026',
-                  'venueId': 'australian-tapestry-workshop',
-                  'title': 'Lara Tilbrook (Narungga, Kaurna, Ngarrindjeri)',
-                  'artists': ['Lara Tilbrook'],
-                  'startDate': '2026-09-10',
-                  'endDate': '2026-11-07',
-                  'eventType': 'solo exhibition',
-                  'tags': ['textile art', 'tapestry', 'contemporary art'],
-                  'admission': 'unknown',
-                  'sourceName': 'Australian Tapestry Workshop',
-                  'sourceType': 'official',
-                  'sourceUrl': 'https://www.austapestry.com.au/whats-on/exhibitions',
-                  'lastVerified': '2026-11-03',
-              },
-          ]
-          for record in repairs:
-              by_id[record['id']] = record
-          # Preserve existing order; append only genuinely new repair records.
-          existing_ids = {item['id'] for item in events}
-          events = [by_id[item['id']] for item in events] + [r for r in repairs if r['id'] not in existing_ids]
-          write(events_path, events)
-
-          # Link the already-curated APW opening to the newly representable exhibition.
-          programme_path = 'data/programme-events.json'
-          programme = read(programme_path)
-          for item in programme:
-              if item.get('id') == 'apw-impressions-45-years-opening-2026-11-06':
-                  item['exhibitionId'] = 'apw-impressions-45-years-in-print-2026'
-                  item['lastVerified'] = '2026-11-03'
-          write(programme_path, programme)
-
-          # Firestation is a maintained programme venue, not merely an old archive record.
-          venues_path = 'data/venues.json'
-          venues = read(venues_path)
-          for venue in venues:
-              if venue.get('id') == 'firestation-print-studio':
-                  venue['coverageStatus'] = 'maintained-programme'
-                  venue['lastVerified'] = '2026-11-03'
-                  venue['sourceUrl'] = 'https://www.fps.org.au/contact'
-                  venue['hoursSourceUrl'] = 'https://www.fps.org.au/contact'
-          write(venues_path, venues)
-
-          # Refresh Firestation's Make Art record and add the missing Troppo workspace.
-          resources_path = 'data/make-resources.json'
-          resources = read(resources_path)
-          for resource in resources:
-              if resource.get('id') == 'firestation-workshop-access':
-                  resource['website'] = 'https://www.fps.org.au/'
-                  resource['sourceName'] = 'Firestation Print Studio'
-                  resource['sourceType'] = 'official'
-                  resource['lastVerified'] = '2026-11-03'
-                  resource['studioType'] = 'workshop'
-                  resource['practiceTypes'] = ['printmaking', 'etching', 'relief printing', 'letterpress']
-          if not any(r.get('id') == 'troppo-print-studio-open-access' for r in resources):
-              resources.append({
-                  'id': 'troppo-print-studio-open-access',
-                  'name': 'Troppo Print Studio — open-access screenprinting',
-                  'resourceType': 'workspace',
-                  'suburb': 'Coburg',
-                  'address': '503 Sydney Road, Coburg VIC 3058',
-                  'summary': 'Artist-run open-access screenprint studio offering workshops, membership access and collaborative printmaking events.',
-                  'availability': 'membership / workshops',
-                  'tags': ['screenprinting', 'open access', 'workshops', 'membership', 'artist-run'],
-                  'website': 'https://www.troppoprintstudio.com/',
-                  'sourceName': 'Troppo Print Studio',
-                  'sourceType': 'official',
-                  'lastVerified': '2026-11-03',
-                  'studioType': 'workshop',
-                  'practiceTypes': ['screenprinting'],
-                  'premisesStatus': 'active',
-                  'coordinatePrecision': 'building',
-              })
-          write(resources_path, resources)
-
-          # Expand the first-party programme monitoring universe.
-          indexes_path = 'sources/official-indexes.json'
-          indexes = read(indexes_path)
-          index_by_id = {item['venueId']: item for item in indexes}
-          additions = [
-              {
-                  'venueId': 'australian-print-workshop',
-                  'name': 'Australian Print Workshop',
-                  'indexUrl': 'https://www.australianprintworkshop.com/',
-                  'automationAllowed': True,
-                  'sameDomainOnly': True,
-                  'includePathPatterns': ['/apw-gallery/', '/projects/special-projects/'],
-              },
-              {
-                  'venueId': 'australian-tapestry-workshop',
-                  'name': 'Australian Tapestry Workshop',
-                  'indexUrl': 'https://www.austapestry.com.au/whats-on/exhibitions',
-                  'automationAllowed': True,
-                  'sameDomainOnly': True,
-                  'includePathPatterns': ['/whats-on/exhibitions', '/content/'],
-              },
-              {
-                  'venueId': 'firestation-print-studio',
-                  'name': 'Firestation Print Studio',
-                  'indexUrl': 'https://www.fps.org.au/fps-gallery',
-                  'automationAllowed': True,
-                  'sameDomainOnly': True,
-                  'includePathPatterns': ['/fps-gallery', '/gallery'],
-              },
-          ]
-          for item in additions:
-              index_by_id[item['venueId']] = item
-          existing_index_ids = {item['venueId'] for item in indexes}
-          indexes = [index_by_id[item['venueId']] for item in indexes] + [i for i in additions if i['venueId'] not in existing_index_ids]
-          write(indexes_path, indexes)
-
-          # Allow source-supported month-precision exhibition closing dates.
-          types_path = Path('src/types.ts')
-          types = types_path.read_text(encoding='utf-8')
-          needle = "  endDate: string;\n  eventType?: string;"
-          replacement = "  endDate: string;\n  /** Source precision for the closing boundary; month means the exact day is not claimed. */\n  endDatePrecision?: 'day' | 'month' | string;\n  eventType?: string;"
-          if needle not in types:
-              raise SystemExit('types.ts exhibition shape changed; refusing blind patch')
-          types_path.write_text(types.replace(needle, replacement, 1), encoding='utf-8')
-
-          time_path = Path('src/time.ts')
-          time = time_path.read_text(encoding='utf-8')
-          time = time.replace(
-              "export function closesWithin(event: Event, days: number, timeZone = DEFAULT_TIME_ZONE): boolean {\n  const today = todayInTimeZone(timeZone);",
-              "export function closesWithin(event: Event, days: number, timeZone = DEFAULT_TIME_ZONE): boolean {\n  if (event.endDatePrecision === 'month') return false;\n  const today = todayInTimeZone(timeZone);",
-              1,
-          )
-          old_sig = "export function formatDateRange(start: string, end: string): string {"
-          new_sig = "export function formatDateRange(start: string, end: string, endPrecision: 'day' | 'month' | string = 'day'): string {"
-          if old_sig not in time:
-              raise SystemExit('formatDateRange signature changed; refusing blind patch')
-          time = time.replace(old_sig, new_sig, 1)
-          old_return = "  return start === end ? fmt.format(parse(start)) : `${fmt.format(parse(start))} — ${fmt.format(parse(end))}`;\n}"
-          new_return = "  if (endPrecision === 'month') {\n    const endMonth = new Intl.DateTimeFormat('en-AU', { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(parse(end));\n    return `${fmt.format(parse(start))} — ${endMonth}`;\n  }\n  return start === end ? fmt.format(parse(start)) : `${fmt.format(parse(start))} — ${fmt.format(parse(end))}`;\n}"
-          if old_return not in time:
-              raise SystemExit('formatDateRange body changed; refusing blind patch')
-          time_path.write_text(time.replace(old_return, new_return, 1), encoding='utf-8')
-
-          main_path = Path('src/main.ts')
-          main = main_path.read_text(encoding='utf-8')
-          main = main.replace('formatDateRange(event.startDate, event.endDate)', 'formatDateRange(event.startDate, event.endDate, event.endDatePrecision)')
-          main_path.write_text(main, encoding='utf-8')
-
-          # Regression: the two user-identified spaces and month-precision APW date must surface.
-          test_path = Path('tests/e2e/current-exhibitions.spec.ts')
-          tests = test_path.read_text(encoding='utf-8')
-          tests += """
-
-test('APW and Firestation surface current or imminent first-party programmes', async ({ page }) => {
-  await page.clock.setSystemTime(new Date('2026-11-03T00:00:00Z'));
-  await page.goto('/');
-
-  const apw = page.locator('#event-apw-impressions-45-years-in-print-2026');
-  await expect(apw).toBeVisible();
-  await expect(apw).toContainText('IMPRESSIONS: 45 Years in Print');
-  await expect(apw).toContainText('6 Nov 2026 — Feb 2027');
-
-  const firestation = page.locator('#event-firestation-lindesay-dresdon-2026');
-  await expect(firestation).toBeVisible();
-  await expect(firestation).toContainText('Lindesay Dresdon');
-});
-
-test('Troppo is present in all making resources', async ({ page }) => {
-  await page.clock.setSystemTime(new Date('2026-11-03T00:00:00Z'));
-  await page.goto('/?mode=make');
-  await page.locator('#makeKind').selectOption('resources');
-  await expect(page.locator('#resource-troppo-print-studio-open-access')).toBeVisible();
-});
-"""
-          test_path.write_text(tests, encoding='utf-8')
-          PY
+      - name: apply deterministic coverage repair
+        run: python scripts/apply_coverage_repair.py
       - name: run coverage census and core validation
         run: |
           python scripts/audit_programme_coverage.py --strict --report generated/programme-coverage.json
           python scripts/validate_data_v3.py
           python scripts/validate_programme_data.py
           python scripts/validate_sources.py
-      - name: remove one-off workflow
-        run: rm .github/workflows/apply-coverage-repair.yml
+      - name: remove one-off repair machinery
+        run: rm .github/workflows/apply-coverage-repair.yml scripts/apply_coverage_repair.py
       - name: commit repair
         run: |
           git config user.name "hangabout-coverage[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/events-current.json data/programme-events.json data/venues.json data/make-resources.json sources/official-indexes.json src/types.ts src/time.ts src/main.ts tests/e2e/current-exhibitions.spec.ts generated/programme-coverage.json .github/workflows/apply-coverage-repair.yml
+          git add -A
           git commit -m "Repair programme coverage and add coverage census"
           git push origin HEAD:coverage/programme-census
