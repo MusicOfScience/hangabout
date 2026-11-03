@@ -1,0 +1,36 @@
+[
+  {
+    "id": "firestation-artist-studios",
+    "name": "Firestation Print Studio — artist studios",
+    "resourceType": "studio",
+    "suburb": "Armadale",
+    "address": "2 Willis Street, Armadale VIC 3143",
+    "summary": "Ten artist-in-residence studios within Firestation Print Studio. Studios become available from time to time; interested artists can register their interest and join the waiting-list process.",
+    "availability": "waiting list / register interest",
+    "tags": ["artist studios", "printmaking", "waiting list", "community", "24/7 qualified access"],
+    "website": "https://www.fps.org.au/project-1",
+    "sourceName": "Firestation Print Studio",
+    "sourceType": "official",
+    "lastVerified": "2026-11-03",
+    "studioType": "private",
+    "practiceTypes": ["printmaking", "visual art"],
+    "premisesStatus": "active"
+  },
+  {
+    "id": "troppo-print-studio-open-access",
+    "name": "Troppo Print Studio — open-access screenprinting",
+    "resourceType": "workspace",
+    "suburb": "Coburg",
+    "address": "503 Sydney Road, Coburg VIC 3058",
+    "summary": "Artist-run open-access screenprint studio offering workshops, membership access and collaborative printmaking events.",
+    "availability": "membership / workshops",
+    "tags": ["screenprinting", "open access", "workshops", "membership", "artist-run"],
+    "website": "https://www.troppoprintstudio.com/",
+    "sourceName": "Troppo Print Studio",
+    "sourceType": "official",
+    "lastVerified": "2026-11-03",
+    "studioType": "workshop",
+    "practiceTypes": ["screenprinting"],
+    "premisesStatus": "active"
+  }
+]

@@ -86,5 +86,29 @@
     "automationAllowed": true,
     "sameDomainOnly": true,
     "includePathPatterns": ["/whats-on/exhibitions/"]
+  },
+  {
+    "venueId": "australian-print-workshop",
+    "name": "Australian Print Workshop",
+    "indexUrl": "https://www.australianprintworkshop.com/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/apw-gallery/", "/projects/special-projects/"]
+  },
+  {
+    "venueId": "australian-tapestry-workshop",
+    "name": "Australian Tapestry Workshop",
+    "indexUrl": "https://www.austapestry.com.au/whats-on/exhibitions",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/whats-on/exhibitions", "/content/"]
+  },
+  {
+    "venueId": "firestation-print-studio",
+    "name": "Firestation Print Studio",
+    "indexUrl": "https://www.fps.org.au/fps-gallery",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": ["/fps-gallery", "/gallery"]
   }
 ]

@@ -47,12 +47,24 @@ export function melbourneLabel(): string {
   }).format(new Date()).toLowerCase();
 }
 
+function isMonthPrecision(value: string): boolean {
+  return /^\d{4}-\d{2}$/.test(value);
+}
+
+/** Convert a source-supported YYYY-MM closing boundary to the last day of that month for comparisons only. */
+export function exhibitionEndBoundary(value: string): string {
+  if (!isMonthPrecision(value)) return value;
+  const [year, month] = value.split('-').map(Number);
+  const last = new Date(Date.UTC(year!, month!, 0));
+  return last.toISOString().slice(0, 10);
+}
+
 export function isEventCurrent(event: Event, iso = todayMelbourne()): boolean {
-  return event.startDate <= iso && event.endDate >= iso;
+  return event.startDate <= iso && exhibitionEndBoundary(event.endDate) >= iso;
 }
 
 export function isEventUpcoming(event: Event, iso = todayMelbourne()): boolean {
-  return event.endDate >= iso;
+  return exhibitionEndBoundary(event.endDate) >= iso;
 }
 
 export function isVenueOpenNow(venue: Venue, nowDate = new Date()): boolean {
@@ -79,6 +91,9 @@ function addDays(iso: string, days: number): string {
 }
 
 export function closesWithin(event: Event, days: number, timeZone = DEFAULT_TIME_ZONE): boolean {
+  // A source that says only "until February" does not support a closing-soon claim
+  // for any particular February date.
+  if (isMonthPrecision(event.endDate)) return false;
   const today = todayInTimeZone(timeZone);
   return event.endDate >= today && event.endDate <= addDays(today, days);
 }
@@ -96,12 +111,12 @@ export function intersectsThisWeekend(event: Event, timeZone = DEFAULT_TIME_ZONE
   const untilSaturday = day === 0 ? -1 : 6 - day;
   const saturday = day === 0 ? addDays(today, -1) : addDays(today, untilSaturday);
   const sunday = addDays(saturday, 1);
-  return event.startDate <= sunday && event.endDate >= saturday;
+  return event.startDate <= sunday && exhibitionEndBoundary(event.endDate) >= saturday;
 }
 
 export function formatDateRange(start: string, end: string): string {
   const parse = (iso: string) => {
-    const [year, month, day] = iso.split('-').map(Number);
+    const [year, month, day = 1] = iso.split('-').map(Number);
     return new Date(Date.UTC(year!, month! - 1, day!));
   };
   const crossesYear = start.slice(0, 4) !== end.slice(0, 4);
@@ -111,5 +126,9 @@ export function formatDateRange(start: string, end: string): string {
     year: crossesYear ? 'numeric' : undefined,
     timeZone: 'UTC',
   });
+  if (isMonthPrecision(end)) {
+    const endFmt = new Intl.DateTimeFormat('en-AU', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+    return `${fmt.format(parse(start))} — ${endFmt.format(parse(end))}`;
+  }
   return start === end ? fmt.format(parse(start)) : `${fmt.format(parse(start))} — ${fmt.format(parse(end))}`;
 }

@@ -43,10 +43,12 @@ def main():
         *load_optional("events-extra.json"),
         *load_optional("events-major.json"),
         *load_optional("events-current.json"),
+        *load_optional("events-current-coverage.json"),
     ]
     resources = [
         *load_optional("make-resources.json"),
         *load_optional("make-resources-extra.json"),
+        *load_optional("make-resources-current.json"),
     ]
     vacancies = load_optional("studio-vacancies.json")
 

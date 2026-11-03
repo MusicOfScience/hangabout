@@ -41,6 +41,7 @@ def main():
         ROOT / "data" / "venues.json",
         ROOT / "data" / "venues-extra.json",
         ROOT / "data" / "venues-major.json",
+        ROOT / "data" / "venues-current.json",
     ]
     venue_ids = {
         venue["id"]

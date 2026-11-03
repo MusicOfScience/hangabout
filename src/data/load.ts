@@ -6,9 +6,11 @@ import eventsBase from '../../data/events.json';
 import eventsExtra from '../../data/events-extra.json';
 import eventsMajor from '../../data/events-major.json';
 import eventsCurrent from '../../data/events-current.json';
+import eventsCurrentCoverage from '../../data/events-current-coverage.json';
 import programmeEventsBase from '../../data/programme-events.json';
 import resourcesBase from '../../data/make-resources.json';
 import resourcesExtra from '../../data/make-resources-extra.json';
+import resourcesCurrent from '../../data/make-resources-current.json';
 import coordinateOverlay from '../../data/venue-coordinates.json';
 import knownPlacesBase from '../../data/known-art-places.json';
 import studioVacanciesBase from '../../data/studio-vacancies.json';
@@ -72,14 +74,15 @@ export function loadDataset(): Dataset {
     return withCoordinates;
   });
 
-  // The existing events*.json files are date-range shows. The current layer is a
-  // deliberately small, first-party-verified programme that can be refreshed without
-  // rewriting the historical catalogue.
+  // The existing events*.json files are date-range shows. The current layers are
+  // deliberately small, first-party-verified programmes that can be refreshed without
+  // rewriting the historical catalogue. The coverage layer closes known monitored gaps.
   const exhibitions = mergeById(
     validated<Exhibition[]>(eventsBase),
     validated<Exhibition[]>(eventsExtra),
     validated<Exhibition[]>(eventsMajor),
     validated<Exhibition[]>(eventsCurrent),
+    validated<Exhibition[]>(eventsCurrentCoverage),
   );
 
   const programmeEvents = mergeById(
@@ -89,6 +92,7 @@ export function loadDataset(): Dataset {
   const rawResources = mergeById(
     validated<MakeResource[]>(resourcesBase),
     validated<MakeResource[]>(resourcesExtra),
+    validated<MakeResource[]>(resourcesCurrent),
   );
 
   const studioVacancies = validated<StudioVacancy[]>(studioVacanciesBase);

@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '22'
       - name: compile Python tooling
-        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_programme_data.py scripts/ical_observations.py scripts/resolve_programme_observations.py scripts/reverify_programme.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py
+        run: python -m py_compile scripts/validate_data_v3.py scripts/validate_programme_data.py scripts/ical_observations.py scripts/resolve_programme_observations.py scripts/reverify_programme.py scripts/validate_coordinates.py scripts/validate_sources.py scripts/validate_known_places.py scripts/validate_freshness.py scripts/discover_official.py scripts/validate_national_contract.py scripts/ingest_fixtures.py scripts/ingestion/replay.py scripts/audit_programme_coverage.py
       - name: test freshness reporting
         run: python -m unittest discover -s tests/python
       - name: validate data contract
@@ -63,5 +63,13 @@ jobs:
         run: npx playwright install --with-deps chromium webkit
       - name: test desktop and mobile interactions
         run: npm run test:e2e
+      - name: retain browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hangabout-browser-failure-${{ github.run_id }}
+          path: test-results
+          if-no-files-found: warn
+          retention-days: 14
       - name: build v2
         run: npm run build

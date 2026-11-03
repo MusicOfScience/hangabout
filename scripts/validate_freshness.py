@@ -3,6 +3,8 @@
 
 import argparse
 import json
+import re
+from calendar import monthrange
 from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -16,11 +18,19 @@ def load(name: str) -> list[dict]:
     return json.loads(path.read_text()) if path.exists() else []
 
 
+def end_boundary(value: str) -> str:
+    if re.fullmatch(r"\d{4}-\d{2}", value):
+        year, month = map(int, value.split("-"))
+        return date(year, month, monthrange(year, month)[1]).isoformat()
+    return value
+
+
 def check(records: list[dict], label: str, maximum_days: int, today: date, *, active_only: bool = False, queue: list[dict] | None = None) -> list[str]:
     stale: list[str] = []
     checked = 0
     for record in records:
-        if active_only and record.get("endDate", record.get("startDate", "")) < today.isoformat():
+        final_date = end_boundary(record.get("endDate", record.get("startDate", "")))
+        if active_only and final_date < today.isoformat():
             continue
         checked += 1
         verified = date.fromisoformat(record["lastVerified"])
@@ -49,10 +59,10 @@ def main() -> None:
     args = parser.parse_args()
     queue: list[dict] = []
     today = datetime.now(ZoneInfo("Australia/Melbourne")).date()
-    events = [*load("events.json"), *load("events-extra.json"), *load("events-major.json"), *load("events-current.json")]
+    events = [*load("events.json"), *load("events-extra.json"), *load("events-major.json"), *load("events-current.json"), *load("events-current-coverage.json")]
     programme_events = load("programme-events.json")
     venues = [*load("venues.json"), *load("venues-extra.json"), *load("venues-major.json"), *load("venues-current.json")]
-    resources = [*load("make-resources.json"), *load("make-resources-extra.json")]
+    resources = [*load("make-resources.json"), *load("make-resources-extra.json"), *load("make-resources-current.json")]
 
     volatile = [row for row in resources if row.get("resourceType") in {"studio", "opportunity"}]
     slower = [row for row in resources if row.get("resourceType") in {"workspace", "finder"}]

@@ -8,7 +8,7 @@ const transparentPng = Buffer.from(
 const fixtureLocation = { latitude: -37.766, longitude: 144.962 };
 
 test.beforeEach(async ({ page }) => {
-  // 28 Oct 2026 in Melbourne: old opportunity/vacancy claims should have failed closed.
+  // 28 Oct 2026 in Melbourne: old opportunity claims should have failed closed.
   await page.clock.install({ time: new Date('2026-10-28T02:00:00Z') });
   await page.route('**/*', route => {
     const url = new URL(route.request().url());
@@ -30,6 +30,10 @@ test('expired opportunities do not remain in the live opportunities view', async
 });
 
 test('stale availability is historical evidence, not an available-now claim', async ({ page }) => {
+  // Pea Green Boat was genuinely rechecked on 29 Oct. Advance beyond the studio
+  // freshness grace window so this test exercises stale-evidence rendering rather
+  // than pinning the catalogue to an obsolete verification date.
+  await page.clock.setSystemTime(new Date('2026-11-20T02:00:00Z'));
   await page.goto('/?mode=make');
   await page.locator('#makeKind').selectOption('resources');
 

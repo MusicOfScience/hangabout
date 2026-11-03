@@ -1,0 +1,48 @@
+[
+  {
+    "id": "apw-impressions-45-years-in-print-2026",
+    "venueId": "australian-print-workshop",
+    "title": "IMPRESSIONS: 45 Years in Print",
+    "artists": ["More than 140 Australian Print Workshop alumni artists"],
+    "startDate": "2026-11-06",
+    "endDate": "2027-02",
+    "eventType": "group exhibition",
+    "tags": ["printmaking", "fundraising exhibition", "contemporary Australian printmaking", "45th anniversary"],
+    "admission": "unknown",
+    "sourceName": "Australian Print Workshop",
+    "sourceType": "official",
+    "sourceUrl": "https://www.australianprintworkshop.com/projects/special-projects/impressions-45-years-print",
+    "lastVerified": "2026-11-03"
+  },
+  {
+    "id": "firestation-lindesay-dresdon-2026",
+    "venueId": "firestation-print-studio",
+    "title": "Solo Exhibition",
+    "artists": ["Lindesay Dresdon"],
+    "startDate": "2026-10-28",
+    "endDate": "2026-11-14",
+    "eventType": "solo exhibition",
+    "tags": ["printmaking", "artist-run", "community print studio"],
+    "admission": "unknown",
+    "opening": {"date": "2026-10-29", "start": "18:00", "end": "20:00"},
+    "sourceName": "Firestation Print Studio",
+    "sourceType": "official",
+    "sourceUrl": "https://www.fps.org.au/fps-gallery",
+    "lastVerified": "2026-11-03"
+  },
+  {
+    "id": "atw-lara-tilbrook-2026",
+    "venueId": "australian-tapestry-workshop",
+    "title": "Lara Tilbrook (Narungga, Kaurna, Ngarrindjeri)",
+    "artists": ["Lara Tilbrook"],
+    "startDate": "2026-09-10",
+    "endDate": "2026-11-07",
+    "eventType": "solo exhibition",
+    "tags": ["textile art", "tapestry", "contemporary art"],
+    "admission": "unknown",
+    "sourceName": "Australian Tapestry Workshop",
+    "sourceType": "official",
+    "sourceUrl": "https://www.austapestry.com.au/whats-on/exhibitions",
+    "lastVerified": "2026-11-03"
+  }
+]

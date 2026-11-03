@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+from calendar import monthrange
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
@@ -17,6 +18,7 @@ ACCESS_LEVELS = {"full","partial","unknown"}
 RESOURCE_TYPES = {"studio","workspace","finder"}
 TIME_RE = re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d$")
 ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+MONTH_RE = re.compile(r"^(\d{4})-(\d{2})$")
 
 def load(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
@@ -37,6 +39,16 @@ def valid_date(value: str, context: str) -> date:
         return date.fromisoformat(value)
     except (TypeError, ValueError) as exc:
         raise AssertionError(f"{context}: invalid ISO date {value!r}") from exc
+
+def valid_exhibition_end(value: str, context: str) -> date:
+    """Accept a sourced day or month boundary; month precision resolves only for comparisons."""
+    if isinstance(value, str):
+        match = MONTH_RE.fullmatch(value)
+        if match:
+            year, month = map(int, match.groups())
+            require(1 <= month <= 12, f"{context}: invalid ISO month {value!r}")
+            return date(year, month, monthrange(year, month)[1])
+    return valid_date(value, context)
 
 def validate_hours(venue: dict):
     hours = venue.get("hours", {})
@@ -99,7 +111,7 @@ def validate_event(event: dict, venue_ids: set[str]):
     valid_date(event.get("lastVerified"), context)
 
     start = valid_date(event.get("startDate"), context)
-    end = valid_date(event.get("endDate"), context)
+    end = valid_exhibition_end(event.get("endDate"), context)
     require(start <= end, f"{context}: startDate is after endDate")
 
     tags = event.get("tags", [])

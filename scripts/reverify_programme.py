@@ -2,7 +2,7 @@
 """Re-verify canonical current/upcoming exhibitions against first-party sources.
 
 This is deliberately conservative. It does not discover or rewrite exhibition
-facts. It revisits only source URLs already curated into ``events-current.json``
+facts. It revisits source URLs already curated into current exhibition layers
 and advances ``lastVerified`` only when the source is first-party, fetchable,
 robots permits access, and the exhibition title is still present in the page
 text. Failed or ambiguous checks preserve the last-good record unchanged.
@@ -16,6 +16,7 @@ import json
 import re
 import time
 import unicodedata
+from calendar import monthrange
 from datetime import date, datetime
 from html.parser import HTMLParser
 from pathlib import Path
@@ -29,6 +30,7 @@ MELBOURNE_TZ = ZoneInfo("Australia/Melbourne")
 USER_AGENT = "hangabout-programme-reverify/0.1 (+https://github.com/MusicOfScience/hangabout)"
 TIMEOUT = 20
 CHECK_RECORD_INTERVAL_DAYS = 7
+CURRENT_EVENT_FILES = ("events-current.json", "events-current-coverage.json")
 
 
 class TextParser(HTMLParser):
@@ -108,6 +110,13 @@ def needs_verification(last_verified: object, checked: str) -> bool:
         return True
 
 
+def exhibition_end_boundary(value: str) -> date:
+    if re.fullmatch(r"\d{4}-\d{2}", value):
+        year, month = map(int, value.split("-"))
+        return date(year, month, monthrange(year, month)[1])
+    return date.fromisoformat(value)
+
+
 def reverify(
     events: list[dict],
     checked: str,
@@ -128,7 +137,7 @@ def reverify(
         if event.get("sourceType") == "official"
         and isinstance(event.get("sourceUrl"), str)
         and event.get("sourceUrl")
-        and date.fromisoformat(event["endDate"]) >= today
+        and exhibition_end_boundary(event["endDate"]) >= today
     ]
 
     for index, event in enumerate(candidates):
@@ -186,12 +195,18 @@ def main() -> int:
     parser.add_argument("--delay", type=float, default=1.0)
     args = parser.parse_args()
 
-    path = ROOT / "data" / "events-current.json"
-    events = json.loads(path.read_text(encoding="utf-8"))
-    results = reverify(events, args.now, delay=args.delay)
-
-    if args.apply:
-        path.write_text(json.dumps(events, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    results: list[dict] = []
+    for name in CURRENT_EVENT_FILES:
+        path = ROOT / "data" / name
+        if not path.exists():
+            continue
+        events = json.loads(path.read_text(encoding="utf-8"))
+        file_results = reverify(events, args.now, delay=args.delay)
+        for result in file_results:
+            result["file"] = name
+        results.extend(file_results)
+        if args.apply:
+            path.write_text(json.dumps(events, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     payload = {
         "generatedAt": args.now,
