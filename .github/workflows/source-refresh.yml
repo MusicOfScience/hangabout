@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   refresh:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +38,8 @@ jobs:
         run: python scripts/refresh_sources.py --apply --report generated/source-refresh.json --delay 1
       - name: reverify canonical current programme
         run: python scripts/reverify_programme.py --apply --report generated/programme-reverify.json --delay 1
+      - name: refresh approved Heide exhibition feed
+        run: python scripts/refresh_exhibition_feed.py --apply --report generated/exhibition-feed.json
       - name: validate refreshed data
         run: |
           python scripts/validate_data_v3.py
@@ -56,6 +59,7 @@ jobs:
           path: |
             generated/source-refresh.json
             generated/programme-reverify.json
+            generated/exhibition-feed.json
           if-no-files-found: warn
           retention-days: 30
       - name: detect safe canonical data changes

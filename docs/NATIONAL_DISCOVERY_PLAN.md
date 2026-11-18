@@ -70,3 +70,26 @@ Acceptance:
 - All structural validators, typecheck, build and desktop/mobile regressions pass; the independent real-date freshness gate remains truthful.
 
 Subsequent focused PRs: reviewed promotion and source coverage; timezone/geography migration; static national search/shards and candidate UX; broader scheduled adapters and operational reporting. Refresh the currently stale catalogue with genuine source checks before any production release.
+
+## Victorian publication pilot
+
+Heide's official exhibition index exposes structured current and upcoming
+tiles. `python scripts/refresh_exhibition_feed.py` checks the source and writes
+a review report. The scheduled refresh uses `--apply` to update
+`data/events-current.json`, which the existing Pages build loads. Python
+validators and the production build run before the existing publish step.
+The job uploads `exhibition-feed.json` with the accepted changes and exceptions.
+
+The source owns the initial title and date range. Hangabout retains curated
+artists and other existing metadata. The feed advances verification for
+confirmed dates, updates explicit date changes in place and uses native IDs
+for new records. The existing Going Back In listing keeps its public ID.
+Conflicting identities, ambiguous matches, missing tiles and malformed data
+go to the report. A source failure preserves the last good records and their
+verification dates. The app retires ended records through its existing date
+filters. Ordinary title-presence reverification skips Heide because it cannot
+verify exhibition dates.
+
+The pilot covers date-range exhibitions at one venue. Timed events, regional
+Victorian adapters, interstate sources and automated venue onboarding require
+their own verified sources and mappings.

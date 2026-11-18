@@ -591,7 +591,7 @@ function exhibitionEntry(event: Event): string {
     <section class="exhibition-entry" id="event-${esc(event.id)}" tabindex="-1">
       <div class="exhibition-date">${esc(formatDateRange(event.startDate, event.endDate))}</div>
       <h4>${esc(event.title)}</h4>
-      <p class="artists">${esc(event.artists.join(', '))}</p>
+      ${event.artists.length ? `<p class="artists">${esc(event.artists.join(', '))}</p>` : ''}
       <div class="meta">
         <span>${event.sourceType === 'official' ? 'official source' : 'directory source'}</span>
         ${event.admission === 'free' ? '<span>free</span>' : ''}
@@ -617,7 +617,7 @@ function openDetail(eventId: string) {
   els.dialogContent.innerHTML = `
     <p class="eyebrow">${esc(venue.kind.replaceAll('-', ' '))}</p>
     <h2>${esc(event.title)}</h2>
-    <p class="artists">${esc(event.artists.join(', '))}</p>
+    ${event.artists.length ? `<p class="artists">${esc(event.artists.join(', '))}</p>` : ''}
     <p><strong>${esc(venue.name)}</strong><br>${esc(venue.address)}</p>
     <p>${esc(formatDateRange(event.startDate, event.endDate))}</p>
     ${opening}
