@@ -17,6 +17,10 @@ concurrency:
 jobs:
   verify-and-build:
     runs-on: ubuntu-24.04
+    container:
+      # Match the locked @playwright/test version.
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -62,9 +66,6 @@ jobs:
           path: generated/freshness-recheck.json
       - name: install frontend dependencies
         run: npm ci --no-audit --no-fund
-      - name: install browser test runtime
-        timeout-minutes: 8
-        run: npx playwright install --with-deps chromium webkit
       - name: test desktop and mobile interactions
         run: npm run test:e2e
       - name: build production bundle
