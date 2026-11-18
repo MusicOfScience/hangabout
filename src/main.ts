@@ -545,47 +545,45 @@ function clearAreaDiscovery() {
 
 function venueCard(group: VenueEventGroup): string {
   const { venue, events } = group;
+  const today = todayInTimeZone(venue.timeZone ?? DEFAULT_TIME_ZONE);
   const distance = state.userLocation && venuePoint(venue)
     ? `${haversine(state.userLocation, venuePoint(venue)!).toFixed(1)} km`
     : '';
   return `
     <article class="event-card venue-card" data-venue="${esc(venue.id)}">
-      <div class="card-top">
-        <span class="kind">${esc(venue.kind.replaceAll('-', ' '))}</span>
-        <span>${events.length} ${events.length === 1 ? 'exhibition' : 'exhibitions'}</span>
-      </div>
-      <h3>${esc(venue.name)}</h3>
-      <p class="venue-line">${esc(venue.suburb)}${distance ? ` · ${distance}` : ''}</p>
-      <div class="meta venue-meta">
-        ${venue.lat != null ? '<span>exact pin</span>' : '<span>area location</span>'}
-      </div>
-      <div class="venue-exhibitions">
-        ${events.map(event => exhibitionEntry(event)).join('')}
-      </div>
+      <header class="venue-card-header">
+        <div>
+          <h3>${esc(venue.name)}</h3>
+          <p class="venue-line">${esc(venue.suburb)}${distance ? ` · ${distance}` : ''}</p>
+        </div>
+        <span class="venue-show-count">${events.length} ${events.length === 1 ? 'exhibition' : 'exhibitions'}</span>
+      </header>
+      <ul class="venue-exhibitions" aria-label="Exhibitions at ${esc(venue.name)}" role="list">
+        ${events.map(event => exhibitionEntry(event, today)).join('')}
+      </ul>
     </article>
   `;
 }
 
-function exhibitionEntry(event: Event): string {
+function exhibitionEntry(event: Event, today: string): string {
   const freshness = eventFreshness(event);
   const saved = state.saved.has(event.id);
   const inCrawl = state.crawl.has(event.id);
   return `
-    <section class="exhibition-entry" id="event-${esc(event.id)}" tabindex="-1">
-      <div class="exhibition-date">${esc(formatDateRange(event.startDate, event.endDate))}</div>
+    <li class="exhibition-entry" id="event-${esc(event.id)}" tabindex="-1">
       <h4>${esc(event.title)}</h4>
       ${event.artists.length ? `<p class="artists">${esc(event.artists.join(', '))}</p>` : ''}
-      <div class="meta">
-        <span>${event.sourceType === 'official' ? 'official source' : 'directory source'}</span>
-        ${event.admission === 'free' ? '<span>free</span>' : ''}
-      </div>
-      <p class="freshness freshness-${freshness.state}">checked ${esc(formatChecked(event.lastVerified))} · ${freshness.state === 'stale' ? 'programme needs rechecking — confirm with the source' : freshness.relativeLabel}</p>
+      <p class="exhibition-date">
+        ${isEventCurrent(event, today) ? '<strong>On now</strong> · ' : isEventUpcoming(event, today) ? '<strong>Upcoming</strong> · ' : ''}
+        ${esc(formatDateRange(event.startDate, event.endDate))}${event.admission === 'free' ? ' · Free' : ''}
+      </p>
+      ${freshness.state === 'current' ? '' : `<p class="freshness freshness-${freshness.state}">Programme needs rechecking. Confirm with the venue.</p>`}
       <div class="card-actions">
         <button class="text-link" data-detail="${esc(event.id)}" aria-label="details for ${esc(event.title)}">details</button>
         <button class="text-link" data-save="${esc(event.id)}" aria-label="${saved ? 'remove saved' : 'save'} ${esc(event.title)}">${saved ? 'saved ✓' : 'save'}</button>
         <button class="text-link" data-crawl="${esc(event.id)}" aria-label="${inCrawl ? 'remove from crawl' : 'add to crawl'} ${esc(event.title)}">${inCrawl ? 'in crawl ✓' : 'add to crawl'}</button>
       </div>
-    </section>
+    </li>
   `;
 }
 

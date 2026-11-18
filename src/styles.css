@@ -133,17 +133,27 @@ select { background: transparent; border: 0; border-bottom: 1px solid var(--ink)
   border: 1px solid var(--line); padding: .25rem .4rem; font-size: .68rem; text-transform: uppercase;
 }
 .card-actions { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
-.venue-card > h3 { margin-bottom: .25rem; }
-.venue-card > .venue-line { margin: 0; }
-.venue-meta { margin-bottom: .75rem; }
-.venue-exhibitions { margin-top: .85rem; border-top: 1px solid var(--line); }
-.exhibition-entry { padding: 1rem 0; border-bottom: 1px solid var(--line); }
-.exhibition-entry:last-child { border-bottom: 0; padding-bottom: .2rem; }
-.exhibition-entry:focus { outline: 0; padding-inline: .45rem; margin-inline: -.45rem; }
-.exhibition-date { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; }
-.exhibition-entry h4 { margin: .45rem 0 .25rem; font-size: clamp(1.25rem, 2.4vw, 1.8rem); line-height: 1.05; letter-spacing: -.025em; }
-.exhibition-entry .artists { margin-bottom: .55rem; }
-.exhibition-entry .freshness { margin-bottom: .2rem; }
+.event-card.venue-card {
+  padding: 0; margin-bottom: .85rem; border: 1px solid var(--line);
+}
+.venue-card-header {
+  display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap;
+  gap: .45rem 1rem; padding: .9rem 1rem;
+  background: color-mix(in srgb, var(--accent) 14%, var(--panel));
+  border-bottom: 1px solid var(--line);
+}
+.venue-card-header h3 { margin: 0 0 .25rem; }
+.venue-card-header .venue-line { margin: 0; }
+.venue-show-count { color: var(--muted); font-size: .8rem; }
+.venue-exhibitions { list-style: none; margin: 0; padding: 0 1rem; }
+.exhibition-entry { padding: .85rem .65rem; }
+.exhibition-entry + .exhibition-entry { border-top: 1px solid var(--line); }
+.exhibition-entry:focus { outline: 2px solid currentColor; outline-offset: -2px; }
+.exhibition-entry h4 { margin: 0 0 .25rem; font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.2; }
+.exhibition-entry .artists { margin: 0 0 .25rem; font-size: .92rem; }
+.exhibition-date { margin: 0; color: var(--muted); font-size: .83rem; }
+.exhibition-entry .freshness { margin: .35rem 0 0; }
+.exhibition-entry .card-actions { margin-top: .45rem; }
 .empty { padding: 3rem 1rem; display: grid; gap: .4rem; }
 .empty strong { font-size: 2rem; }
 

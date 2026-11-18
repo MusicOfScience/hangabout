@@ -38,6 +38,6 @@ test('multiple exhibitions at one gallery share one venue card', async ({ page }
   });
   await expect(unboundCard).toHaveCount(1);
   await expect(unboundCard).toContainText('Gallery Unbound');
-  await expect(unboundCard.locator('.exhibition-entry')).toHaveCount(5);
+  await expect(unboundCard.getByRole('list', { name: 'Exhibitions at Gallery Unbound' }).getByRole('listitem')).toHaveCount(5);
   await expect(unboundCard.locator('#event-gallery-unbound-alena-landers-wildflowers-2026')).toBeVisible();
 });
