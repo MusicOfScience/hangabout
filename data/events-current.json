@@ -525,8 +525,8 @@
     "admission": "unknown",
     "sourceName": "Heide Museum of Modern Art",
     "sourceType": "official",
-    "sourceUrl": "https://www.heide.com.au/exhibitions/",
-    "lastVerified": "2026-11-18"
+    "sourceUrl": "https://www.heide.com.au/exhibitions/ken-whisson-and-john-foubister-going-back-in/",
+    "lastVerified": "2026-11-19"
   },
   {
     "id": "craft-lean-in-2026",
@@ -609,5 +609,61 @@
     "sourceType": "official",
     "sourceUrl": "https://charlesnodrumgallery.com.au/exhibitions/",
     "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "heide-feed-8142",
+    "venueId": "heide-museum-modern-art",
+    "title": "Personal Effects",
+    "artists": [],
+    "startDate": "2026-09-19",
+    "endDate": "2027-03-29",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Heide Museum of Modern Art",
+    "sourceType": "official",
+    "sourceUrl": "https://www.heide.com.au/exhibitions/personal-effects/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "heide-feed-8135",
+    "venueId": "heide-museum-modern-art",
+    "title": "David Jolly Everything Else Falls Away",
+    "artists": [],
+    "startDate": "2026-10-31",
+    "endDate": "2027-03-14",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Heide Museum of Modern Art",
+    "sourceType": "official",
+    "sourceUrl": "https://www.heide.com.au/exhibitions/david-jolly/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "heide-feed-8098",
+    "venueId": "heide-museum-modern-art",
+    "title": "Love Letters",
+    "artists": [],
+    "startDate": "2026-12-02",
+    "endDate": "2027-03-08",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Heide Museum of Modern Art",
+    "sourceType": "official",
+    "sourceUrl": "https://www.heide.com.au/exhibitions/love-letters/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "heide-feed-8745",
+    "venueId": "heide-museum-modern-art",
+    "title": "100 Years 100 Chairs",
+    "artists": [],
+    "startDate": "2027-03-24",
+    "endDate": "2027-07-11",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Heide Museum of Modern Art",
+    "sourceType": "official",
+    "sourceUrl": "https://www.heide.com.au/exhibitions/100-years-100-chairs/",
+    "lastVerified": "2026-11-19"
   }
 ]
