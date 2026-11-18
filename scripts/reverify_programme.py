@@ -135,6 +135,7 @@ def reverify(
     candidates = [
         event for event in events
         if event.get("sourceType") == "official"
+        and event.get("venueId") != "heide-museum-modern-art"  # Handled by the structured feed.
         and isinstance(event.get("sourceUrl"), str)
         and event.get("sourceUrl")
         and exhibition_end_boundary(event["endDate"]) >= today

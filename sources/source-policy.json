@@ -57,6 +57,13 @@
       "host": "creativespaces.net.au",
       "automationAllowed": true,
       "use": "refresh explicit vacancy and pricing facts from first-party listing pages; preserve the last good record when a check fails"
+    },
+    {
+      "id": "heide-exhibitions",
+      "name": "Heide Museum of Modern Art",
+      "host": "www.heide.com.au",
+      "automationAllowed": true,
+      "use": "refresh factual title, detail URL and date range from the structured first-party exhibition index"
     }
   ]
 }

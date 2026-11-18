@@ -15,7 +15,7 @@
     "leaflet": "^1.9.4"
   },
   "devDependencies": {
-    "@playwright/test": "latest",
+    "@playwright/test": "1.61.1",
     "@types/leaflet": "latest",
     "typescript": "latest",
     "vite": "latest"
