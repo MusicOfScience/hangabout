@@ -27,8 +27,12 @@ test('Firestation artist studios appear in the default studio surface', async ({
   await expect(page.locator('#resource-firestation-artist-studios')).toContainText('waiting list / register interest');
 });
 
-test('Troppo appears in all making resources', async ({ page }) => {
+test('session-only workspace and casual rates stay out of studio rentals', async ({ page }) => {
   await page.goto('/?mode=make');
-  await page.locator('#makeKind').selectOption('resources');
-  await expect(page.locator('#resource-troppo-print-studio-open-access')).toBeVisible();
+  await expect(page.locator('#resource-troppo-print-studio-open-access')).toHaveCount(0);
+  const mixedUseStudio = page.locator('#resource-amegstudio-moorabbin');
+  await expect(mixedUseStudio).toContainText('enquire about long-term rental');
+  await expect(mixedUseStudio).not.toContainText('/hour');
+  await page.getByRole('button', { name: 'advertised vacancies', exact: true }).click();
+  await expect(mixedUseStudio).toHaveCount(0);
 });

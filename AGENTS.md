@@ -9,13 +9,13 @@ Hangabout is my existing art-discovery application.
 
 ## Purpose
 
-Help people discover galleries and exhibitions through “see art”, and studios and practical artist resources through “make art”. Preserve the app’s editorial identity, plain-English controls and mobile usability.
+Help people discover galleries and exhibitions through “see art”, and long-term artist studio rentals through “make art”. Preserve the app’s editorial identity, plain-English controls and mobile usability.
 
 ## Scope
 
 Extend gallery and exhibition discovery nationally across Australia, including regional areas. Develop a maintainable indexing and refresh pipeline that discovers new galleries, links them to sourced exhibition programmes and supports geographic search.
 
-Keep studio discovery focused on inner and outer Melbourne.
+Keep Make Art focused on long-term artist studio rentals in inner and outer Melbourne. Session hire, event spaces and general opportunities are outside that directory.
 
 ## Working method
 

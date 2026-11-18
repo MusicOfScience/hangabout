@@ -49,7 +49,6 @@ const els = {
   crawlOpen: q<HTMLAnchorElement>('#crawlOpen'),
   crawlClear: q<HTMLButtonElement>('#crawlClear'),
   makeSearch: q<HTMLInputElement>('#makeSearch'),
-  makeKind: q<HTMLSelectElement>('#makeKind'),
   makeSort: q<HTMLSelectElement>('#makeSort'),
   makeFeatures: q<HTMLElement>('#makeFeatures'),
   makeCount: q<HTMLElement>('#makeCount'),
@@ -184,37 +183,28 @@ function shell(data: Dataset): string {
       <section id="makePanel" hidden>
         <div class="make-intro">
           <p class="eyebrow">for artists</p>
-          <h2>find somewhere to make.</h2>
-          <p>Start with studio listings, then widen the search to shared workshops, live opportunities and gallery pathways. Every result shows where its information came from and when it was last checked.</p>
+          <h2>rent an artist studio.</h2>
+          <p>Long-term artist studio rentals in Melbourne.</p>
           <p class="freshness-note"><strong>Availability changes quickly.</strong> Checked dates are shown on every listing; confirm with the source before travelling, applying or paying.</p>
         </div>
 
         <div class="make-grid">
           <div class="map-shell">
-            <div id="makeMap" role="region" aria-label="map of artist resources"></div>
+            <div id="makeMap" role="region" aria-label="map of Melbourne artist studios"></div>
             <div class="map-actions">
-              <button id="makeReset" class="map-button" hidden>show all resources</button>
+              <button id="makeReset" class="map-button" hidden>show all studios</button>
               <button id="makeLocate" class="map-button">sort near me</button>
             </div>
             <p class="make-map-note">pins are grouped by suburb · open one for studio names, prices and links</p>
           </div>
           <div>
             <div class="make-controls">
-              <input id="makeSearch" class="search" type="search" aria-label="search artist resources" placeholder="studio, suburb, printmaking, 24/7…" autocomplete="off">
+              <input id="makeSearch" class="search" type="search" aria-label="search artist studios" placeholder="studio, suburb, printmaking, 24/7…" autocomplete="off">
               <div class="make-selects">
-                <label>show
-                  <select id="makeKind">
-                  <option value="studio">find a studio</option>
-                  <option value="resources">all making resources</option>
-                  <option value="workspace">shared workspaces + finders</option>
-                  <option value="opportunity">opportunities + development</option>
-                  <option value="pathways">gallery / organisation pathways</option>
-                  </select>
-                </label>
                 <label>sort
                   <select id="makeSort">
                     <option value="relevance">recommended</option>
-                    <option value="price">lowest advertised price</option>
+                    <option value="price">lowest monthly equivalent</option>
                     <option value="distance">nearest</option>
                     <option value="az">a–z</option>
                   </select>
@@ -222,7 +212,7 @@ function shell(data: Dataset): string {
               </div>
               <div id="makeFeatures" class="chips" aria-label="studio features">
                 ${[
-                  ['available-now', 'vacancies now'],
+                  ['available-now', 'advertised vacancies'],
                   ['24/7', '24/7 access'],
                   ['wash-up', 'wash-up space'],
                   ['natural-light', 'natural light'],
@@ -257,7 +247,7 @@ function shell(data: Dataset): string {
 
     <footer>
       <strong>hangabout</strong>
-      <span>${data.events.length} listings · ${data.venues.length} spaces · ${data.venues.filter(v => v.lat != null && v.lng != null).length} exact/building pins · ${data.resources.length} make-art resources</span>
+      <span>${data.events.length} listings · ${data.venues.length} spaces · ${data.venues.filter(v => v.lat != null && v.lng != null).length} exact/building pins · ${data.resources.filter(resource => resource.resourceType === 'studio').length} artist studios</span>
     </footer>
   `;
 }
@@ -366,7 +356,6 @@ function wire() {
     state.makeSuburb = null;
     renderMake();
   });
-  els.makeKind.addEventListener('change', () => { state.makeKind = els.makeKind.value; state.makeSuburb = null; renderMake(); });
   els.makeSort.addEventListener('change', () => {
     state.makeSort = els.makeSort.value as typeof state.makeSort;
     if (state.makeSort === 'distance' && !state.userLocation) {
@@ -388,12 +377,6 @@ function wire() {
   });
   els.makeReset.addEventListener('click', () => { state.makeSuburb = null; renderMake(); });
   els.makeLocate.addEventListener('click', locate);
-
-  els.makeResults.addEventListener('click', event => {
-    const target = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-venue-detail]');
-    if (!target) return;
-    openVenueDetail(target.dataset.venueDetail!);
-  });
 
   els.dialogClose.addEventListener('click', () => els.dialog.close());
   els.dialog.addEventListener('click', event => {
@@ -635,49 +618,27 @@ function openDetail(eventId: string) {
 
 function renderMake() {
   const query = norm(state.makeQuery);
-  let resources = dataset.resources.filter(resource =>
-    !query || matchesStudioQuery(resource, query)
+  const rentals = dataset.resources.filter(resource =>
+    resource.resourceType === 'studio'
+    && (!query || matchesStudioQuery(resource, query))
+    && [...state.makeFeatures].every(feature => resourceMatchesFeature(resource, feature))
   );
-  let venuePathways: Venue[] = [];
+  sortMakeResults(rentals);
 
-  if (state.makeKind === 'studio') resources = resources.filter(r => r.resourceType === 'studio');
-  else if (state.makeKind === 'workspace') resources = resources.filter(r => ['workspace','finder'].includes(r.resourceType));
-  else if (state.makeKind === 'opportunity') resources = resources.filter(r => r.resourceType === 'opportunity');
-  else if (state.makeKind === 'pathways') {
-    resources = [];
-    venuePathways = dataset.venues.filter(v => v.artistPathways?.length && (!query || norm([v.name, v.suburb, v.focus?.join(' ') ?? '', (v.artistPathways ?? []).map(p => p.label).join(' ')].join(' ')).includes(query)));
-  } else {
-    resources = resources.filter(r => ['studio','workspace','finder','opportunity'].includes(r.resourceType));
-  }
-
-  if (state.makeKind !== 'pathways' && state.makeFeatures.size) {
-    resources = resources.filter(resource => [...state.makeFeatures].every(feature => resourceMatchesFeature(resource, feature)));
-  }
-
-  sortMakeResults(resources, venuePathways);
-
-  const mapResources = [...resources];
-  if (state.makeSuburb) {
-    resources = resources.filter(r => norm(r.suburb) === norm(state.makeSuburb!));
-    venuePathways = venuePathways.filter(v => norm(v.suburb) === norm(state.makeSuburb!));
-  }
-
-  const total = resources.length + venuePathways.length;
-  els.makeCount.textContent = `${total} ${makeResultNoun(total)}`;
+  const results = state.makeSuburb
+    ? rentals.filter(resource => norm(resource.suburb) === norm(state.makeSuburb!))
+    : rentals;
+  els.makeCount.textContent = `${results.length} ${results.length === 1 ? 'studio' : 'studios'}`;
   els.makeStatus.textContent = [
     state.makeSuburb ? `showing ${state.makeSuburb}` : '',
     state.makeSort === 'distance' && state.userLocation ? 'nearest first · map positions may be suburb-level' : '',
   ].filter(Boolean).join(' · ');
   els.makeReset.hidden = !state.makeSuburb;
-  els.makeReset.textContent = state.makeKind === 'studio' ? 'show all studios' : 'show all resources';
-  els.makeFeatures.hidden = ['opportunity', 'pathways'].includes(state.makeKind);
 
-  els.makeResults.innerHTML = [
-    ...resources.map(resourceCard),
-    ...venuePathways.map(pathwayCard),
-  ].join('') || `<div class="empty"><strong>nothing there.</strong><span>${state.makeFeatures.has('available-now') ? 'No recently checked vacancies match. Remove “vacancies now” to see studios and contact their sources.' : 'Try another search or remove a feature filter.'}</span></div>`;
+  els.makeResults.innerHTML = results.map(resourceCard).join('') ||
+    `<div class="empty"><strong>no studios match.</strong><span>${state.makeFeatures.has('available-now') ? 'No recently checked vacancies match. Turn off “advertised vacancies” to see other studios.' : 'Try another search or remove a feature filter.'}</span></div>`;
 
-  makeMap.render(mapResources, venuePathways);
+  makeMap.render(rentals);
 }
 
 function resourceCard(resource: MakeResource): string {
@@ -698,46 +659,16 @@ function resourceCard(resource: MakeResource): string {
       <div class="resource-facts">
         ${resource.price ? `<span>${esc(resource.price)}</span>` : ''}
         ${resource.size ? `<span>${esc(resource.size)}</span>` : ''}
-        ${resource.availability ? `<span>${freshness.state === 'stale' ? 'previously listed: ' : ''}${esc(resource.availability)}</span>` : ''}
+        ${resource.availability ? `<span>${freshness.state === 'stale' ? 'previously listed: ' : ''}${esc(resource.availability.replace(/^available now\b/i, 'advertised as available'))}</span>` : ''}
         ${distance ? `<span>${esc(distance)}</span>` : ''}
       </div>
       ${resource.tags?.length ? `<div class="resource-tags">${resource.tags.slice(0, 7).map(tag => `<span>${esc(tag)}</span>`).join('')}</div>` : ''}
       <div class="resource-source">
-        <a href="${safeUrl(resource.website)}" target="_blank" rel="noopener">availability and details ↗</a>
+        <a href="${safeUrl(resource.website)}" target="_blank" rel="noopener">rental details ↗</a>
         <span class="freshness freshness-${freshness.state}">${esc(resource.sourceName)} · last checked ${esc(formatChecked(resource.lastVerified))} (${esc(freshness.relativeLabel)}) · ${freshnessAdvice}</span>
       </div>
     </article>
   `;
-}
-
-function pathwayCard(venue: Venue): string {
-  return `
-    <article class="resource-card" id="pathway-${esc(venue.id)}" tabindex="-1">
-      <div class="card-top"><span class="kind">${esc(venue.kind.replaceAll('-', ' '))}</span><span>${esc(venue.suburb)}</span></div>
-      <h3>${esc(venue.name)}</h3>
-      <div class="pathways">
-        ${(venue.artistPathways ?? []).map(path => `<a href="${safeUrl(path.url)}" target="_blank" rel="noopener">${esc(path.label)} ↗</a>`).join('')}
-      </div>
-      <button class="text-link" data-venue-detail="${esc(venue.id)}">venue details</button>
-    </article>
-  `;
-}
-
-function openVenueDetail(venueId: string) {
-  const venue = venueById.get(venueId);
-  if (!venue) return;
-  els.dialogContent.innerHTML = `
-    <p class="eyebrow">${esc(venue.kind.replaceAll('-', ' '))}</p>
-    <h2>${esc(venue.name)}</h2>
-    <p>${esc(venue.address)}</p>
-    <p>${esc(venue.focus?.join(' · ') ?? '')}</p>
-    ${venue.access?.note ? `<p><strong>access:</strong> ${esc(venue.access.note)}</p>` : ''}
-    <div class="dialog-links">
-      <a href="${safeUrl(venue.website)}" target="_blank" rel="noopener">website ↗</a>
-      ${(venue.artistPathways ?? []).map(path => `<a href="${safeUrl(path.url)}" target="_blank" rel="noopener">${esc(path.label)} ↗</a>`).join('')}
-    </div>
-  `;
-  els.dialog.showModal();
 }
 
 function locate() {
@@ -761,7 +692,7 @@ function locate() {
         state.makeSort = 'distance';
         els.makeSort.value = 'distance';
         renderMake();
-        setStatus('nearest resources first · map positions may be suburb-level');
+        setStatus('nearest studios first · map positions may be suburb-level');
       } else {
         state.sort = 'distance';
         els.sort.value = 'distance';
@@ -795,10 +726,9 @@ function resourceMatchesFeature(resource: MakeResource, feature: string): boolea
   return true;
 }
 
-function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
+function sortMakeResults(resources: MakeResource[]) {
   if (state.makeSort === 'az') {
     resources.sort((a, b) => a.name.localeCompare(b.name));
-    pathways.sort((a, b) => a.name.localeCompare(b.name));
     return;
   }
   if (state.makeSort === 'price') {
@@ -808,7 +738,6 @@ function sortMakeResults(resources: MakeResource[], pathways: Venue[]) {
   if (state.makeSort === 'distance' && state.userLocation) {
     const origin = state.userLocation;
     resources.sort((a, b) => pointDistance(origin, resourcePoint(a)) - pointDistance(origin, resourcePoint(b)));
-    pathways.sort((a, b) => pointDistance(origin, venuePoint(a)) - pointDistance(origin, venuePoint(b)));
     return;
   }
   if (state.makeSort === 'relevance') {
@@ -838,14 +767,6 @@ function comparePrice(a: number, b: number): number {
   if (!Number.isFinite(a)) return 1;
   if (!Number.isFinite(b)) return -1;
   return a - b;
-}
-
-function makeResultNoun(total: number): string {
-  const singular = total === 1;
-  if (state.makeKind === 'studio') return singular ? 'studio' : 'studios';
-  if (state.makeKind === 'opportunity') return singular ? 'opportunity' : 'opportunities';
-  if (state.makeKind === 'pathways') return singular ? 'pathway' : 'pathways';
-  return singular ? 'resource' : 'resources';
 }
 
 function formatChecked(iso: string): string {

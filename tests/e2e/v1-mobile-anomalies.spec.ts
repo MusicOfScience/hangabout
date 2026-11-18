@@ -25,14 +25,6 @@ test.beforeEach(async ({ page }) => {
   }));
 });
 
-test('expired opportunities do not remain in the live opportunities view', async ({ page }) => {
-  await page.goto('/?mode=make');
-  await page.locator('#makeKind').selectOption('opportunity');
-
-  await expect(page.getByText('Craft Crits — August', { exact: true })).toHaveCount(0);
-  await expect(page.locator('#makeResults')).not.toContainText('Craft Crits — August');
-});
-
 test('stale availability is historical evidence, not an available-now claim', async ({ page }) => {
   // Advance past the freshness window even when the scheduled job rechecks the listing.
   const vacancy = studioVacancies.find(row => row.premisesId === 'pea-green-boat-studios');
@@ -42,7 +34,6 @@ test('stale availability is historical evidence, not an available-now claim', as
   staleDate.setUTCDate(staleDate.getUTCDate() + 21);
   await page.clock.setSystemTime(staleDate);
   await page.goto('/?mode=make');
-  await page.locator('#makeKind').selectOption('resources');
 
   const peaGreenBoat = page.locator('#resource-pea-green-boat-studios');
   await expect(peaGreenBoat).toBeVisible();
@@ -56,7 +47,7 @@ test('make-art near-me map stays centred on the user after mode switches', async
   await page.goto('/?mode=make');
 
   await page.getByRole('button', { name: 'sort near me', exact: true }).click();
-  await expect(page.locator('#makeStatus')).toContainText('nearest resources first');
+  await expect(page.locator('#makeStatus')).toContainText('nearest studios first');
 
   const readCenter = () => page.evaluate(() => {
     const map = (window as typeof window & {
