@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import studioVacancies from '../../data/studio-vacancies.json';
 
 const transparentPng = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL4WQAAAABJRU5ErkJggg==',
@@ -30,10 +31,12 @@ test('expired opportunities do not remain in the live opportunities view', async
 });
 
 test('stale availability is historical evidence, not an available-now claim', async ({ page }) => {
-  // Pea Green Boat was genuinely rechecked on 29 Oct. Advance beyond the studio
-  // freshness grace window so this test exercises stale-evidence rendering rather
-  // than pinning the catalogue to an obsolete verification date.
-  await page.clock.setSystemTime(new Date('2026-11-20T02:00:00Z'));
+  // Advance past the freshness window even when the scheduled job rechecks the listing.
+  const vacancy = studioVacancies.find(row => row.premisesId === 'pea-green-boat-studios');
+  expect(vacancy?.availabilityStatus).toBe('advertised');
+  const staleDate = new Date(`${vacancy!.lastVerified}T02:00:00Z`);
+  staleDate.setUTCDate(staleDate.getUTCDate() + 21);
+  await page.clock.setSystemTime(staleDate);
   await page.goto('/?mode=make');
   await page.locator('#makeKind').selectOption('resources');
 
