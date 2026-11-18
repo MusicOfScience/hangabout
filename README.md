@@ -20,7 +20,7 @@ v1.0 includes:
 - saved shows stored locally in the browser
 - a multi-stop **your crawl** proximity route handed off to Google Maps for walking, cycling and driving; public transport remains a single-destination navigation choice rather than a falsely supported multi-stop optimiser
 - per-venue Google Maps, Apple Maps and Waze links using canonical street addresses
-- a separate **make art** directory with studios, workspaces, opportunities, access notes and verified artist pathways where known
+- a separate **make art** directory for long-term artist studio rentals in Melbourne, including advertised vacancies and rental waiting lists
 - explicit provenance: source type, source name, source URL and verification date
 - progressive map enhancement: if map tiles or discovery services fail, the listing and navigation surfaces continue to work
 

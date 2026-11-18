@@ -108,6 +108,9 @@ export function loadDataset(): Dataset {
   const projectedResources = rawResources.map(resource => {
     if (resource.resourceType !== 'studio') return resource;
     const vacancy = vacancyByPremise.get(resource.id);
+    // A mixed-use studio may advertise an hourly rate without confirming an
+    // ongoing rental vacancy. Keep the premises and send artists to the source.
+    const casualQuote = vacancy?.pricePeriod === 'hour' || vacancy?.pricePeriod === 'day';
     const features = Object.fromEntries([
       ['24/7', resource.tags?.includes('24/7')],
       ['wash-up', resource.tags?.includes('wash-up')],
@@ -120,13 +123,13 @@ export function loadDataset(): Dataset {
       premisesId: resource.id,
       vacancyId: vacancy?.id,
       lastVerified: vacancy?.lastVerified ?? resource.lastVerified,
-      availability: vacancy?.availability ?? resource.availability,
-      price: vacancy?.price ?? resource.price,
+      availability: casualQuote ? 'enquire about long-term rental' : vacancy?.availability ?? resource.availability,
+      price: casualQuote ? undefined : vacancy?.price ?? resource.price,
       size: vacancy?.size ?? resource.size,
-      availabilityStatus: vacancy?.availabilityStatus ?? resource.availabilityStatus ?? 'unknown',
-      availableFrom: vacancy?.availableFrom,
-      priceAmount: vacancy?.priceAmount,
-      pricePeriod: vacancy?.pricePeriod,
+      availabilityStatus: casualQuote ? 'unknown' : vacancy?.availabilityStatus ?? resource.availabilityStatus ?? 'unknown',
+      availableFrom: casualQuote ? undefined : vacancy?.availableFrom,
+      priceAmount: casualQuote ? undefined : vacancy?.priceAmount,
+      pricePeriod: casualQuote ? undefined : vacancy?.pricePeriod,
       premisesStatus: 'active',
       coordinatePrecision: resource.coordinatePrecision ?? (resource.lat != null && resource.lng != null ? 'building' : 'locality'),
       practiceTypes: resource.practiceTypes ?? resource.tags?.filter(tag => !['available-now', '24/7', 'wash-up', 'natural-light', 'accessible'].includes(tag)),

@@ -225,32 +225,23 @@ export class MakeMap {
     window.hangaboutMakeMap = this;
   }
 
-  render(resources: MakeResource[], pathwayVenues: Venue[] = []) {
+  render(resources: MakeResource[]) {
     this.layer.clearLayers();
-    const groups = new Map<string, { suburb: string; point: Point; resources: MakeResource[]; pathways: Venue[] }>();
+    const groups = new Map<string, { suburb: string; point: Point; resources: MakeResource[] }>();
     for (const resource of resources) {
       const point = resourcePoint(resource);
       if (!point) continue;
       const key = resource.suburb.toLowerCase();
       const existing = groups.get(key);
       if (existing) existing.resources.push(resource);
-      else groups.set(key, { suburb: resource.suburb, point, resources: [resource], pathways: [] });
+      else groups.set(key, { suburb: resource.suburb, point, resources: [resource] });
     }
-    for (const venue of pathwayVenues) {
-      const point = exactVenuePoint(venue);
-      if (!point) continue;
-      const key = venue.suburb.toLowerCase();
-      const existing = groups.get(key);
-      if (existing) existing.pathways.push(venue);
-      else groups.set(key, { suburb: venue.suburb, point, resources: [], pathways: [venue] });
-    }
-
     const markers: Marker[] = [];
     for (const group of groups.values()) {
-      const count = group.resources.length + group.pathways.length;
+      const count = group.resources.length;
       const marker = L.marker(group.point, {
         icon: divIcon(String(count), 'resource-pin'),
-        title: `${group.suburb}: ${count} resources`,
+        title: `${group.suburb}: ${count} studios`,
       }).addTo(this.layer);
       const resourceRows = group.resources.map(resource => {
         const source = safeExternalUrl(resource.website);
@@ -265,17 +256,10 @@ export class MakeMap {
           '</li>',
         ].join('');
       });
-      const pathwayRows = group.pathways.map(venue => [
-        '<li>',
-        `<strong>${escapeHtml(venue.name)}</strong>`,
-        '<small>gallery / organisation pathway</small>',
-        `<span class="popup-links"><a href="#pathway-${escapeHtml(venue.id)}">show in list ↓</a></span>`,
-        '</li>',
-      ].join(''));
       marker.bindPopup([
         `<strong>${escapeHtml(group.suburb)}</strong>`,
-        `<span>${count} ${count === 1 ? 'resource' : 'resources'} in this view</span>`,
-        `<ul class="popup-listings">${[...resourceRows, ...pathwayRows].join('')}</ul>`,
+        `<span>${count} ${count === 1 ? 'studio' : 'studios'} in this view</span>`,
+        `<ul class="popup-listings">${resourceRows.join('')}</ul>`,
         `<button type="button" class="popup-filter">show only ${escapeHtml(group.suburb)} ↓</button>`,
       ].join('<br>'), { maxWidth: 350, minWidth: 260 });
       marker.on('popupopen', () => {
@@ -286,7 +270,7 @@ export class MakeMap {
     }
 
     const signature = [...groups.entries()].map(([key, group]) =>
-      `${key}:${group.resources.map(resource => resource.id).join(',')}:${group.pathways.map(venue => venue.id).join(',')}`
+      `${key}:${group.resources.map(resource => resource.id).join(',')}`
     ).sort().join('|');
     if (markers.length && signature !== this.markerSignature) this.fitCurrentMarkers();
     this.markerSignature = signature;

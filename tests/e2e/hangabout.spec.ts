@@ -116,17 +116,17 @@ test('stale studio vacancies stay visible while source-rechecked listings qualif
   await page.clock.setSystemTime(new Date('2026-09-23T02:00:00Z'));
   await page.goto('/?mode=make');
   await expect(page.locator('#resource-b2-window-room-brunswick')).toContainText('previously listed: available from 1 Aug 2026');
-  await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
+  await page.getByRole('button', { name: 'advertised vacancies', exact: true }).click();
   await expect(page.locator('.resource-card')).not.toHaveCount(0);
   await expect(page.locator('#resource-b2-window-room-brunswick')).toHaveCount(0);
   await expect(page.locator('#resource-brunswick-bower')).toBeVisible();
-  await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
+  await page.getByRole('button', { name: 'advertised vacancies', exact: true }).click();
   await expect(page.locator('.resource-card')).not.toHaveCount(0);
 });
 
 test('recently checked vacancies still qualify as available now', async ({ page }) => {
   await page.goto('/?mode=make');
-  await page.getByRole('button', { name: 'vacancies now', exact: true }).click();
+  await page.getByRole('button', { name: 'advertised vacancies', exact: true }).click();
   await expect(page.locator('#resource-pink-ember-studios-coburg')).toBeVisible();
   await expect(page.locator('#resource-brunswick-street-gallery-studio')).toHaveCount(0);
 });
