@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test';
-import studioVacancies from '../../data/studio-vacancies.json';
+import { readFileSync } from 'node:fs';
+
+const studioVacancies: { premisesId: string; availabilityStatus: string; lastVerified: string }[] =
+  JSON.parse(readFileSync(new URL('../../data/studio-vacancies.json', import.meta.url), 'utf8'));
 
 const transparentPng = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL4WQAAAABJRU5ErkJggg==',
@@ -33,8 +36,9 @@ test('expired opportunities do not remain in the live opportunities view', async
 test('stale availability is historical evidence, not an available-now claim', async ({ page }) => {
   // Advance past the freshness window even when the scheduled job rechecks the listing.
   const vacancy = studioVacancies.find(row => row.premisesId === 'pea-green-boat-studios');
-  expect(vacancy?.availabilityStatus).toBe('advertised');
-  const staleDate = new Date(`${vacancy!.lastVerified}T02:00:00Z`);
+  if (!vacancy) throw new Error('Missing Pea Green Boat vacancy test data');
+  expect(vacancy.availabilityStatus).toBe('advertised');
+  const staleDate = new Date(`${vacancy.lastVerified}T02:00:00Z`);
   staleDate.setUTCDate(staleDate.getUTCDate() + 21);
   await page.clock.setSystemTime(staleDate);
   await page.goto('/?mode=make');
