@@ -67,5 +67,103 @@
     "sourceType": "official",
     "sourceUrl": "https://www.austapestry.com.au/whats-on/exhibitions",
     "lastVerified": "2026-11-03"
+  },
+  {
+    "id": "gallery-unbound-shattered-and-stained-2026",
+    "venueId": "gallery-unbound",
+    "title": "Shattered and Stained",
+    "artists": [
+      "Toby Halligan"
+    ],
+    "startDate": "2026-11-11",
+    "endDate": "2026-11-29",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Gallery Unbound",
+    "sourceType": "official",
+    "sourceUrl": "https://galleryunbound.com.au/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "gallery-unbound-nightscapes-2026",
+    "venueId": "gallery-unbound",
+    "title": "Nightscapes",
+    "artists": [
+      "Colleen Frances"
+    ],
+    "startDate": "2026-11-11",
+    "endDate": "2026-11-29",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Gallery Unbound",
+    "sourceType": "official",
+    "sourceUrl": "https://galleryunbound.com.au/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "gallery-unbound-resonance-2026",
+    "venueId": "gallery-unbound",
+    "title": "Resonance",
+    "artists": [
+      "Lauren Maguire"
+    ],
+    "startDate": "2026-11-11",
+    "endDate": "2026-11-29",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Gallery Unbound",
+    "sourceType": "official",
+    "sourceUrl": "https://galleryunbound.com.au/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "gallery-unbound-melbourne-institutions-2026",
+    "venueId": "gallery-unbound",
+    "title": "Melbourne Institutions",
+    "artists": [
+      "Bex Create"
+    ],
+    "startDate": "2026-11-11",
+    "endDate": "2026-11-29",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Gallery Unbound",
+    "sourceType": "official",
+    "sourceUrl": "https://galleryunbound.com.au/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "craft-victoria-visionaries-2026",
+    "venueId": "craft-victoria",
+    "title": "Visionaries 2026",
+    "artists": [
+      "Participating makers"
+    ],
+    "startDate": "2026-11-12",
+    "endDate": "2027-02-06",
+    "eventType": "exhibition",
+    "admission": "free",
+    "sourceName": "Craft Victoria",
+    "sourceType": "official",
+    "sourceUrl": "https://craft.org.au/whats-on/all-events/visionaries-2026/",
+    "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "craft-victoria-in-the-shape-of-us-2026",
+    "venueId": "craft-victoria",
+    "title": "In the Shape of Us",
+    "artists": [
+      "MeiMei Hodgkinson",
+      "Enoch",
+      "Zia"
+    ],
+    "startDate": "2026-11-10",
+    "endDate": "2027-01-09",
+    "eventType": "exhibition",
+    "admission": "free",
+    "sourceName": "Craft Victoria",
+    "sourceType": "official",
+    "sourceUrl": "https://craft.org.au/whats-on/all-events/in-her-image/",
+    "lastVerified": "2026-11-19"
   }
 ]
