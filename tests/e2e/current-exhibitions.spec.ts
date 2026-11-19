@@ -38,6 +38,11 @@ test('multiple exhibitions at one gallery share one venue card', async ({ page }
   });
   await expect(unboundCard).toHaveCount(1);
   await expect(unboundCard).toContainText('Gallery Unbound');
-  await expect(unboundCard.getByRole('list', { name: 'Exhibitions at Gallery Unbound' }).getByRole('listitem')).toHaveCount(5);
-  await expect(unboundCard.locator('#event-gallery-unbound-alena-landers-wildflowers-2026')).toBeVisible();
+  const shows = unboundCard.getByRole('list', { name: 'Exhibitions at Gallery Unbound' });
+  await expect(page.locator('.event-card[data-venue="gallery-unbound"]')).toHaveCount(1);
+  await expect(shows.locator('#event-gallery-unbound-alena-landers-wildflowers-2026')).toContainText('On now');
+  await expect(shows.getByRole('listitem').filter({ hasText: 'Shattered and Stained' })).toContainText('Upcoming');
+  await expect(shows.getByRole('listitem').filter({ hasText: 'Nightscapes' })).toContainText('Upcoming');
+  await expect(shows.getByRole('listitem').filter({ hasText: 'Resonance' })).toContainText('Upcoming');
+  await expect(shows.getByRole('listitem').filter({ hasText: 'Melbourne Institutions' })).toContainText('Upcoming');
 });
