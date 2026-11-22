@@ -46,3 +46,27 @@ test('multiple exhibitions at one gallery share one venue card', async ({ page }
   await expect(shows.getByRole('listitem').filter({ hasText: 'Resonance' })).toContainText('Upcoming');
   await expect(shows.getByRole('listitem').filter({ hasText: 'Melbourne Institutions' })).toContainText('Upcoming');
 });
+
+test('an ended exhibition keeps a dated destination outside live results', async ({ page }) => {
+  await page.goto('/?mode=make#event-margaret-ackland-reflections');
+  const archive = page.locator('#linkedExhibition');
+  await expect(archive).toBeFocused();
+  await expect(archive).toContainText('Past exhibition');
+  await expect(archive).toContainText('Reflections');
+  await expect(archive).toContainText(/18 Aug 2026 — 12 Sept? 2026/);
+  await expect(archive.getByRole('link', { name: /Flinders Lane Gallery/ })).toHaveAttribute('href', /^https:/);
+  await expect(page.locator('#resultsList')).not.toContainText('Margaret Ackland');
+  await page.getByRole('button', { name: 'make art', exact: true }).click();
+  await expect(archive).toBeHidden();
+  await page.goBack();
+  await expect(archive).toBeFocused();
+});
+
+test('an unrecognised exhibition link gives a way back to listings', async ({ page }) => {
+  await page.goto('/#event-missing%');
+  const panel = page.locator('#linkedExhibition');
+  await expect(panel).toContainText('Exhibition link unavailable');
+  await panel.getByRole('link', { name: 'Browse exhibition listings' }).click();
+  await expect(panel).toBeHidden();
+  await expect(page.locator('#resultsList')).toBeInViewport();
+});

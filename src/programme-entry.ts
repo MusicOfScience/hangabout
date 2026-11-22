@@ -94,7 +94,7 @@ function render() {
 
   list.innerHTML = rows.length
     ? rows.map(programmeCard).join('')
-    : emptyMessage(selectedWindow);
+    : emptyMessage(selectedWindow, Boolean(query) || venueKind !== 'all');
 }
 
 function programmeCard(event: ProgrammeEvent): string {
@@ -239,11 +239,14 @@ function escapeHtml(value: string): string {
   })[character]!);
 }
 
-function emptyMessage(window: ProgrammeWindow): string {
+function emptyMessage(window: ProgrammeWindow, filtered: boolean): string {
+  if (filtered) {
+    return '<div class="programme-empty"><strong>No timed events match these filters.</strong><span>Try another search, space or time window.</span><a href="#resultsList">View exhibition results ↓</a></div>';
+  }
   const text = window === 'tonight'
     ? 'Nothing verified for tonight yet.'
     : window === 'week'
       ? 'Nothing verified in this window yet.'
       : 'No upcoming timed programme is verified yet.';
-  return `<div class="programme-empty"><strong>${text}</strong><span>That means our maintained coverage is incomplete, not that Melbourne has stopped making art.</span></div>`;
+  return `<div class="programme-empty"><strong>${text}</strong><span>Our timed programme coverage is incomplete. You can still explore exhibition listings.</span><a href="#resultsList">View exhibition results ↓</a></div>`;
 }
