@@ -28,3 +28,10 @@ jobs:
           name: hangabout-source-discovery
           path: generated/source-discovery.json
           retention-days: 14
+      - name: discover Australian gallery candidates from Wikidata
+        run: python scripts/discover_gallery_candidates.py --report generated/gallery-candidates.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: australian-gallery-candidates
+          path: generated/gallery-candidates.json
+          retention-days: 14

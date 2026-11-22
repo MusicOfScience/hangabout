@@ -1,5 +1,6 @@
 import './programme.css';
 
+import { venueGeography } from './geo';
 import { loadDataset } from './data/load';
 import { datePartsInTimeZone, DEFAULT_TIME_ZONE } from './time';
 import type { ProgrammeEvent } from './types';
@@ -80,7 +81,7 @@ function render() {
         event.people?.map(person => `${person.name} ${person.role}`).join(' ') ?? '',
         event.tags?.join(' ') ?? '',
         venue.name,
-        venue.suburb,
+        venueGeography(venue),
       ].join(' ')).includes(query);
     })
     .sort(compareProgrammeEvents);

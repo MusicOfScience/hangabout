@@ -127,3 +127,21 @@ python3.13 scripts/validate_freshness.py --strict
 ```
 
 The report command exits zero while printing warnings; `--strict` exits nonzero when records are overdue. The JSON supplies IDs, source URLs, names, verification dates and ages for a genuine source-review pass. As of 2026-09-23 it contains 19 exhibitions and 22 studio/opportunity records. It is a task queue, not evidence of a new verification. Review source access conditions before fetching; a reachable page alone does not confirm all listing facts. Preserve good data and record unresolved checks rather than advancing their dates.
+
+### Regional gallery coverage
+
+Run the coverage census offline. The report counts distinct canonical venues in each pilot area, venues with a recorded official programme page (manual or monitored), and venues with an official current or upcoming exhibition checked in the preceding 14 days. Use a fixed date to reproduce a snapshot.
+
+```sh
+python3.13 scripts/audit_programme_coverage.py --as-of 2026-11-22 --strict --report generated/programme-coverage.json
+```
+
+The daily source-discovery job also makes one bounded CC0 Wikidata query. To run that part independently, use the following command with internet access.
+
+```sh
+python3.13 scripts/discover_gallery_candidates.py --report generated/gallery-candidates.json
+```
+
+The artifact includes label, QID, candidate websites, and an existing venue ID where a reviewer has linked the QID. The query covers items explicitly classified as an Australian art gallery or art museum. It reports truncation above 500 bindings. Review the official site, premises, locality and programme before promoting a candidate. A failed query fails the job and leaves the published index intact. An unmatched QID may still represent an existing venue.
+
+Use the scheduled programme coverage and discovery artifacts to prioritise gaps. For the regional pilot, Goulburn and NERAM allow scheduled link checks. Ararat and Castlemaine have manual programme links. The seven pilot exhibitions record the published date text alongside the normalised dates. The existing exhibition recheck job requires the title and that date text before advancing their verification dates, subject to each source's access policy.

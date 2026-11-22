@@ -10,6 +10,22 @@
   ],
   "referenceSources": [
     {
+      "id": "castlemaine-manual",
+      "name": "Castlemaine Art Museum",
+      "url": "https://castlemaineartmuseum.org.au/exhibitions",
+      "automationAllowed": false,
+      "reason": "The linked website terms could not be verified at pilot review.",
+      "use": "manual first-party programme checks"
+    },
+    {
+      "id": "ararat-manual",
+      "name": "Ararat Gallery TAMA",
+      "url": "https://www.araratgallerytama.com.au/exhibitions/",
+      "automationAllowed": false,
+      "reason": "Programme access check returned a robots denial.",
+      "use": "manual first-party programme checks"
+    },
+    {
       "id": "charles-art-openings",
       "name": "Art Openings Melbourne calendar",
       "url": "https://calendar.google.com/calendar/u/0/r?cid=charles.artopenings@gmail.com",

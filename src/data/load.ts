@@ -1,3 +1,4 @@
+import programmeIndexes from '../../sources/official-indexes.json';
 import venuesBase from '../../data/venues.json';
 import venuesExtra from '../../data/venues-extra.json';
 import venuesMajor from '../../data/venues-major.json';
@@ -188,8 +189,15 @@ export function loadDataset(): Dataset {
       lng: resource.lng,
     }));
 
+  const localityPoints = new Map(knownPlaces.filter(place => place.precision === 'locality')
+    .map(place => [place.id, [place.lat, place.lng] as [number, number]]));
+  const programmeUrls = new Map(programmeIndexes.map(index => [index.venueId, index.indexUrl]));
   return {
-    venues: canonicalVenues,
+    venues: canonicalVenues.map(venue => ({
+      ...venue,
+      localityPoint: localityPoints.get(venue.id),
+      programmeUrl: venue.programmeUrl ?? programmeUrls.get(venue.id),
+    })),
     // The archive remains complete; the legacy `events` compatibility surface is the
     // live discovery catalogue and therefore excludes programme records older than the
     // stale threshold until they are reverified.

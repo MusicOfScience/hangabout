@@ -179,6 +179,11 @@ def reverify(
             results.append(result)
             continue
 
+        if event.get("sourceDateText") and not page_contains_title(payload, event["sourceDateText"]):
+            result["status"] = "dates-need-review"
+            results.append(result)
+            continue
+
         result["status"] = "verified"
         if needs_verification(event.get("lastVerified"), checked):
             event["lastVerified"] = checked

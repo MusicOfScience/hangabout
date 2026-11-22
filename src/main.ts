@@ -4,7 +4,7 @@ import { loadDataset } from './data/load';
 import { state } from './state';
 import type { Dataset, Event, MakeResource, Venue } from './types';
 import { closesWithin, DEFAULT_TIME_ZONE, formatDateRange, intersectsThisWeekend, isEventCurrent, isEventUpcoming, isVenueOpenNow, isVenueOpenToday, melbourneLabel, openingWithin, todayInTimeZone } from './time';
-import { haversine, nearestSuburb, resourcePoint, venuePoint, type Point } from './geo';
+import { haversine, nearestSuburb, venueGeography, resourcePoint, venuePoint, type Point } from './geo';
 import { googleCrawlUrl, googleSearchUrl, mapsUrl, pointInsideBounds, type WebDiscoveryKind } from './discovery';
 import { MakeMap, SeeMap } from './map';
 import { writeIds } from './storage';
@@ -72,7 +72,7 @@ const makeMap = new MakeMap(q<HTMLElement>('#makeMap'), suburb => {
 });
 
 wire();
-renderSee(true);
+renderSee();
 renderMake();
 updateCrawl();
 applyLocation();
@@ -98,10 +98,10 @@ function shell(data: Dataset): string {
     <main>
       <section class="hero">
         <div class="hero-title">
-          <p class="eyebrow">melbourne</p>
+          <p class="eyebrow">Melbourne · regional Victoria &amp; NSW</p>
           <h1>what's hanging,<br>where.</h1>
         </div>
-        <p class="lede">Exhibitions, openings and places to look—with the artist-run, public, commercial and in-between parts of the city on the same map.</p>
+        <p class="lede">Find exhibitions and openings at artist-run spaces, public galleries and commercial galleries.</p>
       </section>
 
       <nav class="mode-switch" aria-label="choose mode">
@@ -123,7 +123,7 @@ function shell(data: Dataset): string {
         </aside>
 
         <section class="filters" aria-label="find exhibitions">
-          <input id="searchInput" class="search" type="search" aria-label="search exhibitions" placeholder="artist, gallery, suburb, medium…" autocomplete="off">
+          <input id="searchInput" class="search" type="search" aria-label="search exhibitions and galleries" placeholder="artist, gallery, town, state…" autocomplete="off">
           <div id="quickFilters" class="chips">
             ${[
               ['all','everything'], ['open','open now'], ['today','open today'],
@@ -177,6 +177,10 @@ function shell(data: Dataset): string {
               <div><strong id="resultCount">0</strong> shows <span id="mappedCount"></span></div>
               <div id="status" class="status" role="status"></div>
             </div>
+            <details id="galleryDirectory" class="gallery-directory">
+              <summary>Gallery directory <span id="galleryCount"></span></summary>
+              <ul id="galleryList"></ul>
+            </details>
             <div id="resultsList" tabindex="-1"></div>
           </div>
         </section>
@@ -260,7 +264,12 @@ function wire() {
   window.addEventListener('popstate', applyLocation);
   window.addEventListener('hashchange', applyLocation);
 
-  els.search.addEventListener('input', () => { state.query = els.search.value; renderSee(); });
+  els.search.addEventListener('input', () => {
+    state.query = els.search.value;
+    const searching = Boolean(state.query.trim());
+    q<HTMLDetailsElement>('#galleryDirectory').open = searching;
+    renderSee(searching && !state.areaBounds);
+  });
   els.kind.addEventListener('change', () => { state.venueKind = els.kind.value; renderSee(); });
   els.sort.addEventListener('change', () => {
     state.sort = els.sort.value as typeof state.sort;
@@ -489,7 +498,7 @@ function filteredEvents(): Event[] {
     if (state.venueKind !== 'all' && venue.kind !== state.venueKind) return false;
     if (query && !norm([
       event.title, event.artists.join(' '), event.tags?.join(' ') ?? '',
-      venue.name, venue.suburb, venue.kind,
+      venue.name, venueGeography(venue), venue.kind,
     ].join(' ')).includes(query)) return false;
 
     const timeZone = venue.timeZone ?? DEFAULT_TIME_ZONE;
@@ -526,9 +535,30 @@ function filteredEvents(): Event[] {
   return rows;
 }
 
+function renderGalleryDirectory() {
+  const directory = q<HTMLDetailsElement>('#galleryDirectory');
+  const query = norm(state.query);
+  const galleries = dataset.venues.filter(venue => {
+    if (state.venueKind !== 'all' && venue.kind !== state.venueKind) return false;
+    const point = venuePoint(venue);
+    if (state.areaBounds && (!point || !pointInsideBounds(point, state.areaBounds))) return false;
+    return norm([venue.name, venueGeography(venue), venue.kind].join(' ')).includes(query);
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  directory.hidden = !galleries.length || state.quick !== 'all';
+  if (directory.hidden) return [];
+  q<HTMLElement>('#galleryCount').textContent = `(${galleries.length})`;
+  q<HTMLElement>('#galleryList').innerHTML = galleries.map(venue => `
+    <li><strong>${esc(venue.name)}</strong> · ${esc(venue.suburb)} ${esc(venue.stateCode ?? 'VIC')}
+      <a href="${safeUrl(venue.programmeUrl ?? venue.website)}" target="_blank" rel="noopener">${venue.programmeUrl ? 'Exhibition programme' : 'Gallery website'} ↗</a>
+      ${venue.lastVerified ? `<small>Venue checked ${esc(venue.lastVerified)}</small>` : ''}
+    </li>`).join('');
+  return galleries;
+}
+
 function renderSee(focusMap = false) {
   const rows = filteredEvents();
   const groups = groupEventsByVenue(rows, venueById);
+  const directoryVenues = renderGalleryDirectory();
   els.resultCount.textContent = String(rows.length);
 
   const exactMapped = new Set(
@@ -536,7 +566,7 @@ function renderSee(focusMap = false) {
       .filter((venue): venue is Venue => Boolean(venue?.lat != null && venue?.lng != null))
       .map(venue => venue.id)
   ).size;
-  const approximate = new Set(rows.map(event => venueById.get(event.venueId)).filter(Boolean).filter(v => v!.lat == null || v!.lng == null)).size;
+  const approximate = groups.filter(({ venue }) => venue.lat == null && venuePoint(venue)).length;
   els.mappedCount.textContent = `· ${groups.length} ${groups.length === 1 ? 'venue' : 'venues'} · ${exactMapped} exact pins${approximate ? ` · ${approximate} area-matched spaces` : ''}`;
 
   if (state.quick === 'nearby' && !state.userLocation) {
@@ -548,10 +578,10 @@ function renderSee(focusMap = false) {
   }
 
   els.results.innerHTML = groups.map(venueCard).join('') ||
-    `<div class="empty"><strong>nothing there.</strong><span>Try another filter or clear the map area.</span></div>`;
+    `<div class="empty"><strong>No matching exhibition listings.</strong><span>Try another search or filter.</span></div>`;
 
   renderLinkedExhibition();
-  seeMap.render(rows, dataset, focusMap);
+  seeMap.render(rows, dataset, directoryVenues, focusMap);
 }
 
 function renderAreaDiscovery() {
@@ -562,13 +592,13 @@ function renderAreaDiscovery() {
   );
 
   els.areaDiscovery.hidden = false;
-  els.areaDiscoverySummary.textContent = `${areaEvents.length} exhibition ${areaEvents.length === 1 ? 'listing' : 'listings'} · ${places.length} known ${places.length === 1 ? 'place' : 'places'} awaiting programmes`;
+  els.areaDiscoverySummary.textContent = `${areaEvents.length} exhibition ${areaEvents.length === 1 ? 'listing' : 'listings'} · ${places.length} known ${places.length === 1 ? 'place' : 'places'} in this area`;
   els.cachedAreaResults.innerHTML = `
     <a class="area-results-jump" href="#resultsList">${areaEvents.length ? `view ${areaEvents.length} exhibition ${areaEvents.length === 1 ? 'listing' : 'listings'}` : 'no current hangabout exhibition listings here yet'} ↓</a>
   ` + places.map(place => `
     <article class="area-place">
       <div><strong>${esc(place.name)}</strong><span>${esc(place.locality)} · known public gallery</span></div>
-      <a href="${safeUrl(place.sourceUrl)}" target="_blank" rel="noopener">directory source ↗</a>
+      <a href="${safeUrl(venueById.get(place.id)?.programmeUrl ?? place.sourceUrl)}" target="_blank" rel="noopener">${venueById.get(place.id)?.programmeUrl ? 'exhibition programme' : 'directory source'} ↗</a>
     </article>
   `).join('');
   els.liveAreaResults.innerHTML = '<p class="area-place-message">checking OpenStreetMap for additional art places…</p>';

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit whether Hangabout's known Melbourne art universe is actually monitored.
+"""Audit whether Hangabout's gallery catalogue is actually monitored.
 
 This is a coverage diagnostic, not a publishing pipeline. It compares:
 - canonical venue records;
@@ -17,12 +17,16 @@ import argparse
 import json
 import re
 from pathlib import Path
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
+
+from validate_freshness import end_boundary
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 SOURCES = ROOT / "sources"
 VENUE_FILES = ("venues.json", "venues-extra.json", "venues-major.json", "venues-current.json")
-CURRENT_EVENT_FILES = ("events-current.json", "events-current-coverage.json")
+EVENT_FILES = ("events.json", "events-extra.json", "events-major.json", "events-current.json", "events-current-coverage.json")
 
 
 def load(path: Path):
@@ -40,9 +44,9 @@ def merged_venues() -> dict[str, dict]:
     return result
 
 
-def current_exhibitions() -> list[dict]:
+def exhibitions_from_catalogue() -> list[dict]:
     records: list[dict] = []
-    for name in CURRENT_EVENT_FILES:
+    for name in EVENT_FILES:
         path = DATA / name
         if path.exists():
             records.extend(load(path))
@@ -57,15 +61,25 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--report", type=Path)
     parser.add_argument("--strict", action="store_true", help="fail when a maintained-programme venue has no monitored first-party index")
+    parser.add_argument("--as-of", type=date.fromisoformat, default=datetime.now(ZoneInfo("Australia/Melbourne")).date())
     args = parser.parse_args()
 
     venues = merged_venues()
     indexes = load(SOURCES / "official-indexes.json")
-    exhibitions = current_exhibitions()
+    exhibitions = exhibitions_from_catalogue()
     known_places = load(DATA / "known-art-places.json")
 
     monitored = {item["venueId"] for item in indexes if item.get("automationAllowed") is True}
-    live_programme = {item["venueId"] for item in exhibitions}
+    live_programme = {item["venueId"] for item in exhibitions
+                      if item["sourceType"] == "official" and end_boundary(item["endDate"]) >= args.as_of.isoformat()
+                      and 0 <= (args.as_of - date.fromisoformat(item["lastVerified"])).days <= 14}
+    programme_pages = monitored | {key for key, venue in venues.items() if venue.get("programmeUrl")}
+    areas = {
+        "Regional VIC": {key for key, venue in venues.items() if venue.get("region") == "Regional VIC"},
+        "Regional NSW": {key for key, venue in venues.items() if venue.get("region") == "Regional NSW"},
+        "Melbourne commercial and artist-run": {key for key, venue in venues.items()
+            if venue.get("region", "Melbourne") == "Melbourne" and venue["kind"] in {"commercial", "artist-run"}},
+    }
     maintained = {venue_id for venue_id, venue in venues.items() if venue.get("coverageStatus") == "maintained-programme"}
 
     canonical_names = {norm(venue.get("name", "")) for venue in venues.values()}
@@ -79,6 +93,10 @@ def main() -> int:
     canonical_unmonitored = sorted(set(venues) - monitored)
 
     report = {
+        "asOf": args.as_of.isoformat(),
+        "coverageByArea": {area: {"identified": len(ids), "officialProgrammePages": len(ids & programme_pages),
+                                  "withRecentlyVerifiedShow": len(ids & live_programme)}
+                           for area, ids in areas.items()},
         "canonicalVenueCount": len(venues),
         "knownArtPlaceCount": len(known_places),
         "monitoredProgrammeVenueCount": len(monitored),
