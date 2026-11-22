@@ -1,0 +1,96 @@
+name: verified venue refresh
+
+on:
+  schedule:
+    - cron: '32 18 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: hangabout-verified-venue-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: check official venue data and validate the proposed changes
+        run: |
+          python scripts/validate_sources.py
+          python scripts/refresh_neram_venue.py --apply --report generated/venue-refresh.json
+          python scripts/validate_data_v3.py
+          python scripts/validate_coordinates.py
+          git diff --check
+          git diff -- data/venues-current.json data/venue-coordinates.json > generated/venue-refresh.patch
+      - name: retain venue refresh evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: venue-refresh
+          path: |
+            generated/venue-refresh.json
+            generated/venue-refresh.patch
+          if-no-files-found: warn
+          retention-days: 30
+      - name: propose verified changes for review
+        if: github.event_name == 'schedule' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! test -s generated/venue-refresh.patch; then
+            exit 0
+          fi
+          fingerprint=$(python3 -c 'import json; print(json.dumps(json.load(open("generated/venue-refresh.json"))["changes"], sort_keys=True))' | git hash-object --stdin)
+          branch="automation/neram-venue-refresh-$fingerprint"
+          previous=$(gh pr list --state all --base main --head "$branch" --limit 1 --json url --jq '.[0].url // empty')
+          if [ -n "$previous" ]; then
+            printf 'This set of changes already has a pull request. %s\n' "$previous" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          open_pr=$(gh pr list --state open --base main --limit 100 --json headRefName,url \
+            --jq '.[] | select(.headRefName | startswith("automation/neram-venue-refresh-")) | .url')
+          if [ -n "$open_pr" ]; then
+            printf 'Review the outstanding NERAM proposal before opening another. %s\n' "$open_pr" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git fetch origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo 'Main advanced during the check. The next run will compare against the new revision.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if git ls-remote --exit-code --heads origin "refs/heads/$branch"; then
+            git fetch origin "$branch"
+            if ! git diff --quiet FETCH_HEAD; then
+              echo 'An existing proposal branch differs from the verified patch. Review the workflow artifact.' >&2
+              exit 1
+            fi
+          else
+            status=$?
+            if [ "$status" -ne 2 ]; then
+              exit "$status"
+            fi
+            git switch -c "$branch"
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/venues-current.json data/venue-coordinates.json
+            git commit -m 'Propose verified NERAM venue changes'
+            git push origin "HEAD:refs/heads/$branch"
+          fi
+          {
+            printf '%s\n\n' 'Review the proposed address and map pin together against the museum’s official venue page.'
+            printf '%s\n\n' '[First-party venue source](https://www.neram.com.au/venue/neram/)'
+            printf '[Workflow evidence](%s/%s/actions/runs/%s)\n\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+            printf '```json\n'
+            cat generated/venue-refresh.json
+            printf '```\n'
+          } > generated/venue-refresh-pr.md
+          gh pr create --draft --base main --head "$branch" --title 'Review verified NERAM venue changes' \
+            --body-file generated/venue-refresh-pr.md >> "$GITHUB_STEP_SUMMARY"

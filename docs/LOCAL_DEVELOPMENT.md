@@ -156,3 +156,13 @@ python3.13 scripts/audit_gallery_directory.py \
 The audit reports unavailable inputs explicitly. Treat website and name matches as leads and confirm the specific premises on its first-party site before changing the directory. Art Guide Australia and Art Almanac remain manual references under the source policy.
 
 The separate daily **scheduled source refresh** checks and publishes supported exhibition and studio fields through the existing validation and Pages pipeline. For the regional pilot, Goulburn and NERAM allow scheduled link checks. Ararat and Castlemaine have manual programme links. The seven pilot exhibitions record the published date text alongside the normalised dates. The exhibition recheck job requires the title and that date text before advancing their verification dates, subject to each source's access policy.
+
+### Verified venue changes
+
+The weekly **verified venue refresh** checks the structured address and map pin on NERAM’s approved first-party venue page. A meaningful change produces a validated draft PR for review. Formatting differences, missing evidence, a different locality and suspicious map movements are reported without a proposal. The address has its own source and checked date when changed. The venue-wide verification date still describes the wider manual check.
+
+```sh
+python3.13 scripts/refresh_neram_venue.py --report generated/venue-refresh.json
+```
+
+The command needs internet access. The workflow uploads the evidence and proposed patch as the `venue-refresh` artifact. Manual workflow runs check and validate without creating a PR. The GitHub setting **Allow GitHub Actions to create and approve pull requests** permits the scheduled job to open a draft. Use the PR’s normal GitHub review and merge process, including approving its validation run when GitHub requests it.
