@@ -2,6 +2,10 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Verified venue refresh pilot, 23 November 2026
+
+The weekly GitHub workflow checks NERAM’s official structured address and pin. Verified changes within Armidale produce a draft PR with the source observation and patch. The manual workflow is a check-only run. The current first-party response agrees with Hangabout’s address and coordinates. See [local development](LOCAL_DEVELOPMENT.md#verified-venue-changes) for commands and GitHub review steps.
+
 ## Scheduled gallery directory review, 23 November 2026
 
 The daily [source discovery workflow](https://github.com/MusicOfScience/hangabout/actions/workflows/source-discovery.yml) compares its Wikidata result with the gallery directory and discovery cache. Its job summary and JSON artifact surface candidate matches, overdue venue records and monitored programme indexes that failed or returned zero links. Review new premises and changes through the normal feature-branch workflow using first-party evidence. The separate scheduled source refresh continues publishing the supported exhibition and studio fields. See [local development](LOCAL_DEVELOPMENT.md#regional-gallery-coverage) for reproduction.

@@ -64,6 +64,9 @@ def main():
         base.validate_venue(venue)
         if "programmeUrl" in venue:
             base.require(base.valid_url(venue["programmeUrl"]), f"{venue['id']}: invalid programme URL")
+        if "addressSourceUrl" in venue or "addressLastVerified" in venue:
+            base.require(base.valid_url(venue.get("addressSourceUrl", "")), f"{venue['id']}: invalid address source URL")
+            base.valid_date(venue.get("addressLastVerified"), f"{venue['id']} address")
     wikidata_ids = [venue["wikidataId"] for venue in venues if "wikidataId" in venue]
     base.require(len(wikidata_ids) == len(set(wikidata_ids)), "duplicate reviewed Wikidata id")
     known_venues = set(venue_ids)

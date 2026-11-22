@@ -74,6 +74,16 @@ def main():
         require(refresh_host not in blocked_hosts, f"blocked reference host placed in refresh sources: {refresh_host}")
         require(str(source.get("use", "")).strip(), f"refresh source needs a documented use: {source.get('id')}")
 
+    venue_refresh = policy.get("venueRefreshSources", [])
+    seen.clear()
+    for source in venue_refresh:
+        venue_id = source.get("venueId")
+        require(venue_id in venue_ids and venue_id not in seen, f"invalid or duplicate venue refresh ID: {venue_id}")
+        seen.add(venue_id)
+        require(source.get("automationAllowed") is True, f"venue refresh must explicitly allow automation: {venue_id}")
+        require(host(source.get("url", "")) not in blocked_hosts, f"blocked host in venue refresh: {venue_id}")
+        require(str(source.get("use", "")).strip(), f"venue refresh needs a documented use: {venue_id}")
+
     print(f"validated {len(indexes)} automated first-party indexes; {len(refresh_sources)} scheduled refresh sources; {len(reference)} reference-only sources blocked from automation")
 
 

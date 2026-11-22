@@ -66,6 +66,14 @@
       "use": "manual cross-check until permissions/terms are reviewed"
     }
   ],
+  "venueRefreshSources": [
+    {
+      "venueId": "new-england-regional-art-museum",
+      "url": "https://www.neram.com.au/venue/neram/",
+      "automationAllowed": true,
+      "use": "Propose changes to the published street address and coordinates from the museum's structured Place record."
+    }
+  ],
   "refreshSources": [
     {
       "id": "creative-spaces-studios",
