@@ -79,3 +79,12 @@ test('timed programme leaves the live surface after its verification deadline', 
   await expect(page.locator('#programmeList')).toContainText('No upcoming timed programme is verified yet.');
   await expect(page.locator('#programmeList')).toContainText('coverage is incomplete');
 });
+
+test('a search with no matching timed events links to the exhibition results', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#searchInput').fill('zzzz');
+  const list = page.locator('#programmeList');
+  await expect(list).toContainText('No timed events match these filters.');
+  await list.getByRole('link', { name: 'View exhibition results' }).click();
+  await expect(page.locator('#resultsList')).toBeInViewport();
+});

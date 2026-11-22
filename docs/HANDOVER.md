@@ -2,6 +2,12 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Deployment review, 22 November 2026
+
+The public Pages release from main `a5973bc` showed 20 exhibitions across 11 venues and no verified timed events for the next seven days. The live link to Margaret Ackland’s *Reflections* opened the explorer without identifying the past exhibition. The review branch resolves shared links against the complete exhibition archive while keeping the list and map on their existing freshness and date rules. Empty timed searches link to the exhibition results.
+
+The 22 November freshness audit queued 4 exhibitions, 24 studios/opportunities, 5 workspaces/finders and 41 venues for source review. Re-run the audit for current figures. This navigation change does not refresh those records.
+
 ## National/studio data milestone (2026-09-24)
 
 Feature branch `codex/national-studio-data` adds the next planned data stage without changing the signed-off layout or publishing unreviewed records. Studio resource IDs remain stable; `data/studio-vacancies.json` carries separate vacancy status, price, size, source and check metadata, and the loader projects the latest listing onto the existing cards while exposing `studioPremises` and `studioVacancies` in the dataset. Structured Make Art queries now understand practice/facility fields and price limits while unknown facts remain non-matches. National venue records support AU state/locality/region/timezone/coverage fields, and venue-local opening logic works across Australian zones.

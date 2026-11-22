@@ -18,6 +18,7 @@ const venueById = new Map(dataset.venues.map(venue => [venue.id, venue]));
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = shell(dataset);
 
 const els = {
+  linkedExhibition: q<HTMLElement>('#linkedExhibition'),
   skipLink: q<HTMLAnchorElement>('.skip-link'),
   seeTab: q<HTMLButtonElement>('[data-mode="see"]'),
   makeTab: q<HTMLButtonElement>('[data-mode="make"]'),
@@ -109,6 +110,7 @@ function shell(data: Dataset): string {
       </nav>
 
       <section id="seePanel">
+        <section id="linkedExhibition" class="linked-exhibition" aria-labelledby="linkedTitle" tabindex="-1" hidden></section>
         <aside id="locationPrompt" class="location-prompt">
           <div>
             <strong>Want the nearby stuff first?</strong>
@@ -175,7 +177,7 @@ function shell(data: Dataset): string {
               <div><strong id="resultCount">0</strong> shows <span id="mappedCount"></span></div>
               <div id="status" class="status" role="status"></div>
             </div>
-            <div id="resultsList"></div>
+            <div id="resultsList" tabindex="-1"></div>
           </div>
         </section>
       </section>
@@ -396,6 +398,7 @@ function setMode(mode: 'see' | 'make', historyAction: HistoryAction = 'none') {
   els.makePanel.hidden = mode !== 'make';
   els.skipLink.href = mode === 'see' ? '#resultsList' : '#makeResults';
   if (historyAction !== 'none') writeModeToLocation(mode, historyAction);
+  renderLinkedExhibition();
   if (mode === 'see') seeMap.invalidate();
   else makeMap.show();
 }
@@ -405,10 +408,19 @@ function applyLocation() {
   revealLocationTarget();
 }
 
+function locationTarget(): string {
+  const fragment = window.location.hash.slice(1);
+  try {
+    return decodeURIComponent(fragment);
+  } catch {
+    return fragment;
+  }
+}
+
 function modeFromLocation(): 'see' | 'make' {
-  const target = decodeURIComponent(window.location.hash.slice(1));
+  const target = locationTarget();
   if (target.startsWith('resource-') || target.startsWith('pathway-')) return 'make';
-  if (target.startsWith('event-')) return 'see';
+  if (target === 'resultsList' || target.startsWith('event-')) return 'see';
   return new URLSearchParams(window.location.search).get('mode') === 'make' ? 'make' : 'see';
 }
 
@@ -417,8 +429,8 @@ function writeModeToLocation(mode: 'see' | 'make', action: Exclude<HistoryAction
   if (mode === 'make') url.searchParams.set('mode', 'make');
   else url.searchParams.delete('mode');
 
-  const target = decodeURIComponent(url.hash.slice(1));
-  const incompatible = mode === 'make' ? target.startsWith('event-') : target.startsWith('resource-') || target.startsWith('pathway-');
+  const target = locationTarget();
+  const incompatible = mode === 'make' ? target === 'resultsList' || target.startsWith('event-') : target.startsWith('resource-') || target.startsWith('pathway-');
   if (incompatible) url.hash = '';
 
   window.history[action === 'push' ? 'pushState' : 'replaceState'](
@@ -429,14 +441,39 @@ function writeModeToLocation(mode: 'see' | 'make', action: Exclude<HistoryAction
 }
 
 function revealLocationTarget() {
-  const id = decodeURIComponent(window.location.hash.slice(1));
+  const id = locationTarget();
   if (!/^(event|resource|pathway)-/.test(id)) return;
   requestAnimationFrame(() => {
-    const target = document.getElementById(id);
+    if (locationTarget() !== id) return;
+    const target = document.getElementById(id) ?? (id.startsWith('event-') ? els.linkedExhibition : null);
     if (!target || target.closest('[hidden]')) return;
     target.focus({ preventScroll: true });
     target.scrollIntoView({ block: 'center' });
   });
+}
+
+function renderLinkedExhibition() {
+  const id = locationTarget();
+  const panel = els.linkedExhibition;
+  panel.hidden = state.mode !== 'see' || !id.startsWith('event-') || Boolean(document.getElementById(id));
+  if (panel.hidden) return;
+
+  const event = dataset.exhibitions.find(item => item.id === id.slice('event-'.length));
+  const venue = event && venueById.get(event.venueId);
+  let content = '<h2 id="linkedTitle">Exhibition link unavailable</h2><p>Browse the listings below to find another show.</p>';
+  if (event && venue) {
+    const ended = !isEventUpcoming(event, todayInTimeZone(venue.timeZone ?? DEFAULT_TIME_ZONE));
+    const status = ended ? 'Past exhibition' : eventFreshness(event).state === 'stale'
+      ? 'Programme needs rechecking' : 'Outside your current filters';
+    content = `
+      <p class="eyebrow">${status}</p>
+      <h2 id="linkedTitle">${esc(event.title)}</h2>
+      ${event.artists.length ? `<p>${esc(event.artists.join(', '))}</p>` : ''}
+      <p><strong>${esc(venue.name)}</strong> · ${esc(venue.suburb)}</p>
+      <p>${esc(formatDateRange(event.startDate, event.endDate, true))}</p>
+      <p><a href="${safeUrl(event.sourceUrl)}" target="_blank" rel="noopener">${esc(event.sourceName)} ↗</a> · checked ${esc(event.lastVerified)}</p>`;
+  }
+  panel.innerHTML = `${content}<a class="text-link" href="#resultsList">Browse exhibition listings ↓</a>`;
 }
 
 function filteredEvents(): Event[] {
@@ -513,6 +550,7 @@ function renderSee(focusMap = false) {
   els.results.innerHTML = groups.map(venueCard).join('') ||
     `<div class="empty"><strong>nothing there.</strong><span>Try another filter or clear the map area.</span></div>`;
 
+  renderLinkedExhibition();
   seeMap.render(rows, dataset, focusMap);
 }
 

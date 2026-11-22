@@ -114,7 +114,7 @@ export function intersectsThisWeekend(event: Event, timeZone = DEFAULT_TIME_ZONE
   return event.startDate <= sunday && exhibitionEndBoundary(event.endDate) >= saturday;
 }
 
-export function formatDateRange(start: string, end: string): string {
+export function formatDateRange(start: string, end: string, includeYear = false): string {
   const parse = (iso: string) => {
     const [year, month, day = 1] = iso.split('-').map(Number);
     return new Date(Date.UTC(year!, month! - 1, day!));
@@ -123,7 +123,7 @@ export function formatDateRange(start: string, end: string): string {
   const fmt = new Intl.DateTimeFormat('en-AU', {
     day: 'numeric',
     month: 'short',
-    year: crossesYear ? 'numeric' : undefined,
+    year: includeYear || crossesYear ? 'numeric' : undefined,
     timeZone: 'UTC',
   });
   if (isMonthPrecision(end)) {

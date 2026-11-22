@@ -68,6 +68,10 @@ main { max-width: 1500px; margin: 0 auto; padding: 0 1rem 6rem; }
 .button-row, .crawl-actions { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
 .button { padding: .6rem .85rem; }
 
+.linked-exhibition { margin: 1rem 0; padding: 1.25rem; border: 1px solid var(--ink); display: grid; gap: .5rem; }
+.linked-exhibition :is(h2, p) { margin: 0; }
+.linked-exhibition .text-link { justify-self: start; margin-top: .5rem; }
+
 .filters { padding: 1rem 0; display: grid; gap: .8rem; border-bottom: 1px solid var(--line); }
 .search {
   width: 100%; border: 0; border-bottom: 2px solid var(--ink);
