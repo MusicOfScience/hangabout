@@ -2,6 +2,14 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Melbourne gallery programme links, 23 November 2026
+
+Reviewed first-party programme links for Flinders Lane Gallery, Australian Galleries, Niagara Galleries, Scott Livesey Galleries, Vivien Anderson Gallery, Stephen McLaughlan Gallery, cbOne Gallery and Bus Projects. The gallery directory and gallery-only map pins use the links. Bus Projects publishes its exhibition listings on its homepage. The review verified programme destinations for visitor navigation and manual follow-up.
+
+With these links, 11 of 15 Melbourne commercial and artist-run venues in the census have an official programme page, up from 3. Australian Galleries’ Melbourne exhibition filter serves the main gallery record. The separate Stock Rooms record keeps its venue website. No programme link was confirmed for Lynne Alexander Art Gallery, Sullivan+Strumpf or William Mora Galleries in this review.
+
+The regional gallery pilot merged in [PR #42](https://github.com/MusicOfScience/hangabout/pull/42). Its [Pages deployment](https://github.com/MusicOfScience/hangabout/actions/runs/45023290718) passed at merge commit `8104878`.
+
 ## Regional gallery pilot, 22 November 2026
 
 Four regional venue records and seven exhibition records cover Goulburn, Armidale, Castlemaine, Ararat and two existing Melbourne venues (Charles Nodrum Gallery and BLINDSIDE). The directory remains searchable after a show ends. NSW building pins use the galleries’ own published locations; the two Victorian regional markers retain locality precision and their existing identifiers.
