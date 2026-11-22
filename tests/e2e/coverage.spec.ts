@@ -51,3 +51,14 @@ test('regional search separates the gallery from its changing programme', async 
   await expect(page.locator('#resultCount')).toHaveText('0');
   await expect(page.locator('#galleryList a')).toHaveAttribute('href', 'https://goulburnregionalartgallery.com.au/exhibitions/');
 });
+
+test('a manually reviewed programme link works without a current exhibition', async ({ page }) => {
+  await page.clock.setSystemTime(new Date('2027-02-20T00:00:00Z'));
+  await page.goto('/');
+  await page.locator('#searchInput').fill('Flinders Lane Gallery');
+
+  await expect(page.locator('#resultCount')).toHaveText('0');
+  const link = page.locator('#galleryList').getByRole('link', { name: 'Exhibition programme' });
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute('href', 'https://flg.com.au/pages/exhibitions');
+});
