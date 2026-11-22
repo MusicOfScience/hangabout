@@ -2,6 +2,10 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Scheduled gallery directory review, 23 November 2026
+
+The daily [source discovery workflow](https://github.com/MusicOfScience/hangabout/actions/workflows/source-discovery.yml) compares its Wikidata result with the gallery directory and discovery cache. Its job summary and JSON artifact surface candidate matches, overdue venue records and monitored programme indexes that failed or returned zero links. Review new premises and changes through the normal feature-branch workflow using first-party evidence. The separate scheduled source refresh continues publishing the supported exhibition and studio fields. See [local development](LOCAL_DEVELOPMENT.md#regional-gallery-coverage) for reproduction.
+
 ## Melbourne gallery programme links, 23 November 2026
 
 Reviewed first-party programme links for Flinders Lane Gallery, Australian Galleries, Niagara Galleries, Scott Livesey Galleries, Vivien Anderson Gallery, Stephen McLaughlan Gallery, cbOne Gallery and Bus Projects. The gallery directory and gallery-only map pins use the links. Bus Projects publishes its exhibition listings on its homepage. The review verified programme destinations for visitor navigation and manual follow-up.

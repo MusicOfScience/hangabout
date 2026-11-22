@@ -19,6 +19,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: validate source policy
+        id: policy
         run: python scripts/validate_sources.py
       - name: discover first-party programme links
         run: python scripts/discover_official.py
@@ -29,9 +30,28 @@ jobs:
           path: generated/source-discovery.json
           retention-days: 14
       - name: discover Australian gallery candidates from Wikidata
+        id: wikidata
+        if: ${{ !cancelled() && steps.policy.outcome == 'success' }}
         run: python scripts/discover_gallery_candidates.py --report generated/gallery-candidates.json
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.wikidata.outcome == 'success' }}
         with:
           name: australian-gallery-candidates
           path: generated/gallery-candidates.json
           retention-days: 14
+      - name: compare discovery results with the gallery directory
+        id: directory
+        if: ${{ !cancelled() && steps.policy.outcome == 'success' }}
+        run: >-
+          python scripts/audit_gallery_directory.py
+          --wikidata generated/gallery-candidates.json
+          --discovery generated/source-discovery.json
+          --report generated/gallery-directory-review.json
+      - name: retain gallery directory review
+        if: ${{ !cancelled() && steps.directory.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-directory-review
+          path: generated/gallery-directory-review.json
+          if-no-files-found: error
+          retention-days: 30
