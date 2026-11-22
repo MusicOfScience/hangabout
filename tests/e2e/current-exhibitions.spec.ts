@@ -53,7 +53,7 @@ test('an ended exhibition keeps a dated destination outside live results', async
   await expect(archive).toBeFocused();
   await expect(archive).toContainText('Past exhibition');
   await expect(archive).toContainText('Reflections');
-  await expect(archive).toContainText('12 Sept 2026');
+  await expect(archive).toContainText(/18 Aug 2026 — 12 Sept? 2026/);
   await expect(archive.getByRole('link', { name: /Flinders Lane Gallery/ })).toHaveAttribute('href', /^https:/);
   await expect(page.locator('#resultsList')).not.toContainText('Margaret Ackland');
   await page.getByRole('button', { name: 'make art', exact: true }).click();
