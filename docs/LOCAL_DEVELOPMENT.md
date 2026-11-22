@@ -98,7 +98,7 @@ The scheduled studio refresh can be inspected locally in report-only mode (netwo
 python3.13 scripts/refresh_sources.py --report /private/tmp/hangabout-source-refresh.json
 ```
 
-It checks only policy-approved first-party pages and never changes data unless `--apply` is supplied. The GitHub Actions workflow uses `--apply` on a disposable automation branch, validates the resulting JSON, and opens a pull request for review. It preserves existing records on failed or ambiguous checks. Do not run `--apply` on `main` as a substitute for reviewing the generated PR. Gallery candidate discovery remains a separate weekly artifact workflow and is not automatically promoted to verified exhibitions.
+It checks policy-approved first-party pages. Local runs need `--apply` to edit data. The daily GitHub Actions workflow preserves existing records on failed or ambiguous checks, validates any supported changes, then commits them if the main branch is still at the checked revision and triggers Pages. For directory candidates, use the separate daily source-discovery review below.
 
 Git fetch/push, GitHub PR operations, package/browser installation and genuine source verification require network access. No API key or paid service is needed for existing local development.
 
@@ -144,4 +144,15 @@ python3.13 scripts/discover_gallery_candidates.py --report generated/gallery-can
 
 The artifact includes label, QID, candidate websites, and an existing venue ID where a reviewer has linked the QID. The query covers items explicitly classified as an Australian art gallery or art museum. It reports truncation above 500 bindings. Review the official site, premises, locality and programme before promoting a candidate. A failed query fails the job and leaves the published index intact. An unmatched QID may still represent an existing venue.
 
-Use the scheduled programme coverage and discovery artifacts to prioritise gaps. For the regional pilot, Goulburn and NERAM allow scheduled link checks. Ararat and Castlemaine have manual programme links. The seven pilot exhibitions record the published date text alongside the normalised dates. The existing exhibition recheck job requires the title and that date text before advancing their verification dates, subject to each source's access policy.
+Open **Actions → source discovery → latest scheduled run** for the Gallery directory review summary and its `gallery-directory-review` artifact. It records reviewed Wikidata IDs, possible matches by official website address or normalised name, shared-site ambiguities, website discrepancies, venue records overdue for first-party review, and monitored programme indexes with errors or zero links. The schedule runs daily on the default branch. The comparison itself works offline with saved discovery artifacts:
+
+```sh
+python3.13 scripts/audit_gallery_directory.py \
+  --wikidata generated/gallery-candidates.json \
+  --discovery generated/source-discovery.json \
+  --report generated/gallery-directory-review.json
+```
+
+The audit reports unavailable inputs explicitly. Treat website and name matches as leads and confirm the specific premises on its first-party site before changing the directory. Art Guide Australia and Art Almanac remain manual references under the source policy.
+
+The separate daily **scheduled source refresh** checks and publishes supported exhibition and studio fields through the existing validation and Pages pipeline. For the regional pilot, Goulburn and NERAM allow scheduled link checks. Ararat and Castlemaine have manual programme links. The seven pilot exhibitions record the published date text alongside the normalised dates. The exhibition recheck job requires the title and that date text before advancing their verification dates, subject to each source's access policy.

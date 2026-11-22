@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
+VENUE_MAX_AGE_DAYS = 90
 
 
 def load(name: str) -> list[dict]:
@@ -72,7 +73,7 @@ def main() -> None:
         *check(programme_events, "current/upcoming programme event", 14, today, active_only=True, queue=queue),
         *check(volatile, "studio/opportunity", 14, today, queue=queue),
         *check(slower, "workspace/finder", 60, today, queue=queue),
-        *check(venues, "venue", 90, today, queue=queue),
+        *check(venues, "venue", VENUE_MAX_AGE_DAYS, today, queue=queue),
     ]
 
     if args.report:
