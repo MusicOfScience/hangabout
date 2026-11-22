@@ -165,5 +165,118 @@
     "sourceType": "official",
     "sourceUrl": "https://craft.org.au/whats-on/all-events/in-her-image/",
     "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "castlemaine-biyal-2026",
+    "venueId": "pgav-castlemaine-art-museum",
+    "title": "Biyal",
+    "artists": [],
+    "startDate": "2026-08-22",
+    "endDate": "2026-11-29",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Castlemaine Art Museum",
+    "sourceType": "official",
+    "sourceUrl": "https://castlemaineartmuseum.org.au/exhibitions/biyal",
+    "sourceDateText": "August 22, 2026 — November 29, 2026",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "id": "goulburn-the-blue-highway-2026",
+    "venueId": "goulburn-regional-art-gallery",
+    "title": "The Blue Highway",
+    "artists": [
+      "Ira Gold"
+    ],
+    "startDate": "2026-12-04",
+    "endDate": "2027-01-30",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Goulburn Regional Art Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://goulburnregionalartgallery.com.au/exhibitions/ira-gold",
+    "sourceDateText": "4 dec. 2026 — 30 jan. 2027",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "id": "goulburn-open-road-2026",
+    "venueId": "goulburn-regional-art-gallery",
+    "title": "Open Road",
+    "artists": [],
+    "startDate": "2026-12-04",
+    "endDate": "2027-01-30",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Goulburn Regional Art Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://goulburnregionalartgallery.com.au/exhibitions/open-road",
+    "sourceDateText": "4 dec. 2026 — 30 jan. 2027",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "id": "neram-what-are-you-looking-at-2026",
+    "venueId": "new-england-regional-art-museum",
+    "title": "What are YOU Looking At?",
+    "artists": [],
+    "startDate": "2026-10-02",
+    "endDate": "2027-02-07",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "New England Regional Art Museum",
+    "sourceType": "official",
+    "sourceUrl": "https://www.neram.com.au/event/what-are-you-looking-at/",
+    "sourceDateText": "Fri 2 October 2026 – Sun 7 February 2027",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "id": "charles-nodrum-amongst-the-trees-2026",
+    "venueId": "charles-nodrum-gallery",
+    "title": "Amongst the Trees",
+    "artists": [
+      "Tom Alberts"
+    ],
+    "startDate": "2026-11-07",
+    "endDate": "2026-11-28",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Charles Nodrum Gallery",
+    "sourceType": "official",
+    "sourceUrl": "https://www.charlesnodrumgallery.com.au/index.php/exhibitions/tom-alberts-amongst-the-trees/",
+    "sourceDateText": "07 November - 28 November, 2026",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "id": "ararat-sleeping-dreaming-waking-2026",
+    "venueId": "pgav-ararat-gallery-tama",
+    "title": "Sleeping, Dreaming, Waking",
+    "artists": [
+      "Susan Wirth"
+    ],
+    "startDate": "2026-08-29",
+    "endDate": "2027-02-14",
+    "eventType": "exhibition",
+    "admission": "free",
+    "sourceName": "Ararat Gallery TAMA",
+    "sourceType": "official",
+    "sourceUrl": "https://www.araratgallerytama.com.au/event/susan-wirth-sleeping-dreaming-waking/",
+    "sourceDateText": "Saturday 29th August 2026 - Sunday 14th February 2027",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "id": "blindside-footsteps-in-the-miasma-2026",
+    "venueId": "blindside",
+    "title": "Footsteps in the miasma",
+    "artists": [
+      "David Mendelsohn"
+    ],
+    "startDate": "2026-11-25",
+    "endDate": "2026-12-19",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "BLINDSIDE",
+    "sourceType": "official",
+    "sourceUrl": "https://blindside.org.au/program/footsteps-in-the-miasma/",
+    "sourceDateText": "25 Nov–19 Dec 2026",
+    "lastVerified": "2026-11-22"
   }
 ]

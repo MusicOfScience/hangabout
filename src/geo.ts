@@ -1,3 +1,4 @@
+import regions from '../data/australian-regions.json' with { type: 'json' };
 import type { Dataset, MakeResource, Venue } from './types';
 
 export type Point = [number, number];
@@ -48,8 +49,17 @@ const SUBURB_CENTRES: Record<string, Point> = {
 
 const norm = (value: string) => value.trim().toLowerCase();
 
+const stateNames = new Map(regions.map(region => [region.stateCode, region.name]));
+
+export function venueGeography(venue: Venue): string {
+  const state = venue.stateCode ?? 'VIC';
+  const region = venue.region ?? (venue.countryCode ? '' : 'Melbourne');
+  return [venue.suburb, region, state, stateNames.get(state)].filter(Boolean).join(' ');
+}
+
 export function venuePoint(venue: Venue): Point | null {
   if (venue.lat != null && venue.lng != null) return [venue.lat, venue.lng];
+  if (venue.localityPoint) return venue.localityPoint;
   // Legacy Melbourne records predate the national address contract and may still
   // use a clearly labelled locality centre. National records without coordinates
   // stay unmapped rather than silently appearing in Melbourne.

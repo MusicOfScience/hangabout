@@ -30,6 +30,7 @@ def main():
         ROOT / "data" / "venues.json",
         ROOT / "data" / "venues-extra.json",
         ROOT / "data" / "venues-major.json",
+        ROOT / "data" / "venues-current.json",
     ]
     venues = [venue for path in venue_files for venue in load(path)]
     venue_ids = {venue["id"] for venue in venues}

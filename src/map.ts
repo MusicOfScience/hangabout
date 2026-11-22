@@ -1,7 +1,7 @@
 import L, { Map as LeafletMap, LayerGroup, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Dataset, Event, KnownArtPlace, MakeResource, Venue } from './types';
-import { exactVenuePoint, haversine, MELBOURNE, resourcePoint, type Point } from './geo';
+import { exactVenuePoint, venuePoint, haversine, MELBOURNE, resourcePoint, type Point } from './geo';
 
 const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -51,7 +51,7 @@ export class SeeMap {
     window.hangaboutSeeMap = this;
   }
 
-  render(events: Event[], dataset: Dataset, focus = false) {
+  render(events: Event[], dataset: Dataset, directoryVenues: Venue[], focus = false) {
     this.layer.clearLayers();
     this.knownLayer.clearLayers();
     const venueById = new Map(dataset.venues.map(v => [v.id, v]));
@@ -71,9 +71,9 @@ export class SeeMap {
       .filter((item): item is { venue: Venue; point: Point } => Boolean(item.point))
       .map(item => ({ name: item.venue.name, point: item.point }));
 
-    this.renderKnownPlaces(dataset.knownPlaces);
+    this.renderKnownPlaces(dataset.knownPlaces, venueById);
 
-    const markers: Marker[] = [];
+    const points: Point[] = [];
     for (const venue of venues.values()) {
       const point = exactVenuePoint(venue);
       if (!point) continue;
@@ -100,16 +100,28 @@ export class SeeMap {
         `<span>${escapeHtml(venue.suburb)} · ${count} ${count === 1 ? 'show' : 'shows'}</span>`,
         `<ul class="popup-listings">${listings}</ul>`,
       ].join('<br>'), { maxWidth: 330, minWidth: 240 });
-      markers.push(marker);
+      points.push(point);
     }
 
-    if (focus && markers.length) {
-      const bounds = L.featureGroup(markers).getBounds();
+    for (const venue of directoryVenues) {
+      const point = venuePoint(venue);
+      if (!point) continue;
+      points.push(point);
+      if (venues.has(venue.id) || !exactVenuePoint(venue)) continue;
+      const url = safeExternalUrl(venue.programmeUrl ?? venue.website);
+      L.circleMarker(point, { radius: 5, weight: 2, color: '#5f5d57', fillOpacity: .3 })
+        .addTo(this.layer)
+        .bindPopup(`<strong>${escapeHtml(venue.name)}</strong><br>${escapeHtml(venue.suburb)}<br>` +
+          (url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${venue.programmeUrl ? 'exhibition programme' : 'gallery website'} ↗</a>` : ''));
+    }
+
+    if (focus && points.length) {
+      const bounds = L.latLngBounds(points);
       if (bounds.isValid()) this.map.fitBounds(bounds.pad(.12), { maxZoom: 15 });
     }
   }
 
-  private renderKnownPlaces(places: KnownArtPlace[]) {
+  private renderKnownPlaces(places: KnownArtPlace[], venues: ReadonlyMap<string, Venue>) {
     for (const place of places) {
       const point: Point = [place.lat, place.lng];
       if (this.matchesCanonicalNameOrPoint(place.name, point)) continue;
@@ -125,11 +137,12 @@ export class SeeMap {
         className: 'known-place-marker',
       }).addTo(this.knownLayer);
 
+      const programme = safeExternalUrl(venues.get(place.id)?.programmeUrl ?? '');
       const source = safeExternalUrl(place.sourceUrl);
       marker.bindPopup([
         `<strong>${escapeHtml(place.name)}</strong>`,
         `<span>${escapeHtml(place.locality)} · known public gallery</span>`,
-        '<span>current exhibition programme not yet ingested by hangabout</span>',
+        programme ? `<a href="${escapeHtml(programme)}" target="_blank" rel="noopener">exhibition programme ↗</a>` : '<span>current exhibition programme not yet ingested by hangabout</span>',
         `<small>${escapeHtml(place.sourceName)} · ${escapeHtml(place.precision)}-level location</small>`,
         source ? `<a href="${escapeHtml(source)}" target="_blank" rel="noopener">source directory ↗</a>` : '',
       ].filter(Boolean).join('<br>'));

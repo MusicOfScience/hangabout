@@ -1,5 +1,8 @@
 # National gallery discovery and programme refresh plan
 
+The November 2026 pilot adds reviewed regional VIC/NSW venues, first-party exhibition dates, national Wikidata candidate discovery and a dated per-area census. [Current handover](HANDOVER.md) · [Pilot workflow and reproduction](LOCAL_DEVELOPMENT.md#regional-gallery-coverage). The staged design below records the earlier plan.
+
+
 Status: milestone 1 implemented on feature branch `codex/national-studio-data`, inspected 2026-09-24. The application remains static-first: the national contract and offline ingestion pilot produce reviewable candidates, while only promoted records enter the catalogue. National gallery/exhibition discovery, including regional Australia, remains the next coverage expansion; studio discovery stays in inner and outer Melbourne.
 
 ## Existing boundaries

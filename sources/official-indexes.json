@@ -110,5 +110,25 @@
     "automationAllowed": true,
     "sameDomainOnly": true,
     "includePathPatterns": ["/fps-gallery", "/gallery"]
+  },
+  {
+    "venueId": "goulburn-regional-art-gallery",
+    "name": "Goulburn Regional Art Gallery",
+    "indexUrl": "https://goulburnregionalartgallery.com.au/exhibitions/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": [
+      "/exhibitions/"
+    ]
+  },
+  {
+    "venueId": "new-england-regional-art-museum",
+    "name": "New England Regional Art Museum",
+    "indexUrl": "https://www.neram.com.au/whats-on/",
+    "automationAllowed": true,
+    "sameDomainOnly": true,
+    "includePathPatterns": [
+      "/event/"
+    ]
   }
 ]

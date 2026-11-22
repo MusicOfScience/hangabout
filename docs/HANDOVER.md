@@ -2,6 +2,12 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Regional gallery pilot, 22 November 2026
+
+Four regional venue records and seven exhibition records cover Goulburn, Armidale, Castlemaine, Ararat and two existing Melbourne venues (Charles Nodrum Gallery and BLINDSIDE). The directory remains searchable after a show ends. NSW building pins use the galleries’ own published locations; the two Victorian regional markers retain locality precision and their existing identifiers.
+
+The live candidate smoke test returned 150 distinct Wikidata items. Goulburn’s index returned 9 candidate links and NERAM’s returned 12. The dated offline census counted 2/2/2 in regional Victoria, 2/2/2 in regional NSW and 15/3/2 among Melbourne commercial and artist-run venues (identified / official programme page / recently verified current or upcoming show). These are catalogue counts, not estimates of all galleries in those areas. Manual checks remain due for the Victorian pilot venues; expand programme links for the Melbourne sample next. See the regional gallery section in [local development](LOCAL_DEVELOPMENT.md) for reproducible commands.
+
 ## Deployment review, 22 November 2026
 
 The public Pages release from main `a5973bc` showed 20 exhibitions across 11 venues and no verified timed events for the next seven days. The live link to Margaret Ackland’s *Reflections* opened the explorer without identifying the past exhibition. The review branch resolves shared links against the complete exhibition archive while keeping the list and map on their existing freshness and date rules. Empty timed searches link to the exhibition results.

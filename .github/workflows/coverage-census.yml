@@ -9,7 +9,7 @@ on:
     paths:
       - 'data/known-art-places.json'
       - 'data/venues*.json'
-      - 'data/events-current.json'
+      - 'data/events*.json'
       - 'sources/official-indexes.json'
       - 'scripts/audit_programme_coverage.py'
       - '.github/workflows/coverage-census.yml'

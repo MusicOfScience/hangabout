@@ -36,3 +36,18 @@ test('session-only workspace and casual rates stay out of studio rentals', async
   await page.getByRole('button', { name: 'advertised vacancies', exact: true }).click();
   await expect(mixedUseStudio).toHaveCount(0);
 });
+
+test('regional search separates the gallery from its changing programme', async ({ page }) => {
+  await page.clock.setSystemTime(new Date('2026-11-22T00:00:00Z'));
+  await page.goto('/');
+  await page.locator('#searchInput').fill('New South Wales');
+  await expect(page.locator('#galleryList')).toContainText('Goulburn Regional Art Gallery');
+  await expect(page.locator('#map [title="Goulburn Regional Art Gallery"]')).toBeVisible();
+  await expect(page.locator('#resultsList')).toContainText('The Blue Highway');
+  await expect(page.locator('#resultsList')).toContainText('What are YOU Looking At?');
+  await page.clock.setSystemTime(new Date('2027-02-20T00:00:00Z'));
+  await page.reload();
+  await page.locator('#searchInput').fill('Goulburn');
+  await expect(page.locator('#resultCount')).toHaveText('0');
+  await expect(page.locator('#galleryList a')).toHaveAttribute('href', 'https://goulburnregionalartgallery.com.au/exhibitions/');
+});

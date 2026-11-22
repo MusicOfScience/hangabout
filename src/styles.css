@@ -238,3 +238,9 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
+
+.gallery-directory { padding: .85rem 1rem; border-bottom: 1px solid var(--line); }
+.gallery-directory summary { cursor: pointer; font-weight: 700; }
+.gallery-directory ul { list-style: none; padding: 0; margin: .5rem 0 0; }
+.gallery-directory li { padding: .6rem 0; border-top: 1px solid var(--line); }
+.gallery-directory li a, .gallery-directory small { display: block; }

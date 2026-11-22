@@ -20,6 +20,8 @@ export interface Venue {
   lat?: number;
   lng?: number;
   website: string;
+  programmeUrl?: string;
+  localityPoint?: [number, number];
   hours?: Hours;
   hoursVerified?: boolean;
   hoursSourceUrl?: string;

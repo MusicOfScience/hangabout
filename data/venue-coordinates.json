@@ -138,5 +138,25 @@
     "sourceName": "Hobsons Bay City Council",
     "sourceUrl": "https://www.hobsonsbay.vic.gov.au/Community/Venues-and-facilities/Community-venues-for-hire/The-Substation",
     "lastVerified": "2026-08-26"
+  },
+  {
+    "venueId": "new-england-regional-art-museum",
+    "lat": -30.525271,
+    "lng": 151.6648014,
+    "precision": "building",
+    "method": "venue GeoCoordinates in first-party event structured data",
+    "sourceName": "New England Regional Art Museum",
+    "sourceUrl": "https://www.neram.com.au/event/what-are-you-looking-at/",
+    "lastVerified": "2026-11-22"
+  },
+  {
+    "venueId": "goulburn-regional-art-gallery",
+    "lat": -34.752141,
+    "lng": 149.716973,
+    "precision": "building",
+    "method": "gallery destination in official visitor directions link",
+    "sourceName": "Goulburn Regional Art Gallery",
+    "sourceUrl": "https://goulburnregionalartgallery.com.au/visit",
+    "lastVerified": "2026-11-22"
   }
 ]

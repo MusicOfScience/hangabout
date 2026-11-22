@@ -62,6 +62,10 @@ def main():
 
     for venue in venues:
         base.validate_venue(venue)
+        if "programmeUrl" in venue:
+            base.require(base.valid_url(venue["programmeUrl"]), f"{venue['id']}: invalid programme URL")
+    wikidata_ids = [venue["wikidataId"] for venue in venues if "wikidataId" in venue]
+    base.require(len(wikidata_ids) == len(set(wikidata_ids)), "duplicate reviewed Wikidata id")
     known_venues = set(venue_ids)
     for event in events:
         base.validate_event(event, known_venues)
