@@ -651,11 +651,58 @@ def on_the_move(url, html):
     return list(leads)
 
 
+ARTSACT_CULTURAL_GUIDELINES = (
+    "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program"
+)
+ARTSACT_CULTURAL_ROUND = "https://artsact.smartygrants.com.au/culturalartsprogram2027"
+
+
+def artsact_cultural_round_url(official_url, html):
+    if any(link == ARTSACT_CULTURAL_GUIDELINES for link, _ in links(html, official_url)):
+        return ARTSACT_CULTURAL_ROUND
+    raise ValueError("the ACT Government announcement no longer points to the reviewed artsACT programme")
+
+
+def artsact_cultural(url, html, now, portal_html):
+    text = page_text(html)
+    require(r"Aboriginal and Torres Strait Islander artists, groups and organisations can now apply", text)
+    require(r"creativity with the Canberra community", text)
+    require(r"including visual arts, music, theatre, dance, literature, screen, digital media and festivals", text)
+    require(r"Expressions of interest are now open", text)
+    low, high = require(rf"grants of between {MONEY} and {MONEY}", text).groups()
+
+    portal_text = page_text(portal_html)
+    require(r"2027 Aboriginal and Torres Strait Islander Cultural Arts Program", portal_text)
+    portal_cutoff = require(
+        rf"Submissions close(?: at)? (\d{{1,2}}:\d{{2}}\s*[AP]M) ({MONTH_DATE}) \((AEST|AEDT)\)", portal_text,
+    )
+    zone = "Australia/Sydney"
+    deadline = local_instant(local_date(portal_cutoff[2]), portal_cutoff[1], zone)
+    if portal_cutoff[3].upper() != deadline.tzname():
+        raise ValueError("the published artsACT deadline conflicts with its time zone")
+    intake_open = re.search(r"Submissions are now being accepted", portal_text, re.I)
+    status = "closed" if now >= deadline else "open" if intake_open else "unknown"
+
+    return [entry(
+        "2027", "Aboriginal and Torres Strait Islander Cultural Arts Program · 2027", url, ARTSACT_CULTURAL_ROUND,
+        ["artist-grant", "professional-development"], money(amount(high), "AUD") | {"minimum": amount(low)},
+        eligibility("state", "Canberra region · applicant-specific eligibility applies",
+                    "For Aboriginal and Torres Strait Islander-led arts and cultural projects that benefit the Canberra region.",
+                    state="ACT", countries=["AU"], applicantTypes=["individual", "group", "organisation"],
+                    disciplines=["dance", "music", "theatre", "visual-arts", "craft", "literature", "digital-media", "screen"],
+                    specialistCriteria="Check the funder’s guidelines for the rules about cultural and geographic connections, groups and incorporated organisations."),
+        timing(override_status(portal_text, status), deadline=deadline),
+        "ACT funding for First Nations-led arts and cultural projects and professional development.",
+        applicationRequirements="Submit an expression of interest using the official form and review the detailed programme guidelines before applying.",
+        restrictions="The advertised public deadline is for the expression of interest.",
+    )]
+
+
 ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
     "gottlieb-individual": gottlieb_individual, "createability": createability,
-    "down-the-lane": down_the_lane, "emmanuel": emmanuel,
+    "down-the-lane": down_the_lane, "emmanuel": emmanuel, "artsact-cultural": artsact_cultural,
 }
 
 DIRECTORY_ADAPTERS = {"on-the-move": on_the_move}

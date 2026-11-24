@@ -17,7 +17,9 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.robotparser import RobotFileParser
 from zoneinfo import ZoneInfo
 
-from opportunity_adapters import ADAPTERS, DIRECTORY_ADAPTERS, SOURCE_DETAIL_PATHS, links, page_text, ramsay_terms_url
+from opportunity_adapters import (
+    ADAPTERS, DIRECTORY_ADAPTERS, SOURCE_DETAIL_PATHS, artsact_cultural_round_url, links, page_text, ramsay_terms_url,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/opportunity-sources.json"
@@ -313,12 +315,16 @@ def observe(source, fetch, now):
     observations = []
     for official_url, content in pages:
         supporting_url = source.get("supportingUrl")
+        application_evidence_url = None
         try:
             if source["adapter"] == "ramsay":
                 supporting_url = ramsay_terms_url(official_url, content)
+            if source["adapter"] == "artsact-cultural":
+                application_evidence_url = artsact_cultural_round_url(official_url, content)
         except ValueError as error:
             raise QuarantineError(f"{official_url}: {error}") from error
-        supporting_html = fetch(supporting_url) if supporting_url else None
+        evidence_url = application_evidence_url or supporting_url
+        supporting_html = fetch(evidence_url) if evidence_url else None
         try:
             records = ADAPTERS[source["adapter"]](official_url, content, now, supporting_html)
             check(bool(records), "adapter returned no records")

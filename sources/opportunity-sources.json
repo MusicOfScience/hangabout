@@ -152,6 +152,22 @@
       "termsUrl": "https://www.nsw.gov.au/nsw-government/about-website/copyright"
     },
     {
+      "id": "artsact-cultural-arts",
+      "name": "artsACT (ACT Government)",
+      "url": "https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/michael-pettersson-mla-media-releases/2026/aboriginal-and-torres-strait-islander-cultural-arts-program-funding-opens",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "adapter": "artsact-cultural",
+      "remit": "First Nations-led arts and cultural projects serving the Canberra region; the guidelines explain pathways for eligible applicants outside the ACT.",
+      "reviewNote": "The separate ACT Government announcement supplies funding and eligibility for the reviewed 2027 round. Check that round's public artsACT portal for its EOI deadline. The artsACT guidelines host returned HTTP 403 for robots.txt from GitHub Actions.",
+      "termsUrl": "https://www.arts.act.gov.au/legal/copyright"
+    },
+    {
       "id": "arts-queensland-touring",
       "name": "Arts Queensland",
       "url": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund",

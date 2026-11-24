@@ -12,7 +12,9 @@ Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workf
 
 [PR #50](https://github.com/MusicOfScience/hangabout/pull/50) and [PR #51](https://github.com/MusicOfScience/hangabout/pull/51) merged and the [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45438918881) passed at `e216193`. The public Gunyah detail retains its fee and shows overdue verification. The [check-only refresh on main](https://github.com/MusicOfScience/hangabout/actions/runs/45439151808) reproduced 13 records from ten monitored programmes with an empty patch. PR checks now require successful hosted results for new and edited monitored registry entries.
 
-The directory pilot uses On the Move to discover residency leads. Emmanuel College is the first promoted lead, with funding, artist expenses and the application deadline verified against the college's published terms. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for evidence, source cadence and review steps.
+[PR #52](https://github.com/MusicOfScience/hangabout/pull/52) added On the Move discovery and the first verified lead, Emmanuel College. The [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45483406024) passed at `f011a2d`. The public detail displayed the stipend, deadline and official application link. The [main check](https://github.com/MusicOfScience/hangabout/actions/runs/45483690619) reproduced 14 monitored records and 26 directory leads with an empty patch.
+
+The ACT coverage follow-up pairs the ACT Government announcement for the Aboriginal and Torres Strait Islander Cultural Arts Program with the public artsACT EOI round. The general ACT Arts Activities stream remains pending due to its end-of-day portal cutoff. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, cadence and review steps.
 
 ## Verified venue refresh pilot, 23 November 2026
 
