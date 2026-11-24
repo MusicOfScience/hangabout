@@ -157,15 +157,10 @@
       "url": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund",
       "group": "australia",
       "role": "funder",
-      "state": "active",
-      "intervalDays": 2,
-      "staleDays": 14,
       "reviewedOn": "2026-11-25",
-      "mechanism": "officialHTML",
-      "adapter": "touring-queensland",
-      "supportingUrl": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund/touring-queensland-fund-faqs",
       "remit": "Queensland-based applicants touring arts experiences across Queensland.",
-      "reviewNote": "Monitor the funder programme page and co-investment FAQ. Require the current application section to show an intake before presenting it as open."
+      "state": "seed",
+      "reviewNote": "The programme page was readable in local review. GitHub Actions received HTTP 403 from this host’s robots.txt, so the source awaits an accessible official refresh path."
     },
     {
       "id": "creative-victoria",
