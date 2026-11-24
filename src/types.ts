@@ -275,6 +275,6 @@ export interface Dataset {
   studioVacancies: StudioVacancy[];
 }
 
-export type Mode = 'see' | 'make';
+export type Mode = 'see' | 'make' | 'opportunities';
 export type QuickFilter = 'all' | 'open' | 'today' | 'weekend' | 'openings' | 'closing' | 'free' | 'nearby' | 'saved';
 export type SortMode = 'closing' | 'newest' | 'distance' | 'az';

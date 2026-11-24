@@ -1,0 +1,66 @@
+.mode-switch { flex-wrap: wrap; }
+
+.opportunities {
+  --opportunity-accent: #4d3847;
+  --opportunity-tint: #eee3eb;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+.opportunity-intro { padding: clamp(1.5rem, 4vw, 3rem) 0 1.25rem; }
+.opportunities h1 {
+  margin: 0 0 .5rem;
+  font-size: clamp(2.3rem, 8vw, 5.2rem);
+  line-height: 1;
+  letter-spacing: -.065em;
+}
+.opportunity-filters { display: grid; gap: 1rem; margin-bottom: 1.2rem; }
+.opportunity-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .85rem 1rem; }
+.opportunity-filter-grid label, .opportunity-search { display: grid; gap: .32rem; align-content: start; }
+.opportunity-filter-grid :is(select, input) {
+  min-width: 0; min-height: 2.7rem; width: 100%; padding: .45rem .4rem;
+  border: 1px solid var(--line); border-radius: 0; background: var(--panel);
+  font-size: 1rem; text-transform: none; letter-spacing: normal;
+}
+.opportunity-search .search { padding: .35rem 0 .55rem; font-size: clamp(1.2rem, 3vw, 1.65rem); }
+.opportunity-search .search::placeholder { color: var(--muted); }
+.opportunity-more-filters > :not(summary) { margin: .75rem 0; }
+.opportunities summary { cursor: pointer; width: fit-content; padding: .45rem 0; font-weight: 750; }
+.opportunities summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.opportunity-checkboxes { display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
+.opportunity-checkboxes label { min-height: 2.5rem; text-transform: none; letter-spacing: normal; font-size: .92rem; }
+.opportunity-checkboxes input { accent-color: var(--opportunity-accent); width: 1.1rem; height: 1.1rem; flex: none; }
+.opportunity-results-heading { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+.opportunity-results-heading p { margin: 0; font-weight: 750; }
+.opportunity-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: .8rem; }
+.opportunity-card, .opportunity-detail { padding: 1rem; border: 1px solid var(--line); background: var(--panel); overflow-wrap: anywhere; }
+.opportunity-card { border-top: 3px solid var(--opportunity-accent); }
+.opportunity-card h2, .opportunity-detail h2 { margin: .5rem 0 .28rem; line-height: 1.15; letter-spacing: -.025em; }
+.opportunity-card h2 { font-size: 1.24rem; }
+.opportunity-card h2 a, .opportunity-back { text-underline-offset: .2em; }
+.opportunity-funder, .opportunity-categories { margin: .2rem 0; }
+.opportunity-funder { font-weight: 680; }
+.opportunity-categories { font-size: .87rem; color: var(--opportunity-accent); }
+.opportunity-badges { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0; font-size: .78rem; font-weight: 750; }
+.opportunity-badges span { padding: .18rem .45rem; border: 1px solid var(--line); }
+.opportunity-badges span[data-status] { background: var(--opportunity-tint); color: var(--opportunity-accent); }
+.opportunity-badges span[data-status="closing-soon"] { background: var(--opportunity-accent); color: white; }
+.opportunity-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: .55rem 1rem; margin: .85rem 0 0; }
+.opportunity-facts dt { font-size: .77rem; font-weight: 750; }
+.opportunity-facts dd { margin: .15rem 0 0; line-height: 1.35; }
+.opportunity-detail { margin: 1rem 0 0; max-width: 52rem; scroll-margin-top: 5rem; }
+.opportunity-detail .opportunity-facts { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+.opportunity-detail .opportunity-back { display: inline-block; margin-bottom: .75rem; }
+.opportunity-detail details { border-top: 1px solid var(--line); padding: .35rem 0; }
+.opportunity-detail details .opportunity-facts { margin: .35rem 0 .7rem; }
+.opportunity-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.opportunity-actions a { display: inline-block; text-decoration: none; font-weight: 700; }
+.opportunity-cost-note { background: var(--opportunity-tint); padding: .65rem; }
+.opportunity-verified { font-size: .88rem; }
+#opportunityResults { scroll-margin-top: 5rem; }
+@media (max-width: 480px) {
+  .mode-switch .mode { padding: .64rem .75rem; }
+  .opportunity-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 375px) and (max-width: 600px) {
+  .opportunity-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

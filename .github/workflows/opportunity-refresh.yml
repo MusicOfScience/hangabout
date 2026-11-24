@@ -1,0 +1,143 @@
+name: artist opportunity refresh
+
+on:
+  schedule:
+    - cron: '46 18 * * *'
+  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - .github/workflows/opportunity-refresh.yml
+      - scripts/opportunity_adapters.py
+      - scripts/refresh_opportunities.py
+      - sources/opportunity-sources.json
+
+concurrency:
+  group: hangabout-artist-opportunity-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: restore source check history
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          previous=$(gh run list --workflow opportunity-refresh.yml --branch main --event schedule --status success \
+            --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [ -n "$previous" ]; then
+            gh run download "$previous" --name opportunity-refresh --dir generated/previous ||
+              echo 'Previous refresh artifact unavailable. Using committed verification times.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: check public funder pages and validate the proposal
+        run: |
+          args=(--apply --report generated/opportunity-refresh.json)
+          if [ "$GITHUB_EVENT_NAME" != schedule ]; then
+            args+=(--force)
+          elif [ -s generated/previous/opportunity-refresh.json ]; then
+            args+=(--previous-report generated/previous/opportunity-refresh.json)
+          fi
+          python scripts/refresh_opportunities.py "${args[@]}"
+          python scripts/refresh_opportunities.py --validate
+          python -m unittest discover -s tests/python
+          git diff --check
+          git diff -- data/opportunities.json > generated/opportunity-refresh.patch
+      - name: summarize source health
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+
+          path = Path("generated/opportunity-refresh.json")
+          if path.exists():
+              report = json.loads(path.read_text())
+              print("### Opportunity source checks\n")
+              print("| Source | Result | Observed | Last successful fetch |")
+              print("| --- | --- | ---: | --- |")
+              for source, row in report["sources"].items():
+                  print(f"| {source} | {row['status']} | {row.get('observed', '—')} | {row['lastSuccessfulFetchAt'] or '—'} |")
+              print(f"\n{len(report['changes'])} catalogue changes proposed.")
+          PY
+      - name: retain source observations and data patch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: opportunity-refresh
+          path: |
+            generated/opportunity-refresh.json
+            generated/opportunity-refresh.patch
+          if-no-files-found: warn
+          retention-days: 30
+
+  propose:
+    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: opportunity-refresh
+          path: generated
+      - name: open one draft pull request for source-backed changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! test -s generated/opportunity-refresh.patch; then
+            exit 0
+          fi
+          open=$(gh pr list --state open --base main --limit 100 --json headRefName,url \
+            --jq '.[] | select(.headRefName | startswith("automation/opportunities-")) | .url')
+          if [ -n "$open" ]; then
+            printf 'An opportunity refresh is awaiting review. %s\n' "$open" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git fetch origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo 'Main advanced during the check. The next run will retry.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git apply --check generated/opportunity-refresh.patch
+          git apply generated/opportunity-refresh.patch
+          fingerprint=$(git hash-object data/opportunities.json)
+          branch="automation/opportunities-$fingerprint"
+          if git ls-remote --exit-code --heads origin "refs/heads/$branch"; then
+            git fetch origin "$branch"
+            if ! git diff --quiet FETCH_HEAD; then
+              echo 'Existing proposal branch differs from the validated patch.' >&2
+              exit 1
+            fi
+          else
+            status=$?
+            if [ "$status" -ne 2 ]; then
+              exit "$status"
+            fi
+            git switch -c "$branch"
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/opportunities.json
+            git commit -m 'Propose verified artist opportunity updates'
+            git push origin "HEAD:refs/heads/$branch"
+          fi
+          {
+            printf '%s\n\n' 'Review the changes against the official funder links before merging.'
+            printf '[Source observations and data patch](%s/%s/actions/runs/%s)\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+          } > generated/opportunity-refresh-pr.md
+          gh pr create --draft --base main --head "$branch" --title 'Review artist opportunity updates' \
+            --body-file generated/opportunity-refresh-pr.md >> "$GITHUB_STEP_SUMMARY"

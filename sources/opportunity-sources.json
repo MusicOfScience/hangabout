@@ -1,0 +1,361 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "artshub",
+      "name": "ArtsHub",
+      "url": "https://www.artshub.com.au/",
+      "group": "australia",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "nava",
+      "name": "National Association for the Visual Arts",
+      "url": "https://visualarts.net.au/",
+      "group": "australia",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "creative-australia",
+      "name": "Creative Australia",
+      "url": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "adapter": "creative-australia",
+      "intervalDays": 3,
+      "staleDays": 21,
+      "reviewedOn": "2026-11-25",
+      "remit": "Australia-wide for eligible Australian citizens and permanent residents.",
+      "mechanism": "officialHTML",
+      "reviewNote": "Public guidelines. Read the dated key and future deadlines separately; a future closing date does not establish the application opening date."
+    },
+    {
+      "id": "music-australia",
+      "name": "Music Australia (Creative Australia)",
+      "url": "https://creative.gov.au/investments-opportunities/music-australia-export-development-fund-international-professional-and-artistic-development",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "adapter": "music-australia",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "reviewedOn": "2026-11-25",
+      "remit": "Australian contemporary music artists developing their practice overseas.",
+      "mechanism": "officialHTML",
+      "reviewNote": "First-party Creative Australia guidelines with dated round and an explicit application link when available."
+    },
+    {
+      "id": "office-for-the-arts",
+      "name": "Office for the Arts",
+      "url": "https://www.arts.gov.au/funding-and-support",
+      "group": "australia",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "ian-potter-cultural-trust",
+      "name": "The Ian Potter Cultural Trust",
+      "url": "https://www.ianpotterculturaltrust.org.au/opportunities/emerging-artist-grants/how-to-apply/",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "adapter": "potter",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "reviewedOn": "2026-11-25",
+      "remit": "Australia-wide for eligible Australian citizens and permanent residents. The grant primarily supports development overseas.",
+      "mechanism": "officialHTML",
+      "reviewNote": "Public first-party page. Check robots directives before fetching and stop on access restrictions."
+    },
+    {
+      "id": "arts-access-australia",
+      "name": "Arts Access Australia",
+      "url": "https://artsaccessaustralia.org/",
+      "group": "australia",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "copyright-agency",
+      "name": "Copyright Agency Cultural Fund",
+      "url": "https://www.copyright.com.au/culturalfund/",
+      "group": "australia",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "australian-cultural-fund",
+      "name": "Australian Cultural Fund",
+      "url": "https://australianculturalfund.org.au/",
+      "group": "australia",
+      "role": "fundraising",
+      "state": "reference",
+      "reviewNote": "Donation and fundraising platform. Never a grant-provider adapter."
+    },
+    {
+      "id": "churchill-trust",
+      "name": "Churchill Trust",
+      "url": "https://www.churchilltrust.com.au/",
+      "group": "australia",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "awesome-foundation",
+      "name": "Awesome Foundation",
+      "url": "https://www.awesomefoundation.org/",
+      "group": "australia",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "guildhouse",
+      "name": "Guildhouse",
+      "url": "https://guildhouse.org.au/",
+      "group": "australia",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "creative-victoria",
+      "name": "Creative Victoria",
+      "url": "https://creative.vic.gov.au/funding-opportunities",
+      "group": "victoria",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "arts-access-victoria",
+      "name": "Arts Access Victoria",
+      "url": "https://www.artsaccess.com.au/",
+      "group": "victoria",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "multicultural-arts-victoria",
+      "name": "Multicultural Arts Victoria",
+      "url": "https://multiculturalarts.com.au/",
+      "group": "victoria",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "city-of-melbourne",
+      "name": "City of Melbourne",
+      "url": "https://www.melbourne.vic.gov.au/",
+      "group": "victoria",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "arts-merri-bek",
+      "name": "Arts Merri-bek",
+      "url": "https://www.merri-bek.vic.gov.au/exploring-merri-bek/arts-and-culture/",
+      "group": "victoria",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "city-of-yarra",
+      "name": "City of Yarra",
+      "url": "https://www.yarracity.vic.gov.au/",
+      "group": "victoria",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "australian-print-workshop",
+      "name": "Australian Print Workshop",
+      "url": "https://www.australianprintworkshop.com/",
+      "group": "victoria",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "craft-victoria",
+      "name": "Craft Victoria",
+      "url": "https://craft.org.au/",
+      "group": "victoria",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "ccp",
+      "name": "Centre for Contemporary Photography",
+      "url": "https://ccp.org.au/",
+      "group": "victoria",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "experimenta",
+      "name": "Experimenta",
+      "url": "https://experimenta.org/",
+      "group": "victoria",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "wyndham",
+      "name": "Wyndham City Council",
+      "url": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants",
+      "group": "victoria",
+      "role": "funder",
+      "state": "active",
+      "adapter": "wyndham",
+      "intervalDays": 1,
+      "staleDays": 10,
+      "reviewedOn": "2026-11-25",
+      "remit": "Wyndham residents for development. Presentation has separate location requirements.",
+      "mechanism": "officialHTML",
+      "reviewNote": "Public first-party page. Check robots directives before fetching and stop on access restrictions."
+    },
+    {
+      "id": "on-the-move",
+      "name": "On the Move",
+      "url": "https://on-the-move.org/",
+      "group": "internationalDiscovery",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "callopen-art",
+      "name": "CallOpen.art",
+      "url": "https://callopen.art/",
+      "group": "internationalDiscovery",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "artconnect",
+      "name": "ArtConnect",
+      "url": "https://www.artconnect.com/",
+      "group": "internationalDiscovery",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "open-call",
+      "name": "OPEN CALL",
+      "url": "https://opencall.ca/",
+      "group": "internationalDiscovery",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "res-artis",
+      "name": "Res Artis",
+      "url": "https://resartis.org/",
+      "group": "internationalDiscovery",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "transartists",
+      "name": "DutchCulture TransArtists",
+      "url": "https://www.transartists.org/",
+      "group": "internationalDiscovery",
+      "role": "directory",
+      "state": "seed"
+    },
+    {
+      "id": "creative-capital",
+      "name": "Creative Capital",
+      "url": "https://creative-capital.org/",
+      "group": "internationalDiscovery",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "artquest",
+      "name": "Artquest",
+      "url": "https://artquest.org.uk/",
+      "group": "internationalDiscovery",
+      "role": "mixed",
+      "state": "seed"
+    },
+    {
+      "id": "pollock-krasner",
+      "name": "Pollock-Krasner Foundation",
+      "url": "https://www.pkf.org/how-to-apply/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "active",
+      "adapter": "pkf",
+      "intervalDays": 7,
+      "staleDays": 35,
+      "reviewedOn": "2026-11-25",
+      "remit": "International. The funder explicitly welcomes artists worldwide.",
+      "mechanism": "officialHTML",
+      "reviewNote": "Public first-party page. Check robots directives before fetching and stop on access restrictions."
+    },
+    {
+      "id": "gottlieb",
+      "name": "Adolph and Esther Gottlieb Foundation",
+      "url": "https://www.gottliebfoundation.org/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "greenshields",
+      "name": "Elizabeth Greenshields Foundation",
+      "url": "https://www.elizabethgreenshieldsfoundation.ca/en/apply",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "fca",
+      "name": "Foundation for Contemporary Arts",
+      "url": "https://www.foundationforcontemporaryarts.org/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "prince-claus",
+      "name": "Prince Claus Fund",
+      "url": "https://princeclausfund.org/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "pro-helvetia",
+      "name": "Pro Helvetia",
+      "url": "https://prohelvetia.ch/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "goethe",
+      "name": "Goethe-Institut",
+      "url": "https://www.goethe.de/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "japan-foundation",
+      "name": "Japan Foundation",
+      "url": "https://www.jpf.go.jp/e/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    },
+    {
+      "id": "british-council",
+      "name": "British Council",
+      "url": "https://www.britishcouncil.org/",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "seed"
+    }
+  ]
+}

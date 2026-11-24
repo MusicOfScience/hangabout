@@ -1,0 +1,701 @@
+{
+  "schemaVersion": 1,
+  "officialUrlAliases": {},
+  "opportunities": [
+    {
+      "roundKey": "2026-09",
+      "title": "Arts Projects for Individuals and Groups · September 2026",
+      "officialUrl": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
+      "applicationUrl": null,
+      "categories": [
+        "artist-grant"
+      ],
+      "funding": {
+        "minimum": 10000,
+        "maximum": 50000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "national",
+        "geography": "Australia-wide",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "all"
+        ],
+        "careerStages": null,
+        "citizenship": "Australian citizen or permanent resident.",
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "group"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": "Access costs can be included in the application budget.",
+        "disabilitySpecific": null,
+        "criteria": "For practising artists and arts professionals applying as individuals or groups."
+      },
+      "timing": {
+        "observedStatus": "closed",
+        "openingDate": null,
+        "opensAt": null,
+        "closingDate": "2026-09-01",
+        "closesAt": "2026-09-01T15:00:00+10:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": "2026-12-07",
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Creative Australia’s project grants for individual artists and groups across arts practices.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": null,
+      "evidenceHash": "bd99e8fabcbdacbc8a92144ac6f8bd6f02cfc6c99e0e48c0a5cbfb4014518161",
+      "verificationStatus": "verified",
+      "id": "creative-australia-2026-09",
+      "sourceId": "creative-australia",
+      "organisation": "Creative Australia",
+      "discoverySources": [
+        {
+          "sourceId": "creative-australia",
+          "url": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups"
+        }
+      ],
+      "verificationUrl": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
+      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "staleAfterDays": 21,
+      "contentHash": "596512c2d0d1156ca610514eb3fe5421b7e7d6e3413b5f23fbf1e269b82bd806"
+    },
+    {
+      "roundKey": "2027-03",
+      "title": "Arts Projects for Individuals and Groups · March 2027",
+      "officialUrl": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
+      "applicationUrl": null,
+      "categories": [
+        "artist-grant"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": null,
+        "currency": null,
+        "type": "unknown",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "national",
+        "geography": "Australia-wide · confirm round eligibility",
+        "geographicConfidence": "potential",
+        "countries": [
+          "AU"
+        ],
+        "states": null,
+        "municipalities": null,
+        "disciplines": null,
+        "careerStages": null,
+        "citizenship": null,
+        "residency": null,
+        "age": null,
+        "applicantTypes": null,
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "The funder has announced a deadline. Round-specific guidelines are pending."
+      },
+      "timing": {
+        "observedStatus": "forthcoming",
+        "openingDate": null,
+        "opensAt": null,
+        "closingDate": "2027-03-02",
+        "closesAt": "2027-03-02T15:00:00+11:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Creative Australia’s project grants for individual artists and groups across arts practices.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "The opening date, application link and terms for this round are awaiting publication.",
+      "verificationStatus": "partially-verified",
+      "evidenceHash": "bd99e8fabcbdacbc8a92144ac6f8bd6f02cfc6c99e0e48c0a5cbfb4014518161",
+      "id": "creative-australia-2027-03",
+      "sourceId": "creative-australia",
+      "organisation": "Creative Australia",
+      "discoverySources": [
+        {
+          "sourceId": "creative-australia",
+          "url": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups"
+        }
+      ],
+      "verificationUrl": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
+      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "staleAfterDays": 21,
+      "contentHash": "159cc238a461d00b5b0f697769ee63595e4d44a731525f427f413ef115aa5991"
+    },
+    {
+      "roundKey": "2027-round-1",
+      "title": "Emerging Artist Grants · Round 1, 2027",
+      "officialUrl": "https://www.ianpotterculturaltrust.org.au/opportunities/emerging-artist-grants/how-to-apply/",
+      "applicationUrl": "https://ipct.givingdata.com/portal/campaign/IPCT2027Round1Application",
+      "categories": [
+        "artist-grant",
+        "professional-development",
+        "travel-mobility"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 15000,
+        "currency": "AUD",
+        "type": "partial",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": "A reasonable personal contribution is required. No fixed amount is stated.",
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "national",
+        "geography": "Australia-wide · mainly for development overseas",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "all"
+        ],
+        "careerStages": [
+          "emerging"
+        ],
+        "citizenship": "Australian citizen or permanent resident.",
+        "residency": null,
+        "age": "18 or older",
+        "applicantTypes": [
+          "individual"
+        ],
+        "qualifications": "Formal arts qualifications are optional.",
+        "specialistCriteria": "Applicants need an Australian bank account in their own name.",
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "For individual emerging or early-career artists developing their practice."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-11-24",
+        "opensAt": null,
+        "closingDate": "2027-01-19",
+        "closesAt": "2027-01-19T17:00:00+11:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": "2027-04-01",
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Funding for early-career artists to develop their practice, primarily through opportunities overseas.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "Check the funder’s guidelines for eligible expenses and the contribution expected for your project.",
+      "evidenceHash": "f767a76d81f0393cc45b36c7d85f7f2898107c38230bc09ae6e424fb6333f9b7",
+      "verificationStatus": "verified",
+      "id": "ian-potter-cultural-trust-2027-round-1",
+      "sourceId": "ian-potter-cultural-trust",
+      "organisation": "The Ian Potter Cultural Trust",
+      "discoverySources": [
+        {
+          "sourceId": "ian-potter-cultural-trust",
+          "url": "https://www.ianpotterculturaltrust.org.au/opportunities/emerging-artist-grants/how-to-apply/"
+        }
+      ],
+      "verificationUrl": "https://www.ianpotterculturaltrust.org.au/opportunities/emerging-artist-grants/how-to-apply/",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
+      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "fbce9ef353787bccc1e8651f26b2d56a6278b43cb1ef503dd758bea5d550c7a5"
+    },
+    {
+      "roundKey": "2026-12",
+      "title": "International Professional and Artistic Development · December 2026",
+      "officialUrl": "https://creative.gov.au/investments-opportunities/music-australia-export-development-fund-international-professional-and-artistic-development",
+      "applicationUrl": "https://australiacouncil.fluxx.io/user_sessions/new",
+      "categories": [
+        "artist-grant",
+        "professional-development",
+        "travel-mobility"
+      ],
+      "funding": {
+        "minimum": 3000,
+        "maximum": 15000,
+        "currency": "AUD",
+        "type": "partial",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": "Applicants must match the requested grant amount with eligible cash funding.",
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": "In-kind contributions and Australian government grants cannot count towards the match.",
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "national",
+        "geography": "Australia-wide · for activity overseas",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "music"
+        ],
+        "careerStages": [
+          "emerging",
+          "breakthrough",
+          "established"
+        ],
+        "citizenship": "Australian citizen or permanent resident.",
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "group"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "For practising contemporary musicians across career stages, including solo artists and groups."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": null,
+        "opensAt": null,
+        "closingDate": "2026-12-01",
+        "closesAt": "2026-12-01T15:00:00+11:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Matched funding for international professional development by Australian contemporary music artists.",
+      "applicationRequirements": "Register for the application portal at least two business days before the deadline. Include evidence of matched funding.",
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "Confirm the activity window and eligible expenses in the official guidelines.",
+      "evidenceHash": "ba04528bb46f3d4f770b921c6d265e87d41a493564191fc3fef246ecf6f9c926",
+      "verificationStatus": "verified",
+      "id": "music-australia-2026-12",
+      "sourceId": "music-australia",
+      "organisation": "Music Australia (Creative Australia)",
+      "discoverySources": [
+        {
+          "sourceId": "music-australia",
+          "url": "https://creative.gov.au/investments-opportunities/music-australia-export-development-fund-international-professional-and-artistic-development"
+        }
+      ],
+      "verificationUrl": "https://creative.gov.au/investments-opportunities/music-australia-export-development-fund-international-professional-and-artistic-development",
+      "firstDiscoveredAt": "2026-11-24T13:45:11+00:00",
+      "lastCheckedAt": "2026-11-24T13:45:11+00:00",
+      "lastVerifiedAt": "2026-11-24T13:45:11+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "0a4a96d79c8fddb4fb30301b3f1b16f8dcd6691143e3555e04d219e26bdfe7c7"
+    },
+    {
+      "roundKey": "rolling",
+      "title": "Pollock-Krasner Foundation Grant",
+      "officialUrl": "https://www.pkf.org/how-to-apply/",
+      "applicationUrl": "https://bbgm-apply.yourcausegrants.com/apply/programs/afa38443-4f9b-41de-9d80-b14f36899241",
+      "categories": [
+        "artist-grant",
+        "materials-equipment",
+        "studio-workspace"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 50000,
+        "currency": "USD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": "The grant is unrestricted. The award depends on the artist’s circumstances.",
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "international",
+        "geography": "Worldwide · Australian artists can apply",
+        "geographicConfidence": "confirmed",
+        "countries": null,
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "painting",
+          "sculpture",
+          "printmaking",
+          "works-on-paper"
+        ],
+        "careerStages": [
+          "established"
+        ],
+        "citizenship": null,
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual"
+        ],
+        "qualifications": null,
+        "specialistCriteria": "At least 10 eligible professional exhibitions in the past 10 years.",
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "For professional visual artists with an established exhibition record in eligible media."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": null,
+        "opensAt": null,
+        "closingDate": null,
+        "closesAt": null,
+        "deadlineTimezone": null,
+        "commencementDate": null,
+        "duration": "Intended for one year",
+        "recurrence": null,
+        "rolling": true
+      },
+      "summary": "Unrestricted funding to sustain the practice of professional visual artists.",
+      "applicationRequirements": "Apply online with a cover letter, artist statement, exhibition CV, ten recent work images, an image list and three professional references.",
+      "selectionCriteria": "The panel considers professional exhibition and award history and places weight on the submitted images.",
+      "restrictions": "Primary media are painting, sculpture and works on paper. Review the funder’s excluded practices and student rules.",
+      "uncertainties": null,
+      "evidenceHash": "a645d5b6940b08fc5379ae9464b40841fae147eb85e7a71e534a08359ad18c3d",
+      "verificationStatus": "verified",
+      "id": "pollock-krasner-rolling",
+      "sourceId": "pollock-krasner",
+      "organisation": "Pollock-Krasner Foundation",
+      "discoverySources": [
+        {
+          "sourceId": "pollock-krasner",
+          "url": "https://www.pkf.org/how-to-apply/"
+        }
+      ],
+      "verificationUrl": "https://www.pkf.org/how-to-apply/",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:44:04+00:00",
+      "lastVerifiedAt": "2026-11-24T13:44:04+00:00",
+      "staleAfterDays": 35,
+      "contentHash": "1cc9521e3f2cff336ca9367f47906a85a1c6ef976dc876d03b9f6ab5dd072d05"
+    },
+    {
+      "roundKey": "2027-creative-development",
+      "title": "Wyndham Arts Grants · Creative Development 2027",
+      "officialUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
+      "applicationUrl": "https://wyndham.smartygrants.com.au/wyndhamartsgrants2027",
+      "categories": [
+        "artist-grant",
+        "research-experimental"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 3000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "municipality",
+        "geography": "Wyndham, Victoria",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "VIC"
+        ],
+        "municipalities": [
+          "Wyndham"
+        ],
+        "disciplines": [
+          "all"
+        ],
+        "careerStages": null,
+        "citizenship": null,
+        "residency": "Wyndham residents.",
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "group"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "Applicants must live in Wyndham. A group’s applicant must be a Wyndham resident."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-10-28",
+        "opensAt": "2026-10-28T09:00:00+11:00",
+        "closingDate": "2026-11-27",
+        "closesAt": "2026-11-27T15:00:00+11:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Supports research, testing and development of new creative work for future presentation.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "See the council guidelines for stream rules, eligible costs and the application checklist.",
+      "evidenceHash": "6c96484d816cac8160369ec14325f087bafc221135828c4347f30d4751bea262",
+      "verificationStatus": "verified",
+      "id": "wyndham-2027-creative-development",
+      "sourceId": "wyndham",
+      "organisation": "Wyndham City Council",
+      "discoverySources": [
+        {
+          "sourceId": "wyndham",
+          "url": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants"
+        }
+      ],
+      "verificationUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
+      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "staleAfterDays": 10,
+      "contentHash": "8e7d7b8f38e919bcc5659a5518484b3726188f8b9b0b643b727c6534e92ab780"
+    },
+    {
+      "roundKey": "2027-presentation",
+      "title": "Wyndham Arts Grants · Presentation 2027",
+      "officialUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
+      "applicationUrl": "https://wyndham.smartygrants.com.au/wyndhamartsgrants2027",
+      "categories": [
+        "artist-grant",
+        "exhibition-opportunity"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 5000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "municipality",
+        "geography": "Projects in Wyndham, Victoria",
+        "geographicConfidence": "potential",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "VIC"
+        ],
+        "municipalities": [
+          "Wyndham"
+        ],
+        "disciplines": [
+          "all"
+        ],
+        "careerStages": null,
+        "citizenship": null,
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "group"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "Artists may be based outside Wyndham. All funded presentation outcomes must take place in Wyndham."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-10-28",
+        "opensAt": "2026-10-28T09:00:00+11:00",
+        "closingDate": "2026-11-27",
+        "closesAt": "2026-11-27T15:00:00+11:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Supports presentation of new creative work in Wyndham, across art forms.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "See the council guidelines for stream rules, eligible costs and the application checklist.",
+      "evidenceHash": "6c96484d816cac8160369ec14325f087bafc221135828c4347f30d4751bea262",
+      "verificationStatus": "verified",
+      "id": "wyndham-2027-presentation",
+      "sourceId": "wyndham",
+      "organisation": "Wyndham City Council",
+      "discoverySources": [
+        {
+          "sourceId": "wyndham",
+          "url": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants"
+        }
+      ],
+      "verificationUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
+      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "staleAfterDays": 10,
+      "contentHash": "99ed303747769f0c9bed28919a01638fe5736fced20f696c5cfb72ef72095543"
+    },
+    {
+      "roundKey": "2027-skills-development",
+      "title": "Wyndham Arts Grants · Skills Development 2027",
+      "officialUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
+      "applicationUrl": "https://wyndham.smartygrants.com.au/wyndhamartsgrants2027",
+      "categories": [
+        "artist-grant",
+        "professional-development"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 3000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "municipality",
+        "geography": "Wyndham, Victoria",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "VIC"
+        ],
+        "municipalities": [
+          "Wyndham"
+        ],
+        "disciplines": [
+          "all"
+        ],
+        "careerStages": null,
+        "citizenship": null,
+        "residency": "Wyndham residents.",
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "group"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "Applicants must live in Wyndham. A group’s applicant must be a Wyndham resident."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-10-28",
+        "opensAt": "2026-10-28T09:00:00+11:00",
+        "closingDate": "2026-11-27",
+        "closesAt": "2026-11-27T15:00:00+11:00",
+        "deadlineTimezone": "Australia/Melbourne",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Supports artists learning new skills or developing techniques for their creative practice.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "See the council guidelines for stream rules, eligible costs and the application checklist.",
+      "evidenceHash": "6c96484d816cac8160369ec14325f087bafc221135828c4347f30d4751bea262",
+      "verificationStatus": "verified",
+      "id": "wyndham-2027-skills-development",
+      "sourceId": "wyndham",
+      "organisation": "Wyndham City Council",
+      "discoverySources": [
+        {
+          "sourceId": "wyndham",
+          "url": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants"
+        }
+      ],
+      "verificationUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
+      "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
+      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "staleAfterDays": 10,
+      "contentHash": "f791df769599f77a83ca8a770b4e0fb0ea074f370f664d3bacc476e248dd707f"
+    }
+  ]
+}

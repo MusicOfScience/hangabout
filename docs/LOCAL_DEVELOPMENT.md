@@ -166,3 +166,22 @@ python3.13 scripts/refresh_neram_venue.py --report generated/venue-refresh.json
 ```
 
 The command needs internet access. The workflow uploads the evidence and proposed patch as the `venue-refresh` artifact. Manual workflow runs check and validate without creating a PR. The GitHub setting **Allow GitHub Actions to create and approve pull requests** permits the scheduled job to open a draft. Use the PR’s normal GitHub review and merge process, including approving its validation run when GitHub requests it.
+
+## Artist Opportunities
+
+Run the catalogue validator, Python regressions and browser checks with Node 22 and Python 3.13:
+
+```bash
+python3.13 scripts/refresh_opportunities.py --validate
+python3.13 -m unittest discover -s tests/python
+npm run test:e2e
+npm run build
+```
+
+The test build uses a fixed browser clock and a separate Opportunities fixture based on the launch data. The production build uses the reviewed catalogue. To check live sources, run the following with internet access:
+
+```bash
+python3.13 scripts/refresh_opportunities.py --force --report generated/opportunity-refresh.json
+```
+
+Add `--apply` to write the proposed data to `data/opportunities.json`, then review the report and diff against the sources before committing. A run without `--force` uses the source intervals and accepts `--previous-report` for the last successful fetch dates. For the review and release workflow, see [Artist Opportunities](ARTIST_OPPORTUNITIES.md).

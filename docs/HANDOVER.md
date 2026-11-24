@@ -2,6 +2,10 @@
 
 Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workflows when resuming.
 
+## Artist Opportunities, 25 November 2026
+
+The feature branch adds a third navigation mode and a reviewed, scheduled intake from five programmes across four funders. The first live run found eight records, including six open opportunities and one announced future round. The registry has 40 sources. Wider regional and international coverage, confirmed fee data and additional opportunity types are future coverage work. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for the source evidence, checks and operating instructions.
+
 ## Verified venue refresh pilot, 23 November 2026
 
 The weekly GitHub workflow checks NERAM’s official structured address and pin. Verified changes within Armidale produce a draft PR with the source observation and patch. The manual workflow is a check-only run. The current first-party response agrees with Hangabout’s address and coordinates. See [local development](LOCAL_DEVELOPMENT.md#verified-venue-changes) for commands and GitHub review steps.
