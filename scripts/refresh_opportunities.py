@@ -8,6 +8,7 @@ import re
 import sys
 import time
 from datetime import date, datetime, timedelta, timezone
+from http.client import HTTPException
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from urllib.error import HTTPError
@@ -16,7 +17,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.robotparser import RobotFileParser
 from zoneinfo import ZoneInfo
 
-from opportunity_adapters import ADAPTERS, WYNDHAM_DETAIL, links, page_text
+from opportunity_adapters import ADAPTERS, WYNDHAM_DETAIL, links, page_text, ramsay_terms_url
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/opportunity-sources.json"
@@ -105,6 +106,12 @@ def validate_registry(registry):
                   and 0 < source["intervalDays"] < source["staleDays"], "invalid check interval")
             iso_date(source["reviewedOn"])
             check(source["remit"] and source["mechanism"] == "officialHTML", "source review evidence is required")
+            if source.get("supportingUrl"):
+                supporting = url_key(source["supportingUrl"])
+                check(urlsplit(supporting).hostname == urlsplit(source["url"]).hostname
+                      and supporting != url_key(source["url"]), "supporting page must be a separate first-party URL")
+            if source.get("termsUrl"):
+                url_key(source["termsUrl"])
         sources[source_id] = source
     return sources
 
@@ -137,6 +144,10 @@ def validate_record(record, sources):
         check(item["sourceId"] in sources, "unknown discovery source")
         url_key(item["url"])
     check(url_key(record["verificationUrl"]) == url_key(record["officialUrl"]), "invalid verification provenance")
+    if record.get("supportingEvidenceUrl"):
+        supporting = url_key(record["supportingEvidenceUrl"])
+        check(urlsplit(supporting).hostname == official.hostname and supporting != url_key(record["officialUrl"]),
+              "invalid supporting evidence URL")
     check(record["verificationStatus"] in VERIFICATION, "invalid verification status")
     check(timestamp(record["firstDiscoveredAt"]) <= timestamp(record["lastVerifiedAt"])
           <= timestamp(record["lastCheckedAt"]), "inconsistent verification timestamps")
@@ -252,7 +263,7 @@ class PublicFetcher:
                     raise
                 if attempt == 2:
                     raise
-            except OSError:
+            except (OSError, HTTPException):
                 if attempt == 2:
                     raise
             time.sleep(2 ** attempt)
@@ -292,12 +303,22 @@ def observe(source, fetch, now):
 
     observations = []
     for official_url, content in pages:
+        supporting_url = source.get("supportingUrl")
         try:
-            records = ADAPTERS[source["adapter"]](official_url, content, now)
+            if source["adapter"] == "ramsay":
+                supporting_url = ramsay_terms_url(official_url, content)
+        except ValueError as error:
+            raise QuarantineError(f"{official_url}: {error}") from error
+        supporting_html = fetch(supporting_url) if supporting_url else None
+        try:
+            records = ADAPTERS[source["adapter"]](official_url, content, now, supporting_html)
             check(bool(records), "adapter returned no records")
-            evidence_hash = digest(page_text(content))
+            evidence = page_text(content)
+            evidence_hash = digest([evidence, page_text(supporting_html)] if supporting_html else evidence)
             for record in records:
                 record["evidenceHash"] = evidence_hash
+                if supporting_url:
+                    record["supportingEvidenceUrl"] = supporting_url
                 record["funding"].setdefault("fullyFunded", None)
                 observations.append(record)
         except (ValueError, KeyError) as error:
@@ -375,7 +396,7 @@ def refresh(catalogue, sources, fetch, now, last_success, always=False):
         except QuarantineError as error:
             row.update(status="quarantined", detail=str(error))
             continue
-        except (OSError, ValueError) as error:
+        except (OSError, HTTPException, ValueError, LookupError) as error:
             row.update(status="fetch-failed", detail=str(error))
             continue
         row["lastSuccessfulFetchAt"] = result["checkedAt"]

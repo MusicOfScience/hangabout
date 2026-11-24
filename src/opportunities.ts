@@ -63,6 +63,7 @@ export interface Opportunity {
   summary: string;
   categories: (keyof typeof categories)[];
   officialUrl: string;
+  supportingEvidenceUrl?: string;
   applicationUrl: UnknownText;
   verificationStatus: Verification;
   lastVerifiedAt: string;

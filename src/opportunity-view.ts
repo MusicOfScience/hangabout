@@ -123,6 +123,7 @@ function detail(record: Opportunity, now: Date): string {
   const funding = record.funding;
   const eligible = record.eligibility;
   const timing = record.timing;
+  const isPrize = record.categories.includes('prize-award');
   const external = (url: string, label: string, solid = false) =>
     `<a class="button${solid ? ' solid' : ''}" href="${esc(url)}">${label}</a>`;
   const hasExpense = Boolean(funding.coContribution || funding.otherCosts || (funding.applicationFee?.amount ?? 0) > 0
@@ -136,7 +137,7 @@ function detail(record: Opportunity, now: Date): string {
     <p class="opportunity-categories">${esc(categoryLine(record))}</p>
     <p>${esc(record.summary)}</p>
     ${facts([
-      ['Funding', fundingLabel(funding)], ['Funding type', fundingLabels[funding.type]],
+      ['Funding', fundingLabel(funding)], ['Funding type', isPrize && funding.type === 'direct' ? 'Competitive cash prize' : fundingLabels[funding.type]],
       ['Deadline', deadlineLabel(record)], ['Application fee', feeLabel(funding.applicationFee)],
       ['Participation fee', feeLabel(funding.participationFee)], ['Required contribution', funding.coContribution],
     ])}
@@ -146,6 +147,7 @@ function detail(record: Opportunity, now: Date): string {
     <div class="opportunity-actions">
       ${record.applicationUrl ? `<span data-opportunity-apply${canApply(record, now) ? '' : ' hidden'}>${external(record.applicationUrl, 'Apply with the funder', true)}</span>` : ''}
       ${external(record.officialUrl, 'Official guidelines')}
+      ${record.supportingEvidenceUrl ? external(record.supportingEvidenceUrl, isPrize ? 'Official entry terms' : 'Official eligibility FAQ') : ''}
     </div>
     <details>
       <summary>Eligibility and accessibility</summary>
