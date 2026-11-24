@@ -400,6 +400,9 @@ def refresh(catalogue, sources, fetch, now, last_success, always=False):
         except QuarantineError as error:
             row.update(status="quarantined", detail=str(error))
             continue
+        except HTTPError as error:
+            row.update(status="fetch-failed", detail=str(error), failedUrl=error.geturl())
+            continue
         except (OSError, HTTPException, ValueError, LookupError) as error:
             row.update(status="fetch-failed", detail=str(error))
             continue

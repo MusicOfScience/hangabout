@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import sys
 import unittest
+from urllib.error import HTTPError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from opportunity_adapters import createability, touring_queensland
@@ -65,6 +66,19 @@ class StateOpportunityCoverageTest(unittest.TestCase):
         amended["funding"].update(maximum=1000, currency="AUD")
         with self.assertRaisesRegex(ValueError, "host employment"):
             validate_record(amended, self.sources)
+
+    def test_http_failure_reports_the_blocked_page(self):
+        source = self.sources["create-nsw-createability"]
+
+        def fetch(url):
+            if url == source["url"]:
+                return f'<a href="{NSW}">Apply</a>'
+            raise HTTPError(url, 403, "Forbidden", None, None)
+
+        catalogue, report = refresh(EMPTY, {source["id"]: source}, fetch, NOW, {}, always=True)
+        self.assertEqual(catalogue, EMPTY)
+        self.assertEqual(report["sources"][source["id"]]["status"], "fetch-failed")
+        self.assertEqual(report["sources"][source["id"]]["failedUrl"], NSW)
 
     def test_unsupported_index_links_cannot_create_a_record(self):
         source = self.sources["create-nsw-createability"]
