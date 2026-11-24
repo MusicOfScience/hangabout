@@ -651,11 +651,55 @@ def on_the_move(url, html):
     return list(leads)
 
 
+def country_arts_sa_project(url, html, now, _supporting_html=None):
+    text = page_text(html)
+    round_number, round_year = require(r"Project Grants\s*\|\s*Round (\d+)\s*\|\s*(\d{4})", text).groups()
+    opening, closing, commencement = map(local_date, require(
+        rf"Regional Arts Fund Project Grant round will open ({MONTH_DATE}) and close ({MONTH_DATE}) "
+        rf"for activities commencing no earlier than ({MONTH_DATE})", text,
+    ).groups())
+    if not opening <= closing < commencement or closing.year != int(round_year):
+        raise ValueError("Country Arts SA’s published round and dates are inconsistent")
+    maximum = amount(require(rf"apply for Project Grants of up to {MONEY}", text)[1])
+    require(r"There is no minimum grant amount", text)
+    require(r"an individual over 18; an Australian incorporated organisation.*?non-profit status.*?or a local government organisation", text)
+    require(r"be based in regional or remote South Australia", text)
+    require(r"have an active Australian Business Number \(ABN\) that is registered to your name and location", text)
+    require(r"not have any outstanding reports, acquittals or serious breaches relating to any Australian Government funding", text)
+    require(r"any area of creative practice, multiple artforms or cross-disciplinary practice", text)
+    require(r"Travel costs \(including international\) Materials.*?Disability access costs", text)
+    require(r"applications are assessed.*?competitive basis", text)
+    require(r"include realistic budgets and represent value with money", text)
+    require(r"Apply online via Smarty Grants", text)
+    zone = "Australia/Adelaide"
+    today = now.astimezone(ZoneInfo(zone)).date()
+    status = "forthcoming" if today < opening else "closed" if today > closing else "unknown"
+    return [entry(
+        f"{round_year}-round-{round_number}", f"Regional Arts Fund Project Grants · South Australia · Round {round_number}, {round_year}",
+        url, None, ["artist-grant", "professional-development"],
+        money(maximum, "AUD", conditions="There is no programme minimum. Grants support approved project costs.") | {
+            "travel": "Eligible travel costs can be included in the project budget.",
+            "materials": "Eligible materials can be included in the project budget.",
+        },
+        eligibility("state", "Regional or remote South Australia",
+                    "For individuals over 18, eligible incorporated not-for-profit organisations and local government bodies based in an eligible South Australian region.",
+                    state="SA", countries=["AU"], disciplines=["all"], applicantTypes=["individual", "organisation"],
+                    specialistCriteria="Applicants need an active ABN registered to their name and location and must meet Australian Government grant reporting and compliance requirements.",
+                    accessibility="Disability access costs can be included in the project budget."),
+        timing(override_status(text, status), opening=opening, closing=closing, commencement=commencement, local_zone=zone),
+        "Project funding for creative work and professional development that benefits regional or remote arts communities.",
+        applicationRequirements="Read the guidelines, discuss the project with Country Arts SA and apply through its Regional Arts Fund portal.",
+        selectionCriteria="Applications are assessed competitively. Country Arts SA asks for realistic budgets and value for money.",
+        uncertainties="The cutoff time, round-specific application link and fees remain unconfirmed.",
+    )]
+
+
 ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
     "gottlieb-individual": gottlieb_individual, "createability": createability,
     "down-the-lane": down_the_lane, "emmanuel": emmanuel,
+    "country-arts-sa-project": country_arts_sa_project,
 }
 
 DIRECTORY_ADAPTERS = {"on-the-move": on_the_move}
