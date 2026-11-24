@@ -72,7 +72,9 @@ def local_date(text):
 
 
 def local_instant(day, clock, zone=MELBOURNE):
-    local_time = datetime.strptime(clock.replace(" ", "").upper(), "%I:%M%p").time()
+    clock = clock.replace(" ", "").upper()
+    clock_format = "%I:%M%p" if ":" in clock else "%I%p"
+    local_time = datetime.strptime(clock, clock_format).time()
     return datetime.combine(day, local_time, ZoneInfo(zone))
 
 
@@ -489,8 +491,54 @@ def gottlieb_individual(url, html, now, supporting_html=None):
     )]
 
 
+CREATEABILITY_DETAIL = r"/grants-and-funding/(\d{4}-\d{2})-createability-internship/?"
+SOURCE_DETAIL_PATHS = {"wyndham": WYNDHAM_DETAIL, "createability": CREATEABILITY_DETAIL}
+SYDNEY = "Australia/Sydney"
+
+
+def createability(url, html, now, _supporting_html=None):
+    text = page_text(html)
+    cycle = re.fullmatch(CREATEABILITY_DETAIL, urlsplit(url).path)[1]
+    require(rf"{cycle} Createability Internship", text)
+    dates = require(
+        rf"Application open(?:ed|s): ({MONTH_DATE}) Application clos(?:es|ed): ({MONTH_DATE}), (\d{{1,2}}(?::\d{{2}})?\s*[ap]m)",
+        text,
+    )
+    opening = local_date(dates[1])
+    deadline = local_instant(local_date(dates[2]), dates[3], SYDNEY)
+    if opening.year != int(cycle[:4]):
+        raise ValueError("Createability opening date does not match the linked cycle")
+    require(r"employed and paid by the Host Organisation", text)
+    require(r"four weeks \(20 days or 160 hours\) or eight weeks \(40 days or 320 hours\)", text)
+    require(r"be an individual identify as a Deaf or Disabled person", text)
+    require(r"be over 18 years of age", text)
+    require(r"be residing in NSW over the last 12 months", text)
+    require(r"have some experience at an emerging or mid-career level", text)
+    require(r"can answer two questions using video or audio", text)
+    require(r"You can request SmartyGrants application forms in Microsoft Word format", text)
+    status_on_page = require(r"Key information Status: (Open|Closed|Opening soon) Grant amount:", text)[1].lower()
+    portal = application(html, url, "artsnsw.smartygrants.com.au", rf"/{cycle}CI/?")
+    status = calendar_status(now.astimezone(ZoneInfo(SYDNEY)).date(), opening, deadline, now, portal)
+    if status == "open" and status_on_page != "open":
+        status = "unknown"
+    return [entry(
+        cycle, f"Createability Internship · {cycle}", url, portal, ["professional-development", "disability-specific"],
+        money(None, None, funding_type="paid-placement",
+              conditions="The host organisation employs and pays successful applicants. The guidelines don’t publish a pay rate."),
+        eligibility(
+            "state", "New South Wales", "For early- and mid-career Deaf and Disabled artists and arts workers.",
+            state="NSW", countries=["AU"], residency="Applicants must have lived in NSW for the past 12 months.",
+            age="Over 18", career=["emerging", "mid-career"], applicantTypes=["individual"],
+            disabilitySpecific=True, accessibility="Request a Word version of the form or answer two questions by video or audio.",
+        ),
+        timing(override_status(text, status), opening=opening, deadline=deadline,
+               duration="Four weeks (160 hours) or eight weeks (320 hours)."),
+        "Paid work experience and professional development with arts, screen, music and cultural organisations.",
+    )]
+
+
 ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
-    "gottlieb-individual": gottlieb_individual,
+    "gottlieb-individual": gottlieb_individual, "createability": createability,
 }

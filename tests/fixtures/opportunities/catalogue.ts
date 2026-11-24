@@ -112,4 +112,21 @@ const ramsay: Opportunity = {
     opensAt: '2026-09-11T10:00:00+09:30', closesAt: '2026-12-11T17:00:00+10:30', deadlineTimezone: 'Australia/Adelaide' },
 };
 
-export default { opportunities: [potter, pkf, ...wyndham, creativeAustralia, archive, ramsay] };
+const createability: Opportunity = {
+  ...base,
+  id: 'create-nsw-createability-2026-27',
+  title: 'Createability Internship · 2026-27',
+  organisation: 'Create NSW (NSW Government)',
+  officialUrl: 'https://www.nsw.gov.au/grants-and-funding/2026-27-createability-internship',
+  applicationUrl: 'https://artsnsw.smartygrants.com.au/2026-27CI',
+  categories: ['professional-development', 'disability-specific'],
+  funding: { ...base.funding, type: 'paid-placement', conditions: 'The guidelines don’t publish a pay rate.' },
+  eligibility: { ...base.eligibility, scope: 'state', geography: 'New South Wales',
+    geographicConfidence: 'confirmed', states: ['NSW'], disabilitySpecific: true,
+    residency: 'Applicants must have lived in NSW for the past 12 months.',
+    accessibility: 'Request a Word version of the form or answer two questions by video or audio.' },
+  timing: { ...base.timing, observedStatus: 'open', openingDate: '2026-11-16', closingDate: '2026-12-16',
+    closesAt: '2026-12-16T14:00:00+11:00', deadlineTimezone: 'Australia/Sydney' },
+};
+
+export default { opportunities: [potter, pkf, ...wyndham, creativeAustralia, archive, ramsay, createability] };

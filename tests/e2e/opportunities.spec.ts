@@ -112,3 +112,25 @@ test('a prize shows its entry fee, local deadline and official terms', async ({ 
   await page.getByLabel('Free to apply').check();
   await expect(results.getByRole('article')).toHaveCount(0);
 });
+
+test('state and access filters surface the paid Createability placement', async ({ page }) => {
+  await page.goto('/?mode=opportunities');
+  const region = page.getByRole('combobox', { name: 'Region', exact: true });
+  const results = page.locator('#opportunityResults');
+  await page.getByText('More filters', { exact: true }).click();
+  await page.getByLabel('Accessibility information or disability-specific funding').check();
+  await region.selectOption('QLD');
+  await expect(results.getByRole('article')).toHaveCount(0);
+  await region.selectOption('NSW');
+  await expect(results.getByRole('article')).toHaveCount(1);
+  await expect(results).toContainText('Paid placement');
+  await expect(results).toContainText(/16 Dec 2026.*2:00 pm/i);
+  await results.getByRole('link', { name: /Createability Internship/ }).click();
+  const detail = page.locator('#opportunityDetail');
+  await expect(detail).toContainText('Employment paid by the host');
+  await expect(detail.getByRole('link', { name: /Official guidelines/ })).toHaveAttribute('target', '_blank');
+  await detail.getByText('Eligibility and accessibility', { exact: true }).click();
+  await expect(detail.getByText('Applicants must have lived in NSW for the past 12 months.')).toBeVisible();
+  await detail.getByText('Funding conditions and support', { exact: true }).click();
+  await expect(detail.getByText(/publish a pay rate/)).toBeVisible();
+});
