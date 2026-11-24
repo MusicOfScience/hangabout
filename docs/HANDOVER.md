@@ -8,7 +8,9 @@ Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workf
 
 [PR #47](https://github.com/MusicOfScience/hangabout/pull/47) merged at `7dd3deb` with the Ramsay Art Prize and two Gottlieb Foundation programmes. The [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45413144266) passed, the public prize page displayed its AUD 50 entry fee and official terms, and the [check-only run](https://github.com/MusicOfScience/hangabout/actions/runs/45413277587) reproduced all 11 records with an empty patch.
 
-The next coverage branch adds the NSW Createability paid placement and expands the catalogue to 12 records. Touring Queensland remains a registry lead after the hosted runner received HTTP 403 for its robots file. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, costs, timing and remaining coverage.
+[PR #48](https://github.com/MusicOfScience/hangabout/pull/48) merged at `302e6cc` with Createability. The [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45417622528) passed and the public detail displayed employment paid by the host and the links to the official guidelines and application. A [check-only refresh on main](https://github.com/MusicOfScience/hangabout/actions/runs/45417798871) reproduced the 12 records with an empty patch. Touring Queensland remains a registry lead after the hosted runner received HTTP 403 for its robots file.
+
+The residency follow-up adds Gunyah and Down the Lane, extending the catalogue to 14 records. The interface identifies the published application fee, participation charge and refundable deposit where applicable. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, costs and timing.
 
 ## Verified venue refresh pilot, 23 November 2026
 

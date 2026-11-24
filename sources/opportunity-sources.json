@@ -163,6 +163,36 @@
       "reviewNote": "The programme page was readable in local review. GitHub Actions received HTTP 403 from this host’s robots.txt, so the source awaits an accessible official refresh path."
     },
     {
+      "id": "gunyah",
+      "name": "Gunyah Artists-in-Residence",
+      "url": "https://gunyah.blogspot.com/p/apply.html",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "adapter": "gunyah",
+      "remit": "Australia-based artists and creatives applying for coastal NSW residencies.",
+      "reviewNote": "Public programme page with explicit participation charge, refundable deposit and no application fee. Check both round-specific forms without fetching them."
+    },
+    {
+      "id": "culture-focus-down-the-lane",
+      "name": "Culture Focus and Down the Lane Studios",
+      "url": "https://www.culturefocus.com.au/",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "adapter": "down-the-lane",
+      "remit": "Worldwide intake for a month-long Melbourne studio residency.",
+      "reviewNote": "The official index links to dated callouts. Extract the published deadline date without assuming a cutoff time."
+    },
+    {
       "id": "creative-victoria",
       "name": "Creative Victoria",
       "url": "https://creative.vic.gov.au/funding-opportunities",

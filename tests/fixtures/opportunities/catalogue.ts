@@ -129,4 +129,34 @@ const createability: Opportunity = {
     closesAt: '2026-12-16T14:00:00+11:00', deadlineTimezone: 'Australia/Sydney' },
 };
 
-export default { opportunities: [potter, pkf, ...wyndham, creativeAustralia, archive, ramsay, createability] };
+const gunyah: Opportunity = {
+  ...base,
+  id: 'gunyah-2027',
+  title: 'Gunyah Artists-in-Residence · 2027',
+  organisation: 'Gunyah Artists-in-Residence',
+  officialUrl: 'https://gunyah.blogspot.com/p/apply.html',
+  applicationUrl: 'https://gunyah.blogspot.com/p/apply.html',
+  categories: ['residency'],
+  funding: { ...base.funding, type: 'participant-expenditure',
+    applicationFee: { amount: 0, currency: 'AUD' }, participationFee: { amount: 470, currency: 'AUD' },
+    otherCosts: 'A refundable AUD 160 cleaning and key deposit is required.' },
+  timing: { ...base.timing, observedStatus: 'open', closingDate: '2026-11-30',
+    closesAt: '2026-11-30T17:00:00+11:00', deadlineTimezone: 'Australia/Sydney' },
+};
+
+const downTheLane: Opportunity = {
+  ...base,
+  id: 'culture-focus-down-the-lane-2027',
+  title: 'Down the Lane Artist Residency · 2027',
+  organisation: 'Culture Focus and Down the Lane Studios',
+  officialUrl: 'https://www.culturefocus.com.au/down-the-lane-residency-2027',
+  applicationUrl: 'https://www.culturefocus.com.au/new-page-2',
+  categories: ['residency'],
+  funding: { ...base.funding, type: 'partial', minimum: 500, maximum: 500, currency: 'AUD',
+    applicationFee: { amount: 50, currency: 'AUD' } },
+  timing: { ...base.timing, observedStatus: 'open', openingDate: '2026-10-01',
+    closingDate: '2026-12-20', deadlineTimezone: melbourne },
+};
+
+export default { opportunities: [potter, pkf, ...wyndham, creativeAustralia, archive, ramsay,
+  createability, gunyah, downTheLane] };
