@@ -135,7 +135,7 @@ const gunyah: Opportunity = {
   title: 'Gunyah Artists-in-Residence · 2027',
   organisation: 'Gunyah Artists-in-Residence',
   officialUrl: 'https://gunyah.blogspot.com/p/apply.html',
-  applicationUrl: 'https://gunyah.blogspot.com/p/apply.html',
+  applicationUrl: 'https://form.jotform.com/263070266835863',
   categories: ['residency'],
   funding: { ...base.funding, type: 'participant-expenditure',
     applicationFee: { amount: 0, currency: 'AUD' }, participationFee: { amount: 470, currency: 'AUD' },

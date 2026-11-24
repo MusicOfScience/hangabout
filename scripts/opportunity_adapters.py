@@ -541,46 +541,6 @@ def createability(url, html, now, _supporting_html=None):
     )]
 
 
-def gunyah(url, html, now, _supporting_html=None):
-    text = page_text(html)
-    round_match = require(r"Applications are (now open|now closed|closed) for the (\d{4}) Gunyah Artists-in-Residence program", text)
-    year = round_match[2]
-    closing = require(rf"Applications close (\d{{1,2}}(?::\d{{2}})?[ap]m) \w+ ({MONTH_DATE})", text)
-    deadline = local_instant(local_date(closing[2]), closing[1], SYDNEY)
-    require(r"there is no application fee", text)
-    require(r"The applicant must be based in Australia", text)
-    require(r"at any stages of their careers can apply for a solo or group/collaboration residency", text)
-    require(r"moderately subsidised by the property owners", text)
-    require(r"These fees are for the whole house", text)
-    cost = amount(require(rf"the cost per residency is {MONEY} for ten days", text)[1])
-    deposit = amount(require(rf"A refundable {MONEY} cleaning and key deposit is also required", text)[1])
-    forms = {
-        match[1] for link, label in links(html, url)
-        if (match := re.fullmatch(rf"(SOLO|GROUP) residency application form, Gunyah AiR {year}", label))
-        and urlsplit(link).scheme == "https" and urlsplit(link).netloc == "form.jotform.com"
-        and re.fullmatch(r"/\d{10,20}/?", urlsplit(link).path)
-    }
-    if now >= deadline or round_match[1].lower() != "now open":
-        status = "closed"
-    else:
-        status = "open" if forms == {"SOLO", "GROUP"} else "unknown"
-    return [entry(
-        year, f"Gunyah Artists-in-Residence · {year}", url, url if forms == {"SOLO", "GROUP"} else None,
-        ["residency"], money(None, None, funding_type="participant-expenditure",
-                            conditions="The property owners subsidise the stay. The participation charge covers the whole house for ten days or part thereof.") | {
-            "applicationFee": {"amount": 0, "currency": "AUD"},
-            "participationFee": {"amount": cost, "currency": "AUD"},
-            "otherCosts": f"A refundable AUD {deposit:,} cleaning and key deposit is required.",
-        },
-        eligibility("national", "Australia-wide", "For Australia-based artists and creatives applying on their own or in a group.",
-                    residency="Applicants must be based in Australia.", disciplines=["all"],
-                    applicantTypes=["individual", "group"]),
-        timing(override_status(text, status), deadline=deadline),
-        "A subsidised self-directed residency in a house and studio on the NSW coast.",
-        applicationRequirements="Choose the solo or group application form on the official page.",
-    )]
-
-
 def down_the_lane(url, html, now, _supporting_html=None):
     text = page_text(html)
     year = re.fullmatch(DOWN_THE_LANE_DETAIL, urlsplit(url).path)[1]
@@ -626,5 +586,5 @@ ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
     "gottlieb-individual": gottlieb_individual, "createability": createability,
-    "gunyah": gunyah, "down-the-lane": down_the_lane,
+    "down-the-lane": down_the_lane,
 }
