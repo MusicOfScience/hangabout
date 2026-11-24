@@ -1,8 +1,12 @@
 import './styles.css';
+import './opportunities.css';
+
+import { esc } from './html';
+import { initialiseOpportunities, opportunitiesPanel } from './opportunity-view';
 
 import { loadDataset } from './data/load';
 import { state } from './state';
-import type { Dataset, Event, MakeResource, Venue } from './types';
+import type { Dataset, Event, MakeResource, Mode, Venue } from './types';
 import { closesWithin, DEFAULT_TIME_ZONE, formatDateRange, intersectsThisWeekend, isEventCurrent, isEventUpcoming, isVenueOpenNow, isVenueOpenToday, melbourneLabel, openingWithin, todayInTimeZone } from './time';
 import { haversine, nearestSuburb, venueGeography, resourcePoint, venuePoint, type Point } from './geo';
 import { googleCrawlUrl, googleSearchUrl, mapsUrl, pointInsideBounds, type WebDiscoveryKind } from './discovery';
@@ -20,8 +24,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = shell(dataset);
 const els = {
   linkedExhibition: q<HTMLElement>('#linkedExhibition'),
   skipLink: q<HTMLAnchorElement>('.skip-link'),
-  seeTab: q<HTMLButtonElement>('[data-mode="see"]'),
-  makeTab: q<HTMLButtonElement>('[data-mode="make"]'),
+  modeTabs: document.querySelectorAll<HTMLButtonElement>('[data-mode]'),
+  seeHero: q<HTMLElement>('#seeHero'),
+  opportunitiesPanel: q<HTMLElement>('#opportunitiesPanel'),
   seePanel: q<HTMLElement>('#seePanel'),
   makePanel: q<HTMLElement>('#makePanel'),
   search: q<HTMLInputElement>('#searchInput'),
@@ -71,10 +76,11 @@ const makeMap = new MakeMap(q<HTMLElement>('#makeMap'), suburb => {
   renderMake();
 });
 
+const opportunities = initialiseOpportunities(els.opportunitiesPanel);
+
 wire();
 renderSee();
 renderMake();
-updateCrawl();
 applyLocation();
 
 function q<T extends Element>(selector: string): T {
@@ -96,7 +102,7 @@ function shell(data: Dataset): string {
     </header>
 
     <main>
-      <section class="hero">
+      <section id="seeHero" class="hero">
         <div class="hero-title">
           <p class="eyebrow">Melbourne · regional Victoria &amp; NSW</p>
           <h1>what's hanging,<br>where.</h1>
@@ -107,6 +113,7 @@ function shell(data: Dataset): string {
       <nav class="mode-switch" aria-label="choose mode">
         <button data-mode="see" class="mode is-active" aria-pressed="true">see art</button>
         <button data-mode="make" class="mode" aria-pressed="false">make art</button>
+        <button data-mode="opportunities" class="mode" aria-pressed="false">Opportunities</button>
       </nav>
 
       <section id="seePanel">
@@ -231,6 +238,7 @@ function shell(data: Dataset): string {
           </div>
         </div>
       </section>
+      ${opportunitiesPanel()}
     </main>
 
     <aside id="crawlBar" class="crawl-bar" hidden>
@@ -259,8 +267,10 @@ function shell(data: Dataset): string {
 }
 
 function wire() {
-  els.seeTab.addEventListener('click', () => setMode('see', 'push'));
-  els.makeTab.addEventListener('click', () => setMode('make', 'push'));
+  els.modeTabs.forEach(button => button.addEventListener('click', () => {
+    const mode = button.dataset.mode as Mode;
+    if (state.mode !== mode) setMode(mode, 'push');
+  }));
   window.addEventListener('popstate', applyLocation);
   window.addEventListener('hashchange', applyLocation);
 
@@ -397,19 +407,24 @@ function wire() {
 
 type HistoryAction = 'none' | 'push' | 'replace';
 
-function setMode(mode: 'see' | 'make', historyAction: HistoryAction = 'none') {
+function setMode(mode: Mode, historyAction: HistoryAction = 'none') {
   state.mode = mode;
-  els.seeTab.classList.toggle('is-active', mode === 'see');
-  els.makeTab.classList.toggle('is-active', mode === 'make');
-  els.seeTab.setAttribute('aria-pressed', String(mode === 'see'));
-  els.makeTab.setAttribute('aria-pressed', String(mode === 'make'));
+  for (const button of els.modeTabs) {
+    const active = button.dataset.mode === mode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  }
+  els.seeHero.hidden = mode === 'opportunities';
   els.seePanel.hidden = mode !== 'see';
   els.makePanel.hidden = mode !== 'make';
-  els.skipLink.href = mode === 'see' ? '#resultsList' : '#makeResults';
+  els.opportunitiesPanel.hidden = mode !== 'opportunities';
+  els.skipLink.href = { see: '#resultsList', make: '#makeResults', opportunities: '#opportunityResults' }[mode];
   if (historyAction !== 'none') writeModeToLocation(mode, historyAction);
+  opportunities.update(locationTarget(), mode === 'opportunities');
+  updateCrawl();
   renderLinkedExhibition();
   if (mode === 'see') seeMap.invalidate();
-  else makeMap.show();
+  if (mode === 'make') makeMap.show();
 }
 
 function applyLocation() {
@@ -426,21 +441,25 @@ function locationTarget(): string {
   }
 }
 
-function modeFromLocation(): 'see' | 'make' {
-  const target = locationTarget();
-  if (target.startsWith('resource-') || target.startsWith('pathway-')) return 'make';
+function modeForTarget(target: string): Mode | null {
+  if (target.startsWith('resource-') || target.startsWith('pathway-') || target === 'makeResults') return 'make';
   if (target === 'resultsList' || target.startsWith('event-')) return 'see';
-  return new URLSearchParams(window.location.search).get('mode') === 'make' ? 'make' : 'see';
+  if (target === 'opportunityResults' || target.startsWith('opportunity-')) return 'opportunities';
+  return null;
 }
 
-function writeModeToLocation(mode: 'see' | 'make', action: Exclude<HistoryAction, 'none'>) {
-  const url = new URL(window.location.href);
-  if (mode === 'make') url.searchParams.set('mode', 'make');
-  else url.searchParams.delete('mode');
+function modeFromLocation(): Mode {
+  const mode = new URLSearchParams(window.location.search).get('mode');
+  return modeForTarget(locationTarget()) ?? (mode === 'make' || mode === 'opportunities' ? mode : 'see');
+}
 
-  const target = locationTarget();
-  const incompatible = mode === 'make' ? target === 'resultsList' || target.startsWith('event-') : target.startsWith('resource-') || target.startsWith('pathway-');
-  if (incompatible) url.hash = '';
+function writeModeToLocation(mode: Mode, action: Exclude<HistoryAction, 'none'>) {
+  const url = new URL(window.location.href);
+  if (mode === 'see') url.searchParams.delete('mode');
+  else url.searchParams.set('mode', mode);
+
+  const targetMode = modeForTarget(locationTarget());
+  if (targetMode && targetMode !== mode) url.hash = '';
 
   window.history[action === 'push' ? 'pushState' : 'replaceState'](
     { hangaboutMode: mode },
@@ -451,10 +470,11 @@ function writeModeToLocation(mode: 'see' | 'make', action: Exclude<HistoryAction
 
 function revealLocationTarget() {
   const id = locationTarget();
-  if (!/^(event|resource|pathway)-/.test(id)) return;
+  if (!/^(event|resource|pathway|opportunity)-/.test(id) && id !== 'opportunityResults') return;
   requestAnimationFrame(() => {
     if (locationTarget() !== id) return;
-    const target = document.getElementById(id) ?? (id.startsWith('event-') ? els.linkedExhibition : null);
+    const target = document.getElementById(id) ?? (id.startsWith('event-') ? els.linkedExhibition
+      : id.startsWith('opportunity-') ? q<HTMLElement>('#opportunityDetail') : null);
     if (!target || target.closest('[hidden]')) return;
     target.focus({ preventScroll: true });
     target.scrollIntoView({ block: 'center' });
@@ -858,7 +878,7 @@ function updateCrawl() {
       return (ap ? haversine(state.userLocation!, ap) : Infinity) - (bp ? haversine(state.userLocation!, bp) : Infinity);
     });
   }
-  els.crawlBar.hidden = venues.length === 0;
+  els.crawlBar.hidden = state.mode === 'opportunities' || venues.length === 0;
   els.crawlCount.textContent = `${venues.length} ${venues.length === 1 ? 'stop' : 'stops'}`;
   const url = googleCrawlUrl(venues.map(v => v.address), els.crawlMode.value as 'walking'|'bicycling'|'driving');
   if (url) els.crawlOpen.href = url;
@@ -871,13 +891,6 @@ function toggleId(set: Set<string>, id: string) {
 
 function norm(value: string): string {
   return value.toLowerCase().normalize('NFKD').replace(/\p{Diacritic}/gu, '').trim();
-}
-
-function esc(value: string): string {
-  const entities: Record<string, string> = {
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
-  };
-  return value.replace(/[&<>"']/g, char => entities[char] ?? char);
 }
 
 function safeUrl(value: string): string {
