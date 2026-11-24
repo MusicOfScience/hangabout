@@ -10,7 +10,7 @@ Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workf
 
 [PR #48](https://github.com/MusicOfScience/hangabout/pull/48) merged at `302e6cc` with Createability. The [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45417622528) passed and the public detail displayed employment paid by the host and the links to the official guidelines and application. A [check-only refresh on main](https://github.com/MusicOfScience/hangabout/actions/runs/45417798871) reproduced the 12 records with an empty patch. Touring Queensland remains a registry lead after the hosted runner received HTTP 403 for its robots file.
 
-The residency follow-up adds Gunyah and Down the Lane, extending the catalogue to 14 records. The interface identifies the published application fee, participation charge and refundable deposit where applicable. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, costs and timing.
+The residency follow-up adds Down the Lane, extending the catalogue to 13 records. Gunyah remains a registry lead after two hosted runs received HTTP 404 from its robots file. Known participation fees appear separately from application fees and refundable deposits. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, costs and timing.
 
 ## Verified venue refresh pilot, 23 November 2026
 
