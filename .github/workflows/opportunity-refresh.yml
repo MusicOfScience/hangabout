@@ -5,9 +5,10 @@ on:
     - cron: '46 18 * * *'
   workflow_dispatch:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     paths:
       - .github/workflows/opportunity-refresh.yml
+      - scripts/check_opportunity_source_report.py
       - scripts/opportunity_adapters.py
       - scripts/refresh_opportunities.py
       - sources/opportunity-sources.json
@@ -26,6 +27,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -53,6 +56,14 @@ jobs:
           python -m unittest discover -s tests/python
           git diff --check
           git diff -- data/opportunities.json > generated/opportunity-refresh.patch
+      - name: require successful checks for new or changed active sources
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git show "$PR_BASE_SHA:sources/opportunity-sources.json" > generated/base-opportunity-sources.json
+          python scripts/check_opportunity_source_report.py \
+            generated/base-opportunity-sources.json sources/opportunity-sources.json generated/opportunity-refresh.json
       - name: summarize source health
         if: always()
         run: |

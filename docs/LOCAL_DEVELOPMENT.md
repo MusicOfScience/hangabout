@@ -185,3 +185,5 @@ python3.13 scripts/refresh_opportunities.py --force --report generated/opportuni
 ```
 
 Add `--apply` to write the proposed data to `data/opportunities.json`, then review the report and diff against the sources before committing. A run without `--force` uses the source intervals and accepts `--previous-report` for the last successful fetch dates. For the review and release workflow, see [Artist Opportunities](ARTIST_OPPORTUNITIES.md).
+
+The hosted pull-request check compares the proposed source registry with the PR's base revision. Every new, reactivated or edited active registry entry needs an `ok` result. Read the `opportunity-refresh` artifact for individual fetch failures and quarantined records, including unchanged sources. Scheduled refreshes continue checking the other sources when an individual source fails and preserve that source's previously validated records.
