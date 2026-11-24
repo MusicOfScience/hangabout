@@ -139,6 +139,9 @@ test('residencies keep free applications separate from participation costs', asy
   await page.goto('/?mode=opportunities');
   await page.getByRole('combobox', { name: 'Category', exact: true }).selectOption('residency');
   const results = page.locator('#opportunityResults');
+  await expect(results.getByRole('article')).toHaveCount(1);
+  await expect(results).not.toContainText('Gunyah');
+  await page.getByRole('combobox', { name: 'Application status', exact: true }).selectOption('all');
   await expect(results.getByRole('article')).toHaveCount(2);
   await expect(results.getByRole('article', { name: /Down the Lane/ })).toContainText('20 Dec 2026 · time not published');
   await page.getByText('More filters', { exact: true }).click();
@@ -149,6 +152,8 @@ test('residencies keep free applications separate from participation costs', asy
   await results.getByRole('link', { name: /Gunyah Artists-in-Residence/ }).click();
   const detail = page.locator('#opportunityDetail');
   await expect(detail.getByRole('link', { name: 'Official guidelines' })).toHaveAttribute('href', /gunyah\.blogspot\.com/);
+  await expect(detail).toContainText('Verification overdue');
+  await expect(detail.getByRole('link', { name: 'Apply with the funder' })).toBeHidden();
   await detail.getByText('Funding conditions and support', { exact: true }).click();
   await expect(detail.getByText(/refundable AUD 160/)).toBeVisible();
 });

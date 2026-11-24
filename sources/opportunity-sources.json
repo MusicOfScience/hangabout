@@ -168,14 +168,10 @@
       "url": "https://gunyah.blogspot.com/p/apply.html",
       "group": "australia",
       "role": "funder",
-      "state": "active",
       "reviewedOn": "2026-11-25",
-      "mechanism": "officialHTML",
-      "intervalDays": 2,
-      "staleDays": 14,
-      "adapter": "gunyah",
       "remit": "Australia-based artists and creatives applying for coastal NSW residencies.",
-      "reviewNote": "Public programme page with explicit participation charge, refundable deposit and no application fee. Check both round-specific forms without fetching them."
+      "state": "seed",
+      "reviewNote": "The application page and robots file were readable during local review. Two GitHub Actions runs returned HTTP 404 for this host’s robots.txt, so this source awaits a verifiable hosted refresh path."
     },
     {
       "id": "culture-focus-down-the-lane",
