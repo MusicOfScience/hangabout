@@ -3,6 +3,92 @@
   "officialUrlAliases": {},
   "opportunities": [
     {
+      "roundKey": "2027",
+      "title": "Ramsay Art Prize 2027",
+      "officialUrl": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/",
+      "applicationUrl": "https://forms.sa.gov.au/form/6940cd41ec2338329cb7be0e",
+      "categories": [
+        "prize-award"
+      ],
+      "funding": {
+        "minimum": 100000,
+        "maximum": 100000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": {
+          "amount": 50,
+          "currency": "AUD"
+        },
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": "The winner must obtain independent legal advice at their own expense.",
+        "conditions": "The gallery acquires the winning work, and the winner retains copyright. Entrants grant a perpetual, royalty-free, non-exclusive licence for uses specified in the entry terms.",
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "national",
+        "geography": "Australia-wide",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": null,
+        "municipalities": null,
+        "disciplines": null,
+        "careerStages": null,
+        "citizenship": "Australian citizen or permanent resident.",
+        "residency": "Australia must be the applicant’s primary place of residence.",
+        "age": "Over 18 and under 40 on the closing date.",
+        "applicantTypes": [
+          "individual",
+          "group"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "For artists working in any medium. Solo artists, duos and collectives may enter."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-09-11",
+        "opensAt": "2026-09-11T10:00:00+09:30",
+        "closingDate": "2026-12-11",
+        "closesAt": "2026-12-11T17:00:00+10:30",
+        "deadlineTimezone": "Australia/Adelaide",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "An acquisitive prize for contemporary Australian art. Finalists exhibit at the Art Gallery of South Australia.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": "One entry per artist or collective. The work must be original, recent, unique and non-editioned.",
+      "uncertainties": null,
+      "evidenceHash": "c289d2f76dd807b80796332647b7f4aa88768891e0b567e47a145ec1f9875f47",
+      "supportingEvidenceUrl": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/ramsay-art-prize-2027-terms-and-conditions/",
+      "verificationStatus": "verified",
+      "id": "agsa-ramsay-2027",
+      "sourceId": "agsa-ramsay",
+      "organisation": "Art Gallery of South Australia",
+      "discoverySources": [
+        {
+          "sourceId": "agsa-ramsay",
+          "url": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/"
+        }
+      ],
+      "verificationUrl": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/",
+      "firstDiscoveredAt": "2026-11-24T14:10:26+00:00",
+      "lastCheckedAt": "2026-11-24T14:13:42+00:00",
+      "lastVerifiedAt": "2026-11-24T14:13:42+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "b3b8a088373b8e088d087862f058f43afa23b59bb5bbbf72ddab50ccf3af16ae"
+    },
+    {
       "roundKey": "2026-09",
       "title": "Arts Projects for Individuals and Groups · September 2026",
       "officialUrl": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
@@ -164,6 +250,179 @@
       "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
       "staleAfterDays": 21,
       "contentHash": "159cc238a461d00b5b0f697769ee63595e4d44a731525f427f413ef115aa5991"
+    },
+    {
+      "roundKey": "2027",
+      "title": "Gottlieb Foundation Individual Support Grant · 2027",
+      "officialUrl": "https://www.gottliebfoundation.org/individual-support-grant-1",
+      "applicationUrl": "https://gottliebfoundation.submittable.com/submit/1d293158-a7a1-4cbb-9fb7-eea779363177/view",
+      "categories": [
+        "artist-grant"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": null,
+        "currency": "USD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "international",
+        "geography": "Worldwide · Australian artists can apply",
+        "geographicConfidence": "confirmed",
+        "countries": null,
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "painting",
+          "sculpture",
+          "printmaking"
+        ],
+        "careerStages": [
+          "established"
+        ],
+        "citizenship": "US citizenship and residence are optional.",
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual"
+        ],
+        "qualifications": null,
+        "specialistCriteria": "At least 20 years of work at a mature stage of artistic practice.",
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "For individual painters, sculptors and printmakers who meet the programme’s experience and financial-need criteria."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-10-15",
+        "opensAt": null,
+        "closingDate": "2027-01-15",
+        "closesAt": "2027-01-15T23:59:00-05:00",
+        "deadlineTimezone": "America/New_York",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Financial support for established visual artists with demonstrated financial need.",
+      "applicationRequirements": "International applicants need a complete tax return and a portfolio documenting the required period of practice.",
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "The funder describes previous award amounts. The amount for this cycle is unpublished.",
+      "evidenceHash": "bfe37bee479e4abbcf99551779fc02522d9e62d9c26b688bd2a75b95f97b69c0",
+      "supportingEvidenceUrl": "https://www.gottliebfoundation.org/isgrantfaq",
+      "verificationStatus": "verified",
+      "id": "gottlieb-individual-2027",
+      "sourceId": "gottlieb-individual",
+      "organisation": "Adolph and Esther Gottlieb Foundation",
+      "discoverySources": [
+        {
+          "sourceId": "gottlieb-individual",
+          "url": "https://www.gottliebfoundation.org/individual-support-grant-1"
+        }
+      ],
+      "verificationUrl": "https://www.gottliebfoundation.org/individual-support-grant-1",
+      "firstDiscoveredAt": "2026-11-24T14:10:26+00:00",
+      "lastCheckedAt": "2026-11-24T14:10:26+00:00",
+      "lastVerifiedAt": "2026-11-24T14:10:26+00:00",
+      "staleAfterDays": 28,
+      "contentHash": "7b311dec84825b5b1bdb78cf5aba644c4233d40c15e2cc9cbcfc8b48ac7fc9eb"
+    },
+    {
+      "roundKey": "rolling",
+      "title": "Gottlieb Foundation Emergency Grant",
+      "officialUrl": "https://www.gottliebfoundation.org/emergency-grant",
+      "applicationUrl": "https://gottliebfoundation.submittable.com/submit/74264011-2f09-4a49-a81b-e02957eff286/emergency-grant-application",
+      "categories": [
+        "emergency-assistance",
+        "artist-grant"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 15000,
+        "currency": "USD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": "Awards are one-off for a particular emergency and subject to the foundation’s annual programme budget.",
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "international",
+        "geography": "Worldwide · Australian artists can apply",
+        "geographicConfidence": "confirmed",
+        "countries": null,
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "painting",
+          "sculpture",
+          "printmaking"
+        ],
+        "careerStages": [
+          "established"
+        ],
+        "citizenship": "US citizenship and residence are optional.",
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual"
+        ],
+        "qualifications": null,
+        "specialistCriteria": "At least 10 years of work at a mature stage of artistic practice.",
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "For individual painters, sculptors and printmakers who meet the programme’s experience and financial-need criteria."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": null,
+        "opensAt": null,
+        "closingDate": null,
+        "closesAt": null,
+        "deadlineTimezone": null,
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": true
+      },
+      "summary": "Short-term financial help for artists facing an unexpected emergency they cannot afford, such as fire, flood or emergency medical costs.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": "The grant excludes chronic issues, projects, general debt and loss of employment.",
+      "uncertainties": null,
+      "evidenceHash": "17d0a526f1a646180a16e93387e485630f1234b0984c23d566d27adb2064a75c",
+      "supportingEvidenceUrl": "https://www.gottliebfoundation.org/isgrantfaq",
+      "verificationStatus": "verified",
+      "id": "gottlieb-rolling",
+      "sourceId": "gottlieb",
+      "organisation": "Adolph and Esther Gottlieb Foundation",
+      "discoverySources": [
+        {
+          "sourceId": "gottlieb",
+          "url": "https://www.gottliebfoundation.org/emergency-grant"
+        }
+      ],
+      "verificationUrl": "https://www.gottliebfoundation.org/emergency-grant",
+      "firstDiscoveredAt": "2026-11-24T14:10:26+00:00",
+      "lastCheckedAt": "2026-11-24T14:10:26+00:00",
+      "lastVerifiedAt": "2026-11-24T14:10:26+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "3c1b28debf7b845d000f412862cf106a4d633c33cdf9295d225175aba808142d"
     },
     {
       "roundKey": "2027-round-1",

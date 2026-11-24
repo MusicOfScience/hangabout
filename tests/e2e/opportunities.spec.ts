@@ -93,3 +93,22 @@ test('announced deadlines, expiry and stale verification are separate', async ({
   await expect(detail.getByRole('link', { name: 'Apply with the funder' })).toBeHidden();
   await expect(detail.getByRole('link', { name: 'Official guidelines' })).toBeVisible();
 });
+
+test('a prize shows its entry fee, local deadline and official terms', async ({ page }) => {
+  await page.goto('/?mode=opportunities');
+  await page.getByRole('combobox', { name: 'Category', exact: true }).selectOption('prize-award');
+  const results = page.locator('#opportunityResults');
+  await expect(results.getByRole('article')).toHaveCount(1);
+  await expect(results).toContainText(/AUD\s*100,000/);
+  await expect(results).toContainText(/AUD\s*50/);
+  await results.getByRole('link', { name: 'Ramsay Art Prize 2027' }).click();
+  const detail = page.locator('#opportunityDetail');
+  await expect(detail).toContainText('Competitive cash prize');
+  await expect(detail).toContainText(/11 Dec 2026.*5:00 pm/i);
+  await expect(detail.getByRole('link', { name: 'Official entry terms' })).toHaveAttribute('href', /agsa\.sa\.gov\.au.*terms-and-conditions/);
+  await detail.getByText('Funding conditions and support', { exact: true }).click();
+  await expect(detail).toContainText('The winner must obtain independent legal advice at their own expense.');
+  await page.getByText('More filters', { exact: true }).click();
+  await page.getByLabel('Free to apply').check();
+  await expect(results.getByRole('article')).toHaveCount(0);
+});

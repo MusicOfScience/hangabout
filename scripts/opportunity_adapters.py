@@ -71,9 +71,9 @@ def local_date(text):
     return datetime.strptime(text, "%d %B %Y").date()
 
 
-def local_instant(day, clock):
+def local_instant(day, clock, zone=MELBOURNE):
     local_time = datetime.strptime(clock.replace(" ", "").upper(), "%I:%M%p").time()
-    return datetime.combine(day, local_time, ZoneInfo(MELBOURNE))
+    return datetime.combine(day, local_time, ZoneInfo(zone))
 
 
 def amount(match):
@@ -102,7 +102,7 @@ def timing(status, *, opening=None, opens_at=None, deadline=None, commencement=N
                 opensAt=opens_at.isoformat() if opens_at else None,
                 closingDate=deadline.date().isoformat() if deadline else None,
                 closesAt=deadline.isoformat() if deadline else None,
-                deadlineTimezone=MELBOURNE if deadline else None,
+                deadlineTimezone=deadline.tzinfo.key if deadline else None,
                 commencementDate=commencement.isoformat() if commencement else None,
                 duration=duration, recurrence=recurrence, rolling=rolling)
 
@@ -130,7 +130,7 @@ def entry(round_key, title, url, apply_url, categories, financial, eligible, dat
                 uncertainties=None) | editorial
 
 
-def potter(url, html, now):
+def potter(url, html, now, _supporting_html=None):
     text = page_text(html)
     round_match = require(r"Current Round\s*\|\s*Round (\d+), (\d{4})", text)
     number, year = round_match.groups()
@@ -171,7 +171,7 @@ def potter(url, html, now):
     )]
 
 
-def pkf(url, html, _now):
+def pkf(url, html, _now, _supporting_html=None):
     text = page_text(html)
     require(r"Artists throughout the world are encouraged to apply", text)
     require(r"minimum of 10 exhibitions within the past 10 years", text)
@@ -206,7 +206,7 @@ def pkf(url, html, _now):
 WYNDHAM_DETAIL = r"/services/arts-culture/residencies-commissions-grants/\d{4}-wyndham-arts-grants/?"
 
 
-def wyndham(url, html, now):
+def wyndham(url, html, now, _supporting_html=None):
     text = page_text(html)
     year = require(r"\b(\d{4}) Wyndham Arts Grants\b", text)[1]
     if not re.fullmatch(WYNDHAM_DETAIL, urlsplit(url).path) or f"/{year}-" not in urlsplit(url).path:
@@ -254,7 +254,7 @@ def creative_portal_application(url, html):
                          for link, label in links(html, url)) else None
 
 
-def creative_australia(url, html, now):
+def creative_australia(url, html, now, _supporting_html=None):
     text = page_text(html)
     require(r"Arts Projects for Individuals and Groups", text)
     deadline_pattern = rf"(?:\w+ )?({MONTH_DATE}) at (\d{{1,2}}(?::\d{{2}})?[ap]m) \((AEDT|AEST)\)"
@@ -308,7 +308,7 @@ def creative_australia(url, html, now):
     return records
 
 
-def music_australia(url, html, now):
+def music_australia(url, html, now, _supporting_html=None):
     text = page_text(html)
     require(r"International Professional and Artistic Development fund \(Category 2\)", text)
     dates = require(
@@ -346,7 +346,151 @@ def music_australia(url, html, now):
     )]
 
 
+RAMSAY_TERMS = r"/whats-on/ramsay-art-prize/ramsay-art-prize-(\d{4})-terms-and-conditions/?"
+SUBMITTABLE_ID = r"[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}"
+ADELAIDE = "Australia/Adelaide"
+NEW_YORK = "America/New_York"
+
+
+def ramsay_terms_url(url, html):
+    matches = {link for link, label in links(html, url)
+               if label == "Terms and Conditions" and urlsplit(link).scheme == "https"
+               and urlsplit(link).netloc == urlsplit(url).netloc
+               and re.fullmatch(RAMSAY_TERMS, urlsplit(link).path, re.I)}
+    if len(matches) != 1:
+        raise ValueError("expected one first-party link to the current Ramsay entry terms")
+    return next(iter(matches))
+
+
+def ramsay(url, html, now, supporting_html=None):
+    text, terms = page_text(html), page_text(supporting_html or "")
+    year = re.fullmatch(RAMSAY_TERMS, urlsplit(ramsay_terms_url(url, html)).path, re.I)[1]
+    require(rf"Ramsay Art Prize {year} - Terms & Conditions", terms)
+    dates = require(
+        rf"Submissions to the Ramsay Art Prize {year} must be uploaded .*? between the hours of "
+        rf"(\d{{1,2}}\.\d{{2}}[ap]m), (\d{{1,2}} [A-Za-z]+) and (\d{{1,2}}\.\d{{2}}[ap]m),"
+        rf" ({MONTH_DATE}) \(Adelaide, South Australia, local time\)",
+        terms,
+    )
+    close_day = local_date(dates[4])
+    opens_at = local_instant(local_date(f"{dates[2]} {close_day.year}"), dates[1].replace(".", ":"), ADELAIDE)
+    deadline = local_instant(close_day, dates[3].replace(".", ":"), ADELAIDE)
+    require(rf"Entries for the Ramsay Art Prize {year} open on {dates[2]} and close {dates[4]}", text)
+    age = require(r"entrant must be under the age of (\d+) and over the age of (\d+)", terms)
+    require(r"Australian citizens or permanent residents and must be living in Australia as their primary place of residence", terms)
+    require(r"Duos or art collectives are eligible to enter", text)
+    require(r"working in any medium", text)
+    require(r"Submissions are limited to one entry per person or collective", terms)
+    require(r"submitted entry must be new or recent work", terms)
+    require(r"entry must be original", terms)
+    require(r"work of art submitted must be unique and non-editioned", terms)
+    require(r"full ownership of the submitted entry \(but not copyright\) will be transferred", terms)
+    require(r"perpetual, royalty-free, non-exclusive licence", terms)
+    require(r"independent legal advice, at their own cost", terms)
+    fee = amount(require(rf"Entry into the Ramsay Art Prize will incur a {MONEY} administration fee, including GST", terms)[1])
+    headline_fee = amount(require(rf"An administration fee of {MONEY} \(inc\. GST\) is applicable", text)[1])
+    prize = amount(require(rf"will pay the Ramsay Art Prize {year} winner {MONEY} \(GST exclusive\)", terms)[1])
+    headline_prize = amount(require(rf"A {MONEY} art prize", text)[1])
+    if fee != headline_fee or prize != headline_prize:
+        raise ValueError("Ramsay entry terms and programme page disagree on amounts")
+    apply_url = application(html, url, "forms.sa.gov.au", r"/form/[a-f0-9]{24}/?")
+    if now >= deadline:
+        status = "closed"
+    elif now < opens_at:
+        status = "forthcoming"
+    else:
+        status = "open" if apply_url else "unknown"
+    return [entry(
+        year, f"Ramsay Art Prize {year}", url, apply_url, ["prize-award"],
+        money(
+            prize, "AUD",
+            conditions=("The gallery acquires the winning work, and the winner retains copyright. Entrants grant "
+                        "a perpetual, royalty-free, non-exclusive licence for uses specified in the entry terms."),
+        ) | {
+            "minimum": prize, "applicationFee": {"amount": fee, "currency": "AUD"},
+            "otherCosts": "The winner must obtain independent legal advice at their own expense.",
+        },
+        eligibility("national", "Australia-wide", "For artists working in any medium. Solo artists, duos and collectives may enter.",
+                    citizenship="Australian citizen or permanent resident.",
+                    residency="Australia must be the applicant’s primary place of residence.",
+                    age=f"Over {age[2]} and under {age[1]} on the closing date.", applicantTypes=["individual", "group"]),
+        timing(override_status(text, status), opening=opens_at.date(), opens_at=opens_at, deadline=deadline),
+        "An acquisitive prize for contemporary Australian art. Finalists exhibit at the Art Gallery of South Australia.",
+        restrictions="One entry per artist or collective. The work must be original, recent, unique and non-editioned.",
+    )]
+
+
+def gottlieb_eligibility(supporting_html, years):
+    text = page_text(supporting_html or "")
+    require(r"The Foundation’s grant programs are open to both US-based and international artists\.", text)
+    require(r"US citizenship or residency is not required", text)
+    return eligibility(
+        "international", "Worldwide · Australian artists can apply",
+        "For individual painters, sculptors and printmakers who meet the programme’s experience and financial-need criteria.",
+        disciplines=["painting", "sculpture", "printmaking"], career=["established"], applicantTypes=["individual"],
+        citizenship="US citizenship and residence are optional.",
+        specialistCriteria=f"At least {years} years of work at a mature stage of artistic practice.",
+    )
+
+
+def gottlieb_emergency(url, html, _now, supporting_html=None):
+    text = page_text(html)
+    eligible = gottlieb_eligibility(supporting_html, 10)
+    require(r"minimum involvement of ten years in a mature phase", text)
+    require(r"Artists must work in the disciplines of painting, sculpture or printmaking", text)
+    require(r"unforeseen, catastrophic incident", text)
+    require(r"once this budgetary limit has been reached", text)
+    require(r"does not consider requests for dental work, chronic situations, capital improvements, or projects", text)
+    require(r"general indebtedness or lack of employment", text)
+    cap = amount(require(rf"The maximum amount of this grant is {MONEY}", text)[1])
+    rolling = bool(re.search(r"This program has no deadlines", text, re.I))
+    status = override_status(text, "unknown")
+    if not rolling and status == "unknown":
+        raise ValueError("rolling deadline evidence missing")
+    apply_url = application(html, url, "gottliebfoundation.submittable.com",
+                            rf"/submit/{SUBMITTABLE_ID}/emergency-grant-application/?")
+    if status == "unknown" and rolling and apply_url:
+        status = "open"
+    return [entry(
+        "rolling", "Gottlieb Foundation Emergency Grant", url, apply_url, ["emergency-assistance", "artist-grant"],
+        money(cap, "USD", conditions="Awards are one-off for a particular emergency and subject to the foundation’s annual programme budget."),
+        eligible, timing(status, rolling=rolling),
+        "Short-term financial help for artists facing an unexpected emergency they cannot afford, such as fire, flood or emergency medical costs.",
+        restrictions="The grant excludes chronic issues, projects, general debt and loss of employment.",
+    )]
+
+
+def gottlieb_individual(url, html, now, supporting_html=None):
+    text, faq = page_text(html), page_text(supporting_html or "")
+    eligible = gottlieb_eligibility(supporting_html, 20)
+    require(r"painters, sculptors, and printmakers who have worked in a mature phase of art for 20 years or more", text)
+    require(r"eligibility for an Individual Support Grant is determined by the applicant’s current financial need", text)
+    require(r"International applicants must provide a complete tax return", faq)
+    require(r"submitted images must begin in \d{4} or earlier and cover the years between then and now", faq)
+    us_date = r"[A-Za-z]+ \d{1,2}, \d{4}"
+    cycle = require(
+        rf"Applications for the (\d{{4}}) grant cycle will be accepted beginning ({us_date})\."
+        rf" The deadline to apply is ({us_date}) at 11:59 Eastern Time", text,
+    )
+    opening = datetime.strptime(cycle[2], "%B %d, %Y").date()
+    deadline = local_instant(datetime.strptime(cycle[3], "%B %d, %Y").date(), "11:59pm", NEW_YORK)
+    require(rf"before midnight Eastern Standard Time on {re.escape(cycle[3])}", faq)
+    if deadline.tzname() != "EST" or deadline.year != int(cycle[1]):
+        raise ValueError("Gottlieb application dates disagree with the published cycle or local time")
+    apply_url = application(html, url, "gottliebfoundation.submittable.com", rf"/submit/{SUBMITTABLE_ID}/view/?")
+    status = calendar_status(now.astimezone(ZoneInfo(NEW_YORK)).date(), opening, deadline, now, apply_url)
+    return [entry(
+        cycle[1], f"Gottlieb Foundation Individual Support Grant · {cycle[1]}", url, apply_url, ["artist-grant"],
+        money(None, "USD"),
+        eligible, timing(override_status(text, status), opening=opening, deadline=deadline),
+        "Financial support for established visual artists with demonstrated financial need.",
+        applicationRequirements="International applicants need a complete tax return and a portfolio documenting the required period of practice.",
+        uncertainties="The funder describes previous award amounts. The amount for this cycle is unpublished.",
+    )]
+
+
 ADAPTERS = {
-    "potter": potter, "pkf": pkf, "wyndham": wyndham,
-    "creative-australia": creative_australia, "music-australia": music_australia,
+    "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
+    "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
+    "gottlieb-individual": gottlieb_individual,
 }

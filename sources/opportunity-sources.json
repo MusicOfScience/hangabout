@@ -120,6 +120,22 @@
       "state": "seed"
     },
     {
+      "id": "agsa-ramsay",
+      "name": "Art Gallery of South Australia",
+      "url": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "adapter": "ramsay",
+      "intervalDays": 3,
+      "staleDays": 14,
+      "remit": "National acquisitive prize for eligible Australian artists who live primarily in Australia.",
+      "reviewNote": "Public programme page and linked same-site edition terms. Read both for deadlines, award and fee; observe the five-second crawl delay.",
+      "termsUrl": "https://agsa-prod.s3.amazonaws.com/media/dd/files/Web18_-_AGSA_Disclaimer_and_Terms_of_Use.7c68a13.pdf"
+    },
+    {
       "id": "creative-victoria",
       "name": "Creative Victoria",
       "url": "https://creative.vic.gov.au/funding-opportunities",
@@ -295,11 +311,35 @@
     },
     {
       "id": "gottlieb",
-      "name": "Adolph and Esther Gottlieb Foundation",
-      "url": "https://www.gottliebfoundation.org/",
-      "group": "internationalFunding",
+      "url": "https://www.gottliebfoundation.org/emergency-grant",
       "role": "funder",
-      "state": "seed"
+      "state": "active",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "group": "internationalFunding",
+      "name": "Adolph and Esther Gottlieb Foundation",
+      "supportingUrl": "https://www.gottliebfoundation.org/isgrantfaq",
+      "remit": "International; the funder’s FAQ confirms both grant programmes accept artists outside the US.",
+      "adapter": "gottlieb-emergency",
+      "intervalDays": 3,
+      "staleDays": 14,
+      "reviewNote": "Public emergency grant guidelines and funder eligibility FAQ. Link to the application portal without fetching it."
+    },
+    {
+      "id": "gottlieb-individual",
+      "url": "https://www.gottliebfoundation.org/individual-support-grant-1",
+      "role": "funder",
+      "state": "active",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "group": "internationalFunding",
+      "name": "Adolph and Esther Gottlieb Foundation",
+      "supportingUrl": "https://www.gottliebfoundation.org/isgrantfaq",
+      "remit": "International; the funder’s FAQ confirms both grant programmes accept artists outside the US.",
+      "adapter": "gottlieb-individual",
+      "intervalDays": 7,
+      "staleDays": 28,
+      "reviewNote": "Public individual support guidelines and funder FAQ. Current award amount remains unpublished; previous award amounts are historical."
     },
     {
       "id": "greenshields",

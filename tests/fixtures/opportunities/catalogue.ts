@@ -95,4 +95,21 @@ const archive: Opportunity = {
     closesAt: '2026-09-01T15:00:00+10:00', deadlineTimezone: melbourne },
 };
 
-export default { opportunities: [potter, pkf, ...wyndham, creativeAustralia, archive] };
+const ramsay: Opportunity = {
+  ...base,
+  id: 'agsa-ramsay-2027',
+  title: 'Ramsay Art Prize 2027',
+  organisation: 'Art Gallery of South Australia',
+  officialUrl: 'https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/',
+  supportingEvidenceUrl: 'https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/ramsay-art-prize-2027-terms-and-conditions/',
+  applicationUrl: 'https://forms.sa.gov.au/form/6940cd41ec2338329cb7be0e',
+  categories: ['prize-award'],
+  funding: { ...base.funding, minimum: 100000, maximum: 100000, currency: 'AUD', type: 'direct',
+    applicationFee: { amount: 50, currency: 'AUD' }, conditions: 'The gallery acquires the winning work.',
+    otherCosts: 'The winner must obtain independent legal advice at their own expense.' },
+  eligibility: { ...base.eligibility, scope: 'national', geography: 'Australia-wide', geographicConfidence: 'confirmed' },
+  timing: { ...base.timing, observedStatus: 'open', openingDate: '2026-09-11', closingDate: '2026-12-11',
+    opensAt: '2026-09-11T10:00:00+09:30', closesAt: '2026-12-11T17:00:00+10:30', deadlineTimezone: 'Australia/Adelaide' },
+};
+
+export default { opportunities: [potter, pkf, ...wyndham, creativeAustralia, archive, ramsay] };

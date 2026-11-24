@@ -14,9 +14,23 @@ The first-party checks on 25 November 2026 (Melbourne time) produced eight recor
 | [Wyndham City Arts Grants](https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants) | Creative Development, Skills Development and Presentation | Caps of AUD 3,000, 3,000 and 5,000. Development applicants must live in Wyndham. Presentation projects must take place there and can be proposed by artists who live outside the area. |
 | [Pollock-Krasner Foundation Grant](https://www.pkf.org/how-to-apply/) | Rolling international application | Up to USD 50,000 for professional visual artists in the listed media. The funder welcomes worldwide applicants. |
 
-The checked pages did not establish an application or participation fee for these records. Those fields stay unknown and do not satisfy the free-application filter. Caps are advertised award amounts. Participant contributions are shown independently. The amount filter requires a matching currency, so it never compares nominal AUD and USD values. Exchange-rate conversion is deferred pending a maintained, dated first-party rates source.
+At launch, the checked pages did not establish an application or participation fee for these records. Those fields stay unknown and do not satisfy the free-application filter. Caps are advertised award amounts. Participant contributions are shown independently. The amount filter requires a matching currency, so it never compares nominal AUD and USD values. Exchange-rate conversion is deferred pending a maintained, dated first-party rates source.
 
-The registry contains 40 entries, including the 38 requested organisations and directories, Wyndham City and Music Australia. Five have active adapters. All other URLs are leads pending activation review, except the Australian Cultural Fund, which is a reference-only fundraising platform. The launch data covers Victorian municipal programmes, national funding and one foreign funder. It does not provide broad state, regional, residency, award or disability-specific coverage.
+The launch registry had 40 entries, including the 38 requested organisations and directories, Wyndham City and Music Australia. The Australian Cultural Fund remains a reference-only fundraising platform.
+
+## Prize and international coverage
+
+Three first-party records extend the catalogue to 11 opportunities across eight programmes and six independent funders. Eight of the 42 registry entries now have active adapters. The other leads remain pending review.
+
+| Programme | Verified result on 25 November 2026 |
+| --- | --- |
+| [Ramsay Art Prize](https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/) | AUD 100,000 acquisitive prize for eligible artists across Australia. The AUD 50 entry fee is separate from any winner expenses. Entries close at 5 pm Adelaide time on 11 December 2026. The gallery acquires the winning work and the artist retains copyright. The [entry terms](https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/ramsay-art-prize-2027-terms-and-conditions/) cover rights and the winner’s obligation to arrange legal advice at their own expense. |
+| [Gottlieb Foundation Emergency Grant](https://www.gottliebfoundation.org/emergency-grant) | Rolling assistance of up to USD 15,000 for eligible artists working in painting, sculpture or printmaking who face a qualifying emergency. Awards are subject to the foundation’s annual budget. |
+| [Gottlieb Foundation Individual Support Grant](https://www.gottliebfoundation.org/individual-support-grant-1) | Dated cycle for established visual artists in financial need. The 2027 deadline is 15 January at 11:59 pm US Eastern time. The award amount for this cycle is unpublished. |
+
+The [Gottlieb funder FAQ](https://www.gottliebfoundation.org/isgrantfaq) confirms both the emergency and individual programmes accept international artists. The adapter checks the FAQ alongside the relevant programme page and the detail view links to the confirming page. The Ramsay adapter follows the current edition’s same-origin entry terms and quarantines observations if the award or fee disagrees with the programme page. Its deadline uses the Adelaide time zone, including the half-hour offset and daylight-saving changes.
+
+Broad state, regional, residency and disability-specific coverage remain open work.
 
 ## Source activation and changes
 
@@ -32,6 +46,6 @@ A failed fetch or incompatible extraction leaves the latest valid records intact
 
 `.github/workflows/opportunity-refresh.yml` checks due sources daily on main and retains a source-health report and proposed data patch for 30 days. The report records source failures, quarantined observations and the last successful fetch. Unchanged source checks do not create daily data churn. Periodic verification proposals renew the public checked date before records become overdue. Only a scheduled main run can open a draft review PR, and the workflow keeps at most one open proposal at a time. Review the diff and first-party links, then use the project’s normal merge and Pages verification flow. Pull request and manual checks are read-only in GitHub.
 
-The pipeline uses five monitored sources, with a one- to seven-day source cadence. It introduces no paid API, model, database, npm or Python dependency. It uses existing Actions minutes, artifact retention and Pages hosting. The schedule is registered once the workflow reaches the default branch. Roll back code and catalogue changes by reverting the feature PR through the normal review flow. To pause proposals while retaining the UI, disable the workflow. To pause an individual source, move its registry entry to a reviewed inactive state and retain its validated records.
+The pipeline uses eight monitored programmes, with a one- to seven-day source cadence. It introduces no paid API, model, database, npm or Python dependency. It uses existing Actions minutes, artifact retention and Pages hosting. The schedule is registered once the workflow reaches the default branch. Roll back code and catalogue changes by reverting the feature PR through the normal review flow. To pause proposals while retaining the UI, disable the workflow. To pause an individual source, move its registry entry to a reviewed inactive state and retain its validated records.
 
 See [Local development](LOCAL_DEVELOPMENT.md#artist-opportunities) for the offline gate and live verification commands.
