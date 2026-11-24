@@ -91,7 +91,7 @@
     {
       "roundKey": "2027",
       "title": "Aboriginal and Torres Strait Islander Cultural Arts Program · 2027",
-      "officialUrl": "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program",
+      "officialUrl": "https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/michael-pettersson-mla-media-releases/2026/aboriginal-and-torres-strait-islander-cultural-arts-program-funding-opens",
       "applicationUrl": "https://artsact.smartygrants.com.au/culturalartsprogram2027",
       "categories": [
         "artist-grant",
@@ -144,13 +144,13 @@
         ],
         "qualifications": null,
         "specialistCriteria": "Check the funder’s guidelines for the rules about cultural and geographic connections, groups and incorporated organisations.",
-        "accessibility": "Contact artsACT to discuss accessibility requirements.",
+        "accessibility": null,
         "disabilitySpecific": null,
         "criteria": "For Aboriginal and Torres Strait Islander-led arts and cultural projects that benefit the Canberra region."
       },
       "timing": {
         "observedStatus": "open",
-        "openingDate": "2026-10-02",
+        "openingDate": null,
         "opensAt": null,
         "closingDate": "2026-12-02",
         "closesAt": "2026-12-02T12:00:00+11:00",
@@ -161,11 +161,11 @@
         "rolling": false
       },
       "summary": "ACT funding for First Nations-led arts and cultural projects and professional development.",
-      "applicationRequirements": "Submit an expression of interest first. Shortlisted applicants are invited to submit a full proposal and budget.",
+      "applicationRequirements": "Submit an expression of interest using the official form and review the detailed programme guidelines before applying.",
       "selectionCriteria": null,
-      "restrictions": "The advertised public deadline is for the expression of interest. The second stage is by invitation.",
+      "restrictions": "The advertised public deadline is for the expression of interest.",
       "uncertainties": null,
-      "evidenceHash": "8d2bcc96de71ddb760ba33d1f4a9c6351b5694f3bce364feb25aadb722c47ffc",
+      "evidenceHash": "2b0e1cac46355a592b9d989268c55c265cb13cfc0a8ab90c5ffe2059ae6aeb82",
       "verificationStatus": "verified",
       "id": "artsact-cultural-arts-2027",
       "sourceId": "artsact-cultural-arts",
@@ -173,15 +173,15 @@
       "discoverySources": [
         {
           "sourceId": "artsact-cultural-arts",
-          "url": "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program"
+          "url": "https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/michael-pettersson-mla-media-releases/2026/aboriginal-and-torres-strait-islander-cultural-arts-program-funding-opens"
         }
       ],
-      "verificationUrl": "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program",
-      "firstDiscoveredAt": "2026-11-24T20:48:30+00:00",
-      "lastCheckedAt": "2026-11-24T20:48:30+00:00",
-      "lastVerifiedAt": "2026-11-24T20:48:30+00:00",
+      "verificationUrl": "https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/michael-pettersson-mla-media-releases/2026/aboriginal-and-torres-strait-islander-cultural-arts-program-funding-opens",
+      "firstDiscoveredAt": "2026-11-24T20:55:58+00:00",
+      "lastCheckedAt": "2026-11-24T20:55:58+00:00",
+      "lastVerifiedAt": "2026-11-24T20:55:58+00:00",
       "staleAfterDays": 14,
-      "contentHash": "6c68158e4ea93f93fd57ed68bfeec36e1c4879e5cb9111681e687d57bb734bd9"
+      "contentHash": "b8ba96a5d6f88df47f61bceecfdc8df7b9b3afa6c480e1cac65e7aeeb8564c14"
     },
     {
       "roundKey": "2026-27",

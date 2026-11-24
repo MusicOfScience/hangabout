@@ -14,7 +14,7 @@ Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workf
 
 [PR #52](https://github.com/MusicOfScience/hangabout/pull/52) added On the Move discovery and the first verified lead, Emmanuel College. The [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45483406024) passed at `f011a2d`. The public detail displayed the stipend, deadline and official application link. The [main check](https://github.com/MusicOfScience/hangabout/actions/runs/45483690619) reproduced 14 monitored records and 26 directory leads with an empty patch.
 
-The ACT coverage follow-up adds the Aboriginal and Torres Strait Islander Cultural Arts Program by checking the public EOI deadline against the linked grants index. The general ACT Arts Activities stream remains pending due to its end-of-day portal cutoff. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, cadence and review steps.
+The ACT coverage follow-up pairs the ACT Government announcement for the Aboriginal and Torres Strait Islander Cultural Arts Program with the public artsACT EOI round. The general ACT Arts Activities stream remains pending due to its end-of-day portal cutoff. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, cadence and review steps.
 
 ## Verified venue refresh pilot, 23 November 2026
 
