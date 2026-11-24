@@ -61,3 +61,6 @@
   .mode-switch .mode { padding: .64rem .75rem; }
   .opportunity-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+@media (min-width: 375px) and (max-width: 600px) {
+  .opportunity-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

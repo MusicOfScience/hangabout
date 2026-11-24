@@ -47,7 +47,7 @@ export function opportunitiesPanel(): string {
         <div class="opportunity-filter-grid">
           <label>Application status
             <select name="status">${options({
-              active: 'Open and forthcoming', open: 'Open applications', 'closing-soon': 'Closing soon',
+              active: 'Open & forthcoming', open: 'Open applications', 'closing-soon': 'Closing soon',
               forthcoming: 'Forthcoming', unknown: 'Status unknown', suspended: 'Suspended or cancelled',
               closed: 'Closed archive', all: 'All statuses',
             })}</select>
