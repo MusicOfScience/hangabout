@@ -89,6 +89,101 @@
       "contentHash": "b3b8a088373b8e088d087862f058f43afa23b59bb5bbbf72ddab50ccf3af16ae"
     },
     {
+      "roundKey": "2027",
+      "title": "Aboriginal and Torres Strait Islander Cultural Arts Program · 2027",
+      "officialUrl": "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program",
+      "applicationUrl": "https://artsact.smartygrants.com.au/culturalartsprogram2027",
+      "categories": [
+        "artist-grant",
+        "professional-development"
+      ],
+      "funding": {
+        "minimum": 3000,
+        "maximum": 15000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "state",
+        "geography": "Canberra region · applicant-specific eligibility applies",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "ACT"
+        ],
+        "municipalities": null,
+        "disciplines": [
+          "dance",
+          "music",
+          "theatre",
+          "visual-arts",
+          "craft",
+          "literature",
+          "digital-media",
+          "screen"
+        ],
+        "careerStages": null,
+        "citizenship": null,
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "group",
+          "organisation"
+        ],
+        "qualifications": null,
+        "specialistCriteria": "Check the funder’s guidelines for the rules about cultural and geographic connections, groups and incorporated organisations.",
+        "accessibility": "Contact artsACT to discuss accessibility requirements.",
+        "disabilitySpecific": null,
+        "criteria": "For Aboriginal and Torres Strait Islander-led arts and cultural projects that benefit the Canberra region."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-10-02",
+        "opensAt": null,
+        "closingDate": "2026-12-02",
+        "closesAt": "2026-12-02T12:00:00+11:00",
+        "deadlineTimezone": "Australia/Sydney",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "ACT funding for First Nations-led arts and cultural projects and professional development.",
+      "applicationRequirements": "Submit an expression of interest first. Shortlisted applicants are invited to submit a full proposal and budget.",
+      "selectionCriteria": null,
+      "restrictions": "The advertised public deadline is for the expression of interest. The second stage is by invitation.",
+      "uncertainties": null,
+      "evidenceHash": "8d2bcc96de71ddb760ba33d1f4a9c6351b5694f3bce364feb25aadb722c47ffc",
+      "verificationStatus": "verified",
+      "id": "artsact-cultural-arts-2027",
+      "sourceId": "artsact-cultural-arts",
+      "organisation": "artsACT (ACT Government)",
+      "discoverySources": [
+        {
+          "sourceId": "artsact-cultural-arts",
+          "url": "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program"
+        }
+      ],
+      "verificationUrl": "https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program",
+      "firstDiscoveredAt": "2026-11-24T20:48:30+00:00",
+      "lastCheckedAt": "2026-11-24T20:48:30+00:00",
+      "lastVerifiedAt": "2026-11-24T20:48:30+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "6c68158e4ea93f93fd57ed68bfeec36e1c4879e5cb9111681e687d57bb734bd9"
+    },
+    {
       "roundKey": "2026-27",
       "title": "Createability Internship · 2026-27",
       "officialUrl": "https://www.nsw.gov.au/grants-and-funding/2026-27-createability-internship",

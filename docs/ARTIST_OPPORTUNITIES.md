@@ -54,7 +54,15 @@ Down the Lane shares the bounded first-party round discovery used by Wyndham and
 
 The first extraction found 26 residency links. On the Move points to the [Emmanuel College residency programme](https://www.ecartistresidency.com/). The [college's application guidelines](https://www.ecartistresidency.com/apply) establish international eligibility, a USD 1,500 stipend, conditional travel and visa support up to USD 1,000, and supplied lodging. Artists cover materials, food, shipping and local transport. Application and participation fees are unpublished. The 2027 intake closes at 11:59 pm Boston time on 18 December 2026. The catalogue records the separate On the Move link as discovery provenance for this round.
 
-This brings the catalogue to 15 records, with 14 monitored by 11 first-party adapters. The 47-entry registry includes one monitored discovery directory. Its report is a review queue. Candidate links enter the catalogue only after first-party verification and review.
+The pilot brought the catalogue to 15 records, with 14 monitored by 11 first-party adapters. Its report is a review queue. Candidate links enter the catalogue only after first-party verification and review.
+
+## ACT cultural arts grant
+
+The [Aboriginal and Torres Strait Islander Cultural Arts Program](https://www.arts.act.gov.au/funding/aboriginal-and-torres-strait-islander-cultural-arts-program) adds Canberra-region coverage. artsACT publishes grants of AUD 3,000–15,000 per project. The 2027 round accepts expressions of interest until noon Canberra time on 2 December 2026. Shortlisted applicants submit a full proposal and budget by invitation. The second-stage date belongs to those applicants. The programme page links to its detailed guidelines and offers a contact for discussing access requirements. Application and participation fees remain unconfirmed.
+
+The adapter reads the programme page and the public grants index it links. It checks that both agree on the EOI cutoff before displaying open intake. The [public round page](https://artsact.smartygrants.com.au/culturalartsprogram2027) is linked for applicants. Both the ACT filter and applicant guidance use the Canberra region as the programme's focus. The guidelines describe some pathways for eligible applicants outside the territory. The catalogue has 16 records, with 15 monitored by 12 first-party adapters and one directory supplying review leads.
+
+The general [artsACT Arts Activities programme](https://www.arts.act.gov.au/funding/arts-activities-funding) describes its smaller grants as year-round. Its [2026–27 intake](https://artsact.smartygrants.com.au/AAU52026) has a published end-of-day cutoff. This stream remains pending an adapter that can preserve the advertised date and the precise midnight boundary.
 
 ## Source activation and changes
 

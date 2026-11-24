@@ -651,11 +651,72 @@ def on_the_move(url, html):
     return list(leads)
 
 
+ARTSACT_PORTAL = "https://artsact.smartygrants.com.au/"
+
+
+def artsact_portal_url(official_url, html):
+    if any(link == ARTSACT_PORTAL for link, _ in links(html, official_url)):
+        return ARTSACT_PORTAL
+    raise ValueError("artsACT’s public grants index is no longer linked by the funder")
+
+
+def artsact_cultural(url, html, now, portal_html):
+    text = page_text(html)
+    require(r"Cultural Arts Program Objective", text)
+    low, high = require(rf"Funding amounts will be between {MONEY} and {MONEY} per project", text).groups()
+    dates = require(
+        rf"Expressions of Interest \(EOI\) opens \w+ ({MONTH_DATE}) EOI submissions close "
+        rf"(\d{{1,2}}:\d{{2}}\s*[AP]M) \w+ ({MONTH_DATE}) Shortlisted applicants invited to submit full applications "
+        rf"\w+ {MONTH_DATE} Shortlisted applicants submit full application (\d{{1,2}}:\d{{2}}\s*[AP]M) \w+ ({MONTH_DATE})", text,
+    )
+    zone = "Australia/Sydney"
+    opening = local_date(dates[1])
+    deadline = local_instant(local_date(dates[3]), dates[2], zone)
+    final_deadline = local_instant(local_date(dates[5]), dates[4], zone)
+    if deadline.date() < opening or final_deadline <= deadline:
+        raise ValueError("artsACT stage dates are out of order")
+    require(r"led by and for the Aboriginal and Torres Strait Islander artists and communities of the capital region", text)
+    require(r"initiated and led by an Aboriginal and Torres Strait Islander individual, group or organisation", text)
+    require(r"dance, music, theatre, visual arts and crafts, literature, digital and new media, screen and arts-based festivals", text)
+    require(r"Stage 1: EOI submitted through SmartyGrants.*?Stage 2: Final application including detailed budget", text)
+    require(r"contact us to discuss any accessibility requirements", text)
+
+    year = final_deadline.year
+    application_url = application(portal_html, ARTSACT_PORTAL, "artsact.smartygrants.com.au", rf"/culturalartsprogram{year}/?")
+    status = calendar_status(now.astimezone(ZoneInfo(zone)).date(), opening, deadline, now, application_url)
+    if application_url:
+        portal_text = page_text(portal_html)
+        portal_cutoff = re.search(
+            rf"{year} Aboriginal and Torres Strait Islander Cultural Arts Program Submissions are now open\. "
+            rf"Submissions close (\d{{1,2}}:\d{{2}}\s*[AP]M) ({MONTH_DATE}) \((AEST|AEDT)\)", portal_text, re.I,
+        )
+        if portal_cutoff and (local_instant(local_date(portal_cutoff[2]), portal_cutoff[1], zone) != deadline
+                              or portal_cutoff[3].upper() != deadline.tzname()):
+            raise ValueError("artsACT’s grants index and programme page disagree on the EOI deadline")
+        if status == "open" and not portal_cutoff:
+            status = "unknown"
+
+    return [entry(
+        str(year), f"Aboriginal and Torres Strait Islander Cultural Arts Program · {year}", url, application_url,
+        ["artist-grant", "professional-development"], money(amount(high), "AUD") | {"minimum": amount(low)},
+        eligibility("state", "Canberra region · applicant-specific eligibility applies",
+                    "For Aboriginal and Torres Strait Islander-led arts and cultural projects that benefit the Canberra region.",
+                    state="ACT", countries=["AU"], applicantTypes=["individual", "group", "organisation"],
+                    disciplines=["dance", "music", "theatre", "visual-arts", "craft", "literature", "digital-media", "screen"],
+                    specialistCriteria="Check the funder’s guidelines for the rules about cultural and geographic connections, groups and incorporated organisations.",
+                    accessibility="Contact artsACT to discuss accessibility requirements."),
+        timing(override_status(text, status), opening=opening, deadline=deadline),
+        "ACT funding for First Nations-led arts and cultural projects and professional development.",
+        applicationRequirements="Submit an expression of interest first. Shortlisted applicants are invited to submit a full proposal and budget.",
+        restrictions="The advertised public deadline is for the expression of interest. The second stage is by invitation.",
+    )]
+
+
 ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
     "gottlieb-individual": gottlieb_individual, "createability": createability,
-    "down-the-lane": down_the_lane, "emmanuel": emmanuel,
+    "down-the-lane": down_the_lane, "emmanuel": emmanuel, "artsact-cultural": artsact_cultural,
 }
 
 DIRECTORY_ADAPTERS = {"on-the-move": on_the_move}
