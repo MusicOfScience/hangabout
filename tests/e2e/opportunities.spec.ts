@@ -134,3 +134,21 @@ test('state and access filters surface the paid Createability placement', async 
   await detail.getByText('Funding conditions and support', { exact: true }).click();
   await expect(detail.getByText(/publish a pay rate/)).toBeVisible();
 });
+
+test('residencies keep free applications separate from participation costs', async ({ page }) => {
+  await page.goto('/?mode=opportunities');
+  await page.getByRole('combobox', { name: 'Category', exact: true }).selectOption('residency');
+  const results = page.locator('#opportunityResults');
+  await expect(results.getByRole('article')).toHaveCount(2);
+  await expect(results.getByRole('article', { name: /Down the Lane/ })).toContainText('20 Dec 2026 · time not published');
+  await page.getByText('More filters', { exact: true }).click();
+  await page.getByLabel('Free to apply').check();
+  await expect(results.getByRole('article')).toHaveCount(1);
+  await expect(results).toContainText('Participation fee');
+  await expect(results).toContainText(/AUD\s*470/);
+  await results.getByRole('link', { name: /Gunyah Artists-in-Residence/ }).click();
+  const detail = page.locator('#opportunityDetail');
+  await expect(detail.getByRole('link', { name: 'Official guidelines' })).toHaveAttribute('href', /gunyah\.blogspot\.com/);
+  await detail.getByText('Funding conditions and support', { exact: true }).click();
+  await expect(detail.getByText(/refundable AUD 160/)).toBeVisible();
+});

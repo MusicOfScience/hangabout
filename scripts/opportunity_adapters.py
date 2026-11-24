@@ -99,12 +99,13 @@ def eligibility(scope, geography, criteria, *, state=None, municipality=None, di
 
 
 def timing(status, *, opening=None, opens_at=None, deadline=None, commencement=None, recurrence=None,
-           rolling=False, duration=None):
+           rolling=False, duration=None, closing=None, local_zone=None):
+    closing = deadline.date() if deadline else closing
     return dict(observedStatus=status, openingDate=opening.isoformat() if opening else None,
                 opensAt=opens_at.isoformat() if opens_at else None,
-                closingDate=deadline.date().isoformat() if deadline else None,
+                closingDate=closing.isoformat() if closing else None,
                 closesAt=deadline.isoformat() if deadline else None,
-                deadlineTimezone=deadline.tzinfo.key if deadline else None,
+                deadlineTimezone=deadline.tzinfo.key if deadline else local_zone,
                 commencementDate=commencement.isoformat() if commencement else None,
                 duration=duration, recurrence=recurrence, rolling=rolling)
 
@@ -492,7 +493,10 @@ def gottlieb_individual(url, html, now, supporting_html=None):
 
 
 CREATEABILITY_DETAIL = r"/grants-and-funding/(\d{4}-\d{2})-createability-internship/?"
-SOURCE_DETAIL_PATHS = {"wyndham": WYNDHAM_DETAIL, "createability": CREATEABILITY_DETAIL}
+DOWN_THE_LANE_DETAIL = r"/down-the-lane-residency-(\d{4})/?"
+SOURCE_DETAIL_PATHS = {
+    "wyndham": WYNDHAM_DETAIL, "createability": CREATEABILITY_DETAIL, "down-the-lane": DOWN_THE_LANE_DETAIL,
+}
 SYDNEY = "Australia/Sydney"
 
 
@@ -537,8 +541,90 @@ def createability(url, html, now, _supporting_html=None):
     )]
 
 
+def gunyah(url, html, now, _supporting_html=None):
+    text = page_text(html)
+    round_match = require(r"Applications are (now open|now closed|closed) for the (\d{4}) Gunyah Artists-in-Residence program", text)
+    year = round_match[2]
+    closing = require(rf"Applications close (\d{{1,2}}(?::\d{{2}})?[ap]m) \w+ ({MONTH_DATE})", text)
+    deadline = local_instant(local_date(closing[2]), closing[1], SYDNEY)
+    require(r"there is no application fee", text)
+    require(r"The applicant must be based in Australia", text)
+    require(r"at any stages of their careers can apply for a solo or group/collaboration residency", text)
+    require(r"moderately subsidised by the property owners", text)
+    require(r"These fees are for the whole house", text)
+    cost = amount(require(rf"the cost per residency is {MONEY} for ten days", text)[1])
+    deposit = amount(require(rf"A refundable {MONEY} cleaning and key deposit is also required", text)[1])
+    forms = {
+        match[1] for link, label in links(html, url)
+        if (match := re.fullmatch(rf"(SOLO|GROUP) residency application form, Gunyah AiR {year}", label))
+        and urlsplit(link).scheme == "https" and urlsplit(link).netloc == "form.jotform.com"
+        and re.fullmatch(r"/\d{10,20}/?", urlsplit(link).path)
+    }
+    if now >= deadline or round_match[1].lower() != "now open":
+        status = "closed"
+    else:
+        status = "open" if forms == {"SOLO", "GROUP"} else "unknown"
+    return [entry(
+        year, f"Gunyah Artists-in-Residence · {year}", url, url if forms == {"SOLO", "GROUP"} else None,
+        ["residency"], money(None, None, funding_type="participant-expenditure",
+                            conditions="The property owners subsidise the stay. The participation charge covers the whole house for ten days or part thereof.") | {
+            "applicationFee": {"amount": 0, "currency": "AUD"},
+            "participationFee": {"amount": cost, "currency": "AUD"},
+            "otherCosts": f"A refundable AUD {deposit:,} cleaning and key deposit is required.",
+        },
+        eligibility("national", "Australia-wide", "For Australia-based artists and creatives applying on their own or in a group.",
+                    residency="Applicants must be based in Australia.", disciplines=["all"],
+                    applicantTypes=["individual", "group"]),
+        timing(override_status(text, status), deadline=deadline),
+        "A subsidised self-directed residency in a house and studio on the NSW coast.",
+        applicationRequirements="Choose the solo or group application form on the official page.",
+    )]
+
+
+def down_the_lane(url, html, now, _supporting_html=None):
+    text = page_text(html)
+    year = re.fullmatch(DOWN_THE_LANE_DETAIL, urlsplit(url).path)[1]
+    require(rf"Down the Lane Artist Residency {year}", text)
+    opening = local_date(require(rf"APPLICATIONS OPEN ({MONTH_DATE}) Apply Now", text)[1].title())
+    closing = local_date(require(rf"All applications must be submitted by ({MONTH_DATE})", text)[1])
+    require(r"open to practising artists worldwide, at any career stage", text)
+    require(r"working in any medium", text)
+    require(rf"present in the studio for the full month in March {year}", text)
+    require(r"return airfare, your accommodation for the month, a private studio and a separate workshop area", text)
+    budget = amount(require(rf"along with an A{MONEY} production budget", text)[1])
+    fee = amount(require(rf"the A{MONEY} application fee is non-refundable", text)[1])
+    application_url = application(html, url, "www.culturefocus.com.au", r"/new-page-2/?")
+    today = now.astimezone(ZoneInfo(MELBOURNE)).date()
+    if today < opening:
+        status = "forthcoming"
+    elif today > closing:
+        status = "closed"
+    else:
+        status = "open" if application_url and today < closing else "unknown"
+    return [entry(
+        year, f"Down the Lane Artist Residency · {year}", url, application_url, ["residency"],
+        money(budget, "AUD", funding_type="partial",
+              conditions="The production budget supports making work. The programme also provides a studio and workshop.") | {
+            "minimum": budget,
+            "applicationFee": {"amount": fee, "currency": "AUD"},
+            "travel": "Return airfare for the resident artist.",
+            "accommodation": "Accommodation for the resident artist for the month.",
+            "materials": "The production budget can cover materials and other costs of making work.",
+        },
+        eligibility("international", "Worldwide · Australian artists can apply",
+                    "For practising artists at any career stage. Applicants must be available in Melbourne for the full residency.",
+                    disciplines=["all"], applicantTypes=["individual"]),
+        timing(override_status(text, status), opening=opening, closing=closing, local_zone=MELBOURNE,
+               duration=f"One month in March {year}."),
+        "A month of studio access and production support at Down the Lane Studios in Melbourne.",
+        applicationRequirements="Apply in English through the official form. The application fee is non-refundable.",
+        uncertainties="The application cutoff time and participation fee are unpublished.",
+    )]
+
+
 ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
     "gottlieb-individual": gottlieb_individual, "createability": createability,
+    "gunyah": gunyah, "down-the-lane": down_the_lane,
 }

@@ -111,6 +111,7 @@ function card(record: Opportunity, now: Date): string {
     ${facts([
       ['Funding', fundingLabel(record.funding)], ['Deadline', deadlineLabel(record)],
       ['Geographic eligibility', record.eligibility.geography], ['Application fee', feeLabel(record.funding.applicationFee)],
+      ...(record.funding.participationFee ? [['Participation fee', feeLabel(record.funding.participationFee)] as [string, string]] : []),
     ])}
   </article>`;
 }
@@ -148,7 +149,7 @@ function detail(record: Opportunity, now: Date): string {
     <p><strong>${esc(eligible.geography ?? 'Geographic eligibility not published')}</strong> · ${geographicEvidence[eligible.geographicConfidence]}</p>
     <p>${esc(eligible.criteria ?? 'Eligibility criteria are not published in this listing.')}</p>
     <div class="opportunity-actions">
-      ${record.applicationUrl ? `<span data-opportunity-apply${canApply(record, now) ? '' : ' hidden'}>${external(record.applicationUrl, 'Apply with the funder', true)}</span>` : ''}
+      ${record.applicationUrl && record.applicationUrl !== record.officialUrl ? `<span data-opportunity-apply${canApply(record, now) ? '' : ' hidden'}>${external(record.applicationUrl, 'Apply with the funder', true)}</span>` : ''}
       ${external(record.officialUrl, 'Official guidelines')}
       ${record.supportingEvidenceUrl ? external(record.supportingEvidenceUrl, isPrize ? 'Official entry terms' : 'Official eligibility FAQ') : ''}
     </div>
