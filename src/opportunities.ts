@@ -39,6 +39,7 @@ export const lifecycleLabels = {
 
 export const fundingLabels = {
   direct: 'Direct financial support',
+  'paid-placement': 'Employment paid by the host',
   'in-kind': 'In-kind support',
   partial: 'Partially funded',
   unfunded: 'Unfunded',
@@ -180,7 +181,8 @@ export function money(amount: number, currency: string): string {
     minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount);
 }
 
-export function fundingLabel({ minimum, maximum, currency }: Opportunity['funding']): string {
+export function fundingLabel({ minimum, maximum, currency, type }: Opportunity['funding']): string {
+  if (type === 'paid-placement') return 'Paid placement';
   if (!currency) return unknown;
   if (minimum !== null && maximum !== null && minimum !== maximum) {
     return `${money(minimum, currency)}–${money(maximum, currency)}`;

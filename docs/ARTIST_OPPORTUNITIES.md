@@ -30,11 +30,22 @@ Three first-party records extend the catalogue to 11 opportunities across eight 
 
 The [Gottlieb funder FAQ](https://www.gottliebfoundation.org/isgrantfaq) confirms both the emergency and individual programmes accept international artists. The adapter checks the FAQ alongside the relevant programme page and the detail view links to the confirming page. The Ramsay adapter follows the current edition’s same-origin entry terms and quarantines observations if the award or fee disagrees with the programme page. Its deadline uses the Adelaide time zone, including the half-hour offset and daylight-saving changes.
 
-Broad state, regional, residency and disability-specific coverage remain open work.
+## NSW and Queensland coverage
+
+Two official programmes extend the catalogue to 13 records. Ten of the 44 registry entries now have active adapters.
+
+| Programme | Verified result on 25 November 2026 |
+| --- | --- |
+| [Createability Internship](https://www.nsw.gov.au/grants-and-funding/2026-27-createability-internship) | Paid placements for eligible Deaf and Disabled artists and arts workers who have lived in NSW for the past 12 months. Host organisations pay the interns and the guidelines leave the pay rate unpublished. Applications close at 2 pm Sydney time on 16 December 2026. The [programme page](https://www.nsw.gov.au/arts-and-culture/engage-nsw-arts-and-culture/creative-cultures-and-communities/createability) supplies current application links and options for accessible applications. |
+| [Touring Queensland Fund](https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund) | Round 4 is forthcoming on 30 November 2026 and closes at 2 pm Brisbane time on 8 February 2027. The cap is AUD 100,000 and the fund covers up to half the project's costs. The funder offers up to AUD 10,000 in additional access support. |
+
+Createability uses the same bounded first-party round discovery as Wyndham and displays a paid placement separately from a grant amount. The source facts are attributed to Create NSW, NSW Government. The official NSW guidelines link opens separately under the [NSW Government linking policy](https://www.nsw.gov.au/nsw-government/about-website/copyright). The Queensland adapter verifies the co-investment share against the funder’s FAQ. The previously closed application area cannot establish an open status for the forthcoming round. A current published form is required after opening.
+
+The prospective Western Australian Contemporary Music Fund pages declined automated access through robots directives and stay outside the active registry. Residency access, broader regional coverage and fees remain gaps.
 
 ## Source activation and changes
 
-Before enabling a source, verify its canonical public pages, source terms, robots directives, applicant geography and programme relevance. Inspect APIs, feeds and structured metadata before implementing page extraction. The active pages exposed the necessary evidence in public HTML. The Wyndham adapter discovers dated round pages from the council index. The other adapters monitor reviewed programme URLs and create new records when those pages publish a new round. Inspect the source registry for reviewed dates, coverage and fetch cadence.
+Before enabling a source, verify its canonical public pages, source terms, robots directives, applicant geography and programme relevance. Inspect APIs, feeds and structured metadata before implementing page extraction. The active pages exposed the necessary evidence in public HTML. The Wyndham and Createability adapters discover dated round pages from official indexes. Most other adapters monitor reviewed programme URLs and create new records when those pages publish a new round. Inspect the source registry for reviewed dates, coverage and fetch cadence.
 
 The Python standard-library fetcher checks robots directives, applies crawl delay, enforces time and response-size limits, retries transient failures and stops on access restrictions or redirects. Third-party application portals are linked from public funder evidence. The job does not fetch authenticated application forms. Keep summaries in Hangabout’s words and publish only the facts needed for discovery. Activate directories as discovery sources in a subsequent coverage phase, with original funder confirmation before publication.
 
@@ -46,6 +57,6 @@ A failed fetch or incompatible extraction leaves the latest valid records intact
 
 `.github/workflows/opportunity-refresh.yml` checks due sources daily on main and retains a source-health report and proposed data patch for 30 days. The report records source failures, quarantined observations and the last successful fetch. Unchanged source checks do not create daily data churn. Periodic verification proposals renew the public checked date before records become overdue. Only a scheduled main run can open a draft review PR, and the workflow keeps at most one open proposal at a time. Review the diff and first-party links, then use the project’s normal merge and Pages verification flow. Pull request and manual checks are read-only in GitHub.
 
-The pipeline uses eight monitored programmes, with a one- to seven-day source cadence. It introduces no paid API, model, database, npm or Python dependency. It uses existing Actions minutes, artifact retention and Pages hosting. The schedule is registered once the workflow reaches the default branch. Roll back code and catalogue changes by reverting the feature PR through the normal review flow. To pause proposals while retaining the UI, disable the workflow. To pause an individual source, move its registry entry to a reviewed inactive state and retain its validated records.
+The pipeline uses ten monitored programmes, with a one- to seven-day source cadence. It introduces no paid API, model, database, npm or Python dependency. It uses existing Actions minutes, artifact retention and Pages hosting. The schedule is registered once the workflow reaches the default branch. Roll back code and catalogue changes by reverting the feature PR through the normal review flow. To pause proposals while retaining the UI, disable the workflow. To pause an individual source, move its registry entry to a reviewed inactive state and retain its validated records.
 
 See [Local development](LOCAL_DEVELOPMENT.md#artist-opportunities) for the offline gate and live verification commands.

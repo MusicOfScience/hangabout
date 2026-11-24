@@ -124,8 +124,11 @@ function detail(record: Opportunity, now: Date): string {
   const eligible = record.eligibility;
   const timing = record.timing;
   const isPrize = record.categories.includes('prize-award');
-  const external = (url: string, label: string, solid = false) =>
-    `<a class="button${solid ? ' solid' : ''}" href="${esc(url)}">${label}</a>`;
+  const external = (url: string, label: string, solid = false) => {
+    const nswGovernment = new URL(url).hostname === 'www.nsw.gov.au';
+    const newTab = nswGovernment ? ' target="_blank" rel="noopener" aria-label="' + esc(label) + ' (opens in a new tab)"' : '';
+    return `<a class="button${solid ? ' solid' : ''}" href="${esc(url)}"${newTab}>${label}</a>`;
+  };
   const hasExpense = Boolean(funding.coContribution || funding.otherCosts || (funding.applicationFee?.amount ?? 0) > 0
     || (funding.participationFee?.amount ?? 0) > 0 || funding.type === 'participant-expenditure');
   const list = (items: string[] | null) => items?.map(value => value === 'all' ? 'All published art forms' : titleCase(value)).join(', ') ?? null;

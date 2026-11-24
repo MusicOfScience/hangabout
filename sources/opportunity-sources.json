@@ -136,6 +136,38 @@
       "termsUrl": "https://agsa-prod.s3.amazonaws.com/media/dd/files/Web18_-_AGSA_Disclaimer_and_Terms_of_Use.7c68a13.pdf"
     },
     {
+      "id": "create-nsw-createability",
+      "name": "Create NSW (NSW Government)",
+      "url": "https://www.nsw.gov.au/arts-and-culture/engage-nsw-arts-and-culture/creative-cultures-and-communities/createability",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "adapter": "createability",
+      "remit": "NSW-based Deaf and Disabled creatives seeking paid professional development.",
+      "reviewNote": "The stable programme page links to official dated internship guidelines. Publish factual summaries with source attribution and retain links to the original NSW Government page.",
+      "termsUrl": "https://www.nsw.gov.au/nsw-government/about-website/copyright"
+    },
+    {
+      "id": "arts-queensland-touring",
+      "name": "Arts Queensland",
+      "url": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "intervalDays": 2,
+      "staleDays": 14,
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "adapter": "touring-queensland",
+      "supportingUrl": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund/touring-queensland-fund-faqs",
+      "remit": "Queensland-based applicants touring arts experiences across Queensland.",
+      "reviewNote": "Monitor the funder programme page and co-investment FAQ. Require the current application section to show an intake before presenting it as open."
+    },
+    {
       "id": "creative-victoria",
       "name": "Creative Victoria",
       "url": "https://creative.vic.gov.au/funding-opportunities",

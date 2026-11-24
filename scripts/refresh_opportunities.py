@@ -17,7 +17,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.robotparser import RobotFileParser
 from zoneinfo import ZoneInfo
 
-from opportunity_adapters import ADAPTERS, WYNDHAM_DETAIL, links, page_text, ramsay_terms_url
+from opportunity_adapters import ADAPTERS, SOURCE_DETAIL_PATHS, links, page_text, ramsay_terms_url
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/opportunity-sources.json"
@@ -30,7 +30,7 @@ CATEGORIES = {
     "exhibition-opportunity", "prize-award", "cultural-exchange", "travel-mobility",
     "research-experimental", "emergency-assistance", "disability-specific",
 }
-FUNDING_TYPES = {"direct", "in-kind", "partial", "unfunded", "participant-expenditure", "unknown"}
+FUNDING_TYPES = {"direct", "in-kind", "partial", "unfunded", "participant-expenditure", "paid-placement", "unknown"}
 VERIFICATION = {"verified", "partially-verified", "discovery-only", "stale", "quarantined"}
 STATUSES = {"forthcoming", "open", "closing-soon", "closed", "suspended", "unknown"}
 
@@ -164,6 +164,9 @@ def validate_record(record, sources):
     check(funding["fullyFunded"] is not True or funding["type"] not in {"partial", "unfunded", "participant-expenditure", "unknown"},
           "fully-funded flag conflicts with funding type")
     check(funding["currency"] is None or currency(funding["currency"]), "invalid funding currency")
+    if funding["type"] == "paid-placement":
+        check(funding["minimum"] is None and funding["maximum"] is None and funding["currency"] is None,
+              "host employment must not be represented as a grant amount")
     for field in ("minimum", "maximum"):
         check(funding[field] is None or valid_amount(funding[field]) and currency(funding["currency"]),
               f"invalid funding {field} or missing currency")
@@ -293,12 +296,13 @@ def observe(source, fetch, now):
     url = source["url"]
     html = fetch(url)
     pages = [(url, html)]
-    if source["adapter"] == "wyndham":
+    detail_path = SOURCE_DETAIL_PATHS.get(source["adapter"])
+    if detail_path:
         urls = {url_key(link): link for link, _ in links(html, url)
                 if urlsplit(link).scheme == "https" and urlsplit(link).netloc == urlsplit(url).netloc
-                and re.fullmatch(WYNDHAM_DETAIL, urlsplit(link).path)}
+                and re.fullmatch(detail_path, urlsplit(link).path)}
         if not 1 <= len(urls) <= 5:
-            raise QuarantineError("Wyndham discovery returned an unexpected number of round pages")
+            raise QuarantineError("programme index returned an unexpected number of round pages")
         pages = [(urls[key], fetch(urls[key])) for key in sorted(urls)]
 
     observations = []

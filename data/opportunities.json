@@ -89,6 +89,180 @@
       "contentHash": "b3b8a088373b8e088d087862f058f43afa23b59bb5bbbf72ddab50ccf3af16ae"
     },
     {
+      "roundKey": "2026-round-4",
+      "title": "Touring Queensland Fund · Round 4",
+      "officialUrl": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund",
+      "applicationUrl": null,
+      "categories": [
+        "artist-grant",
+        "travel-mobility"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 100000,
+        "currency": "AUD",
+        "type": "partial",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": "Other sources must cover at least 50% of tour costs. Eligible in-kind support can count.",
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": null,
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "state",
+        "geography": "Queensland",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "QLD"
+        ],
+        "municipalities": null,
+        "disciplines": null,
+        "careerStages": null,
+        "citizenship": "Individuals must be Australian citizens or permanent residents.",
+        "residency": "Individuals need a Queensland primary residence. Groups and organisations need a Queensland business address.",
+        "age": "Individual applicants must be over 18.",
+        "applicantTypes": [
+          "individual",
+          "group",
+          "organisation"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": "Up to AUD 10,000 in additional support is available for disability and Deaf access costs.",
+        "disabilitySpecific": null,
+        "criteria": "For Queensland-based artists, groups and organisations touring work around the state."
+      },
+      "timing": {
+        "observedStatus": "forthcoming",
+        "openingDate": "2026-11-30",
+        "opensAt": null,
+        "closingDate": "2027-02-08",
+        "closesAt": "2027-02-08T14:00:00+10:00",
+        "deadlineTimezone": "Australia/Brisbane",
+        "commencementDate": null,
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Support to tour performances, exhibitions and other arts experiences to Queensland communities.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": "The tour must visit at least three locations outside the touring party’s home location.",
+      "uncertainties": null,
+      "evidenceHash": "07b752044f99e505d1728a4e5c7ccaa3f388e9a84c40a6c13e0b0cc74b878645",
+      "supportingEvidenceUrl": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund/touring-queensland-fund-faqs",
+      "verificationStatus": "verified",
+      "id": "arts-queensland-touring-2026-round-4",
+      "sourceId": "arts-queensland-touring",
+      "organisation": "Arts Queensland",
+      "discoverySources": [
+        {
+          "sourceId": "arts-queensland-touring",
+          "url": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund"
+        }
+      ],
+      "verificationUrl": "https://www.arts.qld.gov.au/funding-opportunities/funding/touring-queensland-fund",
+      "firstDiscoveredAt": "2026-11-24T14:26:46+00:00",
+      "lastCheckedAt": "2026-11-24T14:26:46+00:00",
+      "lastVerifiedAt": "2026-11-24T14:26:46+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "6d6e0f910808f45bb44d11da69a1cbb3babe362f8e0995286469446610fb4f73"
+    },
+    {
+      "roundKey": "2026-27",
+      "title": "Createability Internship · 2026-27",
+      "officialUrl": "https://www.nsw.gov.au/grants-and-funding/2026-27-createability-internship",
+      "applicationUrl": "https://artsnsw.smartygrants.com.au/2026-27CI",
+      "categories": [
+        "professional-development",
+        "disability-specific"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": null,
+        "currency": null,
+        "type": "paid-placement",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": null,
+        "accommodation": null,
+        "materials": null,
+        "otherCosts": null,
+        "conditions": "The host organisation employs and pays successful applicants. The guidelines don’t publish a pay rate.",
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "state",
+        "geography": "New South Wales",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "NSW"
+        ],
+        "municipalities": null,
+        "disciplines": null,
+        "careerStages": [
+          "emerging",
+          "mid-career"
+        ],
+        "citizenship": null,
+        "residency": "Applicants must have lived in NSW for the past 12 months.",
+        "age": "Over 18",
+        "applicantTypes": [
+          "individual"
+        ],
+        "qualifications": null,
+        "specialistCriteria": null,
+        "accessibility": "Request a Word version of the form or answer two questions by video or audio.",
+        "disabilitySpecific": true,
+        "criteria": "For early- and mid-career Deaf and Disabled artists and arts workers."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": "2026-11-16",
+        "opensAt": null,
+        "closingDate": "2026-12-16",
+        "closesAt": "2026-12-16T14:00:00+11:00",
+        "deadlineTimezone": "Australia/Sydney",
+        "commencementDate": null,
+        "duration": "Four weeks (160 hours) or eight weeks (320 hours).",
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Paid work experience and professional development with arts, screen, music and cultural organisations.",
+      "applicationRequirements": null,
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": null,
+      "evidenceHash": "f6fab8d2527b59e8b561591dc19c5cca6691e2336947304877334ec01cd064f8",
+      "verificationStatus": "verified",
+      "id": "create-nsw-createability-2026-27",
+      "sourceId": "create-nsw-createability",
+      "organisation": "Create NSW (NSW Government)",
+      "discoverySources": [
+        {
+          "sourceId": "create-nsw-createability",
+          "url": "https://www.nsw.gov.au/arts-and-culture/engage-nsw-arts-and-culture/creative-cultures-and-communities/createability"
+        }
+      ],
+      "verificationUrl": "https://www.nsw.gov.au/grants-and-funding/2026-27-createability-internship",
+      "firstDiscoveredAt": "2026-11-24T14:26:46+00:00",
+      "lastCheckedAt": "2026-11-24T14:26:46+00:00",
+      "lastVerifiedAt": "2026-11-24T14:26:46+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "b467b7a2425f9cbc22060c8b9be8e95d267055eecc365165682959e74950c899"
+    },
+    {
       "roundKey": "2026-09",
       "title": "Arts Projects for Individuals and Groups · September 2026",
       "officialUrl": "https://creative.gov.au/investments-opportunities/arts-projects-individuals-and-groups",
