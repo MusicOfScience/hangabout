@@ -10,7 +10,9 @@ Verified 2026-09-23. Treat this as dated evidence and recheck Git, PRs and workf
 
 [PR #48](https://github.com/MusicOfScience/hangabout/pull/48) merged at `302e6cc` with Createability. The [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45417622528) passed and the public detail displayed employment paid by the host and the links to the official guidelines and application. A [check-only refresh on main](https://github.com/MusicOfScience/hangabout/actions/runs/45417798871) reproduced the 12 records with an empty patch. Touring Queensland remains a registry lead after the hosted runner received HTTP 403 for its robots file.
 
-The residency follow-up adds Down the Lane, extending the catalogue to 13 records. Gunyah remains a registry lead after two hosted runs received HTTP 404 from its robots file. Known participation fees appear separately from application fees and refundable deposits. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for source evidence, costs and timing.
+[PR #50](https://github.com/MusicOfScience/hangabout/pull/50) and [PR #51](https://github.com/MusicOfScience/hangabout/pull/51) merged and the [Pages release](https://github.com/MusicOfScience/hangabout/actions/runs/45438918881) passed at `e216193`. The public Gunyah detail retains its fee and shows overdue verification. The [check-only refresh on main](https://github.com/MusicOfScience/hangabout/actions/runs/45439151808) reproduced 13 records from ten monitored programmes with an empty patch. PR checks now require successful hosted results for new and edited monitored registry entries.
+
+The directory pilot uses On the Move to discover residency leads. Emmanuel College is the first promoted lead, with funding, artist expenses and the application deadline verified against the college's published terms. See [Artist Opportunities](ARTIST_OPPORTUNITIES.md) for evidence, source cadence and review steps.
 
 ## Verified venue refresh pilot, 23 November 2026
 

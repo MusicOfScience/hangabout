@@ -424,6 +424,95 @@
     },
     {
       "roundKey": "2027",
+      "title": "Emmanuel College Artist-in-Residence · 2027",
+      "officialUrl": "https://www.ecartistresidency.com/",
+      "applicationUrl": "https://www.ecartistresidency.com/apply",
+      "categories": [
+        "residency"
+      ],
+      "funding": {
+        "minimum": 1500,
+        "maximum": 1500,
+        "currency": "USD",
+        "type": "partial",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": "International artists may qualify for up to USD 1,000 toward travel and visa costs.",
+        "accommodation": "The college provides a dorm room for the artist.",
+        "materials": null,
+        "otherCosts": "Artists cover materials, meals, shipping and transport during the residency.",
+        "conditions": "Residents take part in a closing exhibition and donate one artwork to the college.",
+        "fullyFunded": false
+      },
+      "eligibility": {
+        "scope": "international",
+        "geography": "International applicants accepted · residency in Boston, Massachusetts",
+        "geographicConfidence": "confirmed",
+        "countries": null,
+        "states": null,
+        "municipalities": null,
+        "disciplines": [
+          "ceramics",
+          "photography",
+          "printmaking",
+          "social-practice"
+        ],
+        "careerStages": null,
+        "citizenship": null,
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual"
+        ],
+        "qualifications": null,
+        "specialistCriteria": "Applicants cannot be enrolled in an academic programme.",
+        "accessibility": null,
+        "disabilitySpecific": null,
+        "criteria": "Individual artists must attend for the full residency and speak conversational English. International artists need a visa."
+      },
+      "timing": {
+        "observedStatus": "open",
+        "openingDate": null,
+        "opensAt": null,
+        "closingDate": "2026-12-18",
+        "closesAt": "2026-12-18T23:59:00-05:00",
+        "deadlineTimezone": "America/New_York",
+        "commencementDate": "2027-06-16",
+        "duration": "Six weeks, through 28 July 2027.",
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "A summer residency with a stipend, accommodation and shared studios at Emmanuel College in Boston.",
+      "applicationRequirements": "Email one PDF of up to 10 MB with a CV, artist statement, 20 annotated portfolio images and a project proposal. Follow the programme's file naming instructions.",
+      "selectionCriteria": null,
+      "restrictions": null,
+      "uncertainties": "The programme does not publish application or participation fees or detailed accessibility provisions.",
+      "evidenceHash": "82c7437844a640b7d3779e8be4ec8c1f4d6deee5f28cd4d8d7d13755c98357e6",
+      "supportingEvidenceUrl": "https://www.ecartistresidency.com/apply",
+      "verificationStatus": "verified",
+      "id": "emmanuel-college-2027",
+      "sourceId": "emmanuel-college",
+      "organisation": "Emmanuel College Art Department",
+      "discoverySources": [
+        {
+          "sourceId": "on-the-move",
+          "url": "https://on-the-move.org/news/emmanuel-college-artist-residencies-ceramics-photography-printmaking-and-social-practice-2027"
+        },
+        {
+          "sourceId": "emmanuel-college",
+          "url": "https://www.ecartistresidency.com/"
+        }
+      ],
+      "verificationUrl": "https://www.ecartistresidency.com/",
+      "firstDiscoveredAt": "2026-11-24T16:42:01+00:00",
+      "lastCheckedAt": "2026-11-24T16:42:01+00:00",
+      "lastVerifiedAt": "2026-11-24T16:42:01+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "d7294949cf275686bf2ce76bac20711af7b4b0ecae2a7a85876ab1d1a09ea294"
+    },
+    {
+      "roundKey": "2027",
       "title": "Gottlieb Foundation Individual Support Grant · 2027",
       "officialUrl": "https://www.gottliebfoundation.org/individual-support-grant-1",
       "applicationUrl": "https://gottliebfoundation.submittable.com/submit/1d293158-a7a1-4cbb-9fb7-eea779363177/view",

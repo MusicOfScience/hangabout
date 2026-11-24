@@ -17,7 +17,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.robotparser import RobotFileParser
 from zoneinfo import ZoneInfo
 
-from opportunity_adapters import ADAPTERS, SOURCE_DETAIL_PATHS, links, page_text, ramsay_terms_url
+from opportunity_adapters import ADAPTERS, DIRECTORY_ADAPTERS, SOURCE_DETAIL_PATHS, links, page_text, ramsay_terms_url
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources/opportunity-sources.json"
@@ -99,19 +99,24 @@ def validate_registry(registry):
         check(re.fullmatch(r"[a-z0-9-]+", source_id) and source_id not in sources, "duplicate or invalid source ID")
         url_key(source["url"])
         check(source["role"] in {"funder", "directory", "fundraising", "mixed"}, f"invalid role for {source_id}")
-        check(source["state"] in {"active", "seed", "reference"}, f"invalid source state for {source_id}")
+        check(source["state"] in {"active", "discovery", "seed", "reference"}, f"invalid source state for {source_id}")
+        if source["state"] in {"active", "discovery"}:
+            check(type(source["intervalDays"]) is int and source["intervalDays"] > 0, "invalid check interval")
+            iso_date(source["reviewedOn"])
+            check(source["remit"], "source review evidence is required")
+        if source["state"] == "discovery":
+            check(source["role"] == "directory" and source["adapter"] in DIRECTORY_ADAPTERS
+                  and source["mechanism"] == "directoryHTML", "discovery sources require a directory adapter")
         if source["state"] == "active":
             check(source["role"] == "funder" and source["adapter"] in ADAPTERS, "active sources require a funder adapter")
-            check(type(source["intervalDays"]) is int and type(source["staleDays"]) is int
-                  and 0 < source["intervalDays"] < source["staleDays"], "invalid check interval")
-            iso_date(source["reviewedOn"])
-            check(source["remit"] and source["mechanism"] == "officialHTML", "source review evidence is required")
+            check(type(source["staleDays"]) is int and source["intervalDays"] < source["staleDays"], "invalid stale interval")
+            check(source["mechanism"] == "officialHTML", "source review evidence is required")
             if source.get("supportingUrl"):
                 supporting = url_key(source["supportingUrl"])
                 check(urlsplit(supporting).hostname == urlsplit(source["url"]).hostname
                       and supporting != url_key(source["url"]), "supporting page must be a separate first-party URL")
-            if source.get("termsUrl"):
-                url_key(source["termsUrl"])
+        if source.get("termsUrl"):
+            url_key(source["termsUrl"])
         sources[source_id] = source
     return sources
 
@@ -330,6 +335,15 @@ def observe(source, fetch, now):
     return observations
 
 
+def observe_directory(source, fetch):
+    url = source["url"]
+    html = fetch(url)
+    try:
+        return DIRECTORY_ADAPTERS[source["adapter"]](url, html)
+    except ValueError as error:
+        raise QuarantineError(f"{url}: {error}") from error
+
+
 def merge_observations(records, observations, source, sources, aliases, now):
     checked = now.isoformat(timespec="seconds")
     proposed = records.copy()
@@ -383,10 +397,11 @@ def refresh(catalogue, sources, fetch, now, last_success, always=False):
     aliases = catalogue["officialUrlAliases"]
     records = {identity(record, aliases): record for record in catalogue["opportunities"]}
     health = {}
-    result = {"checkedAt": now.isoformat(timespec="seconds"), "sources": health, "changes": []}
+    result = {"checkedAt": now.isoformat(timespec="seconds"), "sources": health, "changes": [], "discoveryLeads": []}
     for source_id, source in sources.items():
-        if source["state"] != "active":
+        if source["state"] not in {"active", "discovery"}:
             continue
+        discovery_only = source["state"] == "discovery"
         previous = last_success.get(source_id)
         if previous is None:
             previous = max((record["lastVerifiedAt"] for record in records.values()
@@ -396,7 +411,7 @@ def refresh(catalogue, sources, fetch, now, last_success, always=False):
             row["status"] = "not-due"
             continue
         try:
-            observations = observe(source, fetch, now)
+            observations = observe_directory(source, fetch) if discovery_only else observe(source, fetch, now)
         except QuarantineError as error:
             row.update(status="quarantined", detail=str(error))
             continue
@@ -407,6 +422,10 @@ def refresh(catalogue, sources, fetch, now, last_success, always=False):
             row.update(status="fetch-failed", detail=str(error))
             continue
         row["lastSuccessfulFetchAt"] = result["checkedAt"]
+        if discovery_only:
+            result["discoveryLeads"].extend({"sourceId": source_id, "url": url} for url in observations)
+            row.update(status="ok", observed=len(observations))
+            continue
         try:
             proposed, changes = merge_observations(records, observations, source, sources, aliases, now)
             validate_catalogue(catalogue | {"opportunities": list(proposed.values())}, sources)
@@ -418,6 +437,14 @@ def refresh(catalogue, sources, fetch, now, last_success, always=False):
         row.update(status="ok", observed=len(observations))
     candidate = catalogue | {"opportunities": sorted(records.values(), key=lambda record: record["id"])}
     validate_catalogue(candidate, sources)
+    if result["discoveryLeads"]:
+        known = {}
+        for record in candidate["opportunities"]:
+            for item in record["discoverySources"]:
+                key = item["sourceId"], url_key(item["url"])
+                known.setdefault(key, []).append(record["id"])
+        for lead in result["discoveryLeads"]:
+            lead["catalogueIds"] = known.get((lead["sourceId"], url_key(lead["url"])), [])
     return candidate, result
 
 
@@ -445,8 +472,10 @@ def main():
     for source, row in report["sources"].items():
         print(f"{source}: {row['status']} · {row.get('observed', 0)} observed · {row.get('detail', '')}")
     print(f"{len(report['changes'])} changes proposed. {len(candidate['opportunities'])} retained opportunities.")
-    if all(row["status"] in {"fetch-failed", "quarantined"} for row in report["sources"].values()):
-        sys.exit("All opportunity source checks failed. The validated catalogue was preserved.")
+    print(f"{len(report['discoveryLeads'])} discovery leads for review.")
+    funder_results = (row for source_id, row in report["sources"].items() if sources[source_id]["state"] == "active")
+    if all(row["status"] in {"fetch-failed", "quarantined"} for row in funder_results):
+        sys.exit("All opportunity funder checks failed. The validated catalogue was preserved.")
 
 
 if __name__ == "__main__":

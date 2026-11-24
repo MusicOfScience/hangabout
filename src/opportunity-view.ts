@@ -151,7 +151,8 @@ function detail(record: Opportunity, now: Date): string {
     <div class="opportunity-actions">
       ${record.applicationUrl ? `<span data-opportunity-apply${canApply(record, now) ? '' : ' hidden'}>${external(record.applicationUrl, 'Apply with the funder', true)}</span>` : ''}
       ${external(record.officialUrl, 'Official guidelines')}
-      ${record.supportingEvidenceUrl ? external(record.supportingEvidenceUrl, isPrize ? 'Official entry terms' : 'Official eligibility FAQ') : ''}
+      ${record.supportingEvidenceUrl && record.supportingEvidenceUrl !== record.applicationUrl
+        ? external(record.supportingEvidenceUrl, isPrize ? 'Official entry terms' : 'Official eligibility FAQ') : ''}
     </div>
     <details>
       <summary>Eligibility and accessibility</summary>

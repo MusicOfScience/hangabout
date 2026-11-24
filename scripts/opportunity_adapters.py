@@ -1,4 +1,4 @@
-"""Deterministic adapters for the reviewed first-party opportunity sources."""
+"""Deterministic adapters for reviewed opportunity sources and directories."""
 
 import re
 from datetime import datetime
@@ -582,9 +582,80 @@ def down_the_lane(url, html, now, _supporting_html=None):
     )]
 
 
+def emmanuel(url, html, now, supporting_html):
+    if not supporting_html:
+        raise ValueError("Emmanuel's application guidelines are required")
+    overview = page_text(html)
+    details = page_text(supporting_html)
+    require(r"Emmanuel College Artist-in-Residence Program", overview)
+    require(r"six-week artists residency", overview)
+    require(r"Ceramics, Photography, Printmaking and Social Practice", overview)
+    programme = require(r"Residency is from June (\d{1,2})(?:st|nd|rd|th) [–-] July (\d{1,2})(?:st|nd|rd|th), (\d{4})", details)
+    year = programme[3]
+    commencement = datetime(int(year), 6, int(programme[1])).date()
+    end = datetime(int(year), 7, int(programme[2])).date()
+    cutoff = require(r"deadline to apply is ([A-Za-z]+ \d{1,2})(?:st|nd|rd|th), (\d{4}) (\d{1,2}:\d{2}\s*[AP]M) (EST|EDT)", details)
+    closing_day = datetime.strptime(f"{cutoff[1]} {cutoff[2]}", "%B %d %Y").date()
+    deadline = local_instant(closing_day, cutoff[3], "America/New_York")
+    if deadline.tzname() != cutoff[4].upper() or closing_day >= commencement:
+        raise ValueError("Emmanuel's application deadline conflicts with its timezone or residency dates")
+    stipend = amount(require(rf"Artists will receive a stipend of {MONEY}\s+dollars", details)[1])
+    travel = amount(require(rf"International artists may be eligible up to an additional {MONEY} to be used to cover travel and visa costs", details)[1])
+    require(r"International Artists must obtain a visa to participate\. Conversational proficiency of the English language is required", details)
+    require(r"Artists must not be currently enrolled in any academic program", details)
+    require(r"Lodging is provided, for the individual artist only", details)
+    require(r"Residents are granted access to a range of shared college studio facilities", details)
+    require(r"Emmanuel will host an on-campus closing exhibition for all resident artists to participate in", details)
+    require(r"Artists are responsible for all material, food, shipping, and transportation costs", details)
+    require(r"Artists will donate one piece to Emmanuel College", details)
+    require(r"Artists must be on-site for the duration of the program", details)
+    require(r"application materials must be submitted via email to ecar@emmanuel\.edu as a single PDF \(no larger than 10MB\)", details)
+    require(r"Resume or CV An Artist Statement 20 images .*? A Project Proposal", details)
+    application_url = application(html, url, "www.ecartistresidency.com", r"/apply/?")
+    intake_open = re.search(rf"The {year} application period is Now Open", details, re.I)
+    status = "closed" if now >= deadline else "open" if application_url and intake_open else "unknown"
+    return [entry(
+        year, f"Emmanuel College Artist-in-Residence · {year}", url, application_url, ["residency"],
+        money(stipend, "USD", funding_type="partial",
+              conditions="Residents take part in a closing exhibition and donate one artwork to the college.") | {
+            "minimum": stipend,
+            "fullyFunded": False,
+            "travel": f"International artists may qualify for up to USD {travel:,} toward travel and visa costs.",
+            "accommodation": "The college provides a dorm room for the artist.",
+            "otherCosts": "Artists cover materials, meals, shipping and transport during the residency.",
+        },
+        eligibility("international", "International applicants accepted · residency in Boston, Massachusetts",
+                    "Individual artists must attend for the full residency and speak conversational English. International artists need a visa.",
+                    disciplines=["ceramics", "photography", "printmaking", "social-practice"],
+                    applicantTypes=["individual"], specialistCriteria="Applicants cannot be enrolled in an academic programme."),
+        timing(override_status(details, status), deadline=deadline, commencement=commencement,
+               duration=f"Six weeks, through {end.day} July {year}."),
+        "A summer residency with a stipend, accommodation and shared studios at Emmanuel College in Boston.",
+        applicationRequirements="Email one PDF of up to 10 MB with a CV, artist statement, 20 annotated portfolio images and a project proposal. Follow the programme's file naming instructions.",
+        uncertainties="The programme does not publish application or participation fees or detailed accessibility provisions.",
+    )]
+
+
+def on_the_move(url, html):
+    section = require(
+        r"(?s)<a name=['\"]residencies['\"]></a>\s*<h2\b[^>]*>Residencies</h2>(.*?)(?=<a name=|</main>)", html,
+    )[1]
+    origin = urlsplit(url).netloc
+    leads = {}
+    for link, _ in links(section, url):
+        parts = urlsplit(link)
+        if parts.scheme == "https" and parts.netloc == origin and re.fullmatch(r"/news/[a-z0-9-]+/?", parts.path):
+            leads[urljoin(url, parts.path.rstrip("/"))] = None
+    if not 1 <= len(leads) <= 100:
+        raise ValueError("directory returned an unexpected number of residency leads")
+    return list(leads)
+
+
 ADAPTERS = {
     "potter": potter, "pkf": pkf, "wyndham": wyndham, "creative-australia": creative_australia,
     "music-australia": music_australia, "ramsay": ramsay, "gottlieb-emergency": gottlieb_emergency,
     "gottlieb-individual": gottlieb_individual, "createability": createability,
-    "down-the-lane": down_the_lane,
+    "down-the-lane": down_the_lane, "emmanuel": emmanuel,
 }
+
+DIRECTORY_ADAPTERS = {"on-the-move": on_the_move}
