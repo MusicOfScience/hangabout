@@ -286,10 +286,16 @@
     {
       "id": "on-the-move",
       "name": "On the Move",
-      "url": "https://on-the-move.org/",
+      "url": "https://on-the-move.org/news/deadlines",
       "group": "internationalDiscovery",
       "role": "directory",
-      "state": "seed"
+      "state": "discovery",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "directoryHTML",
+      "remit": "International cultural mobility directory; applicant geography is programme-specific.",
+      "adapter": "on-the-move",
+      "intervalDays": 7,
+      "reviewNote": "Review only the public residency deadlines index. Robots permits this path. Retain attributed links for review, and use official funder pages for all published terms."
     },
     {
       "id": "callopen-art",
@@ -441,6 +447,22 @@
       "group": "internationalFunding",
       "role": "funder",
       "state": "seed"
+    },
+    {
+      "id": "emmanuel-college",
+      "name": "Emmanuel College Art Department",
+      "url": "https://www.ecartistresidency.com/",
+      "supportingUrl": "https://www.ecartistresidency.com/apply",
+      "group": "internationalFunding",
+      "role": "funder",
+      "state": "active",
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "remit": "International visual and social practice artists can apply for a Boston residency.",
+      "adapter": "emmanuel",
+      "intervalDays": 3,
+      "staleDays": 14,
+      "reviewNote": "The college's dedicated programme homepage and application page are publicly readable under robots directives. The official site publishes visa, English, costs and travel support separately."
     },
     {
       "id": "british-council",

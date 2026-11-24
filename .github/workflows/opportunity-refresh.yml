@@ -56,7 +56,7 @@ jobs:
           python -m unittest discover -s tests/python
           git diff --check
           git diff -- data/opportunities.json > generated/opportunity-refresh.patch
-      - name: require successful checks for new or changed active sources
+      - name: require successful checks for new or changed monitored sources
         if: github.event_name == 'pull_request'
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -80,6 +80,10 @@ jobs:
               for source, row in report["sources"].items():
                   print(f"| {source} | {row['status']} | {row.get('observed', '—')} | {row['lastSuccessfulFetchAt'] or '—'} |")
               print(f"\n{len(report['changes'])} catalogue changes proposed.")
+              leads = report.get("discoveryLeads", [])
+              if leads:
+                  unmatched = sum(not lead["catalogueIds"] for lead in leads)
+                  print(f"\n{len(leads)} directory leads, including {unmatched} without a catalogue match. See the artifact for links.")
           PY
       - name: retain source observations and data patch
         if: always()

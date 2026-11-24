@@ -23,12 +23,14 @@ class OpportunitySourceReviewTest(unittest.TestCase):
 
     def test_new_source_failure_fails_even_when_another_source_succeeds(self):
         existing = source("established")
-        result = self.run_review([existing], [existing, source("new")], {
-            "established": {"status": "ok"},
-            "new": {"status": "fetch-failed"},
-        })
-        self.assertEqual(result.returncode, 1, result.stderr)
-        self.assertIn("new: fetch-failed", result.stdout)
+        for state in ("active", "discovery"):
+            with self.subTest(state=state):
+                result = self.run_review([existing], [existing, source("new", state)], {
+                    "established": {"status": "ok"},
+                    "new": {"status": "fetch-failed"},
+                })
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("new: fetch-failed", result.stdout)
 
     def test_unchanged_failure_and_paused_source_do_not_block_another_activation(self):
         existing = source("established")
