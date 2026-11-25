@@ -50,7 +50,7 @@
     "sourceName": "Buxton Contemporary",
     "sourceType": "official",
     "sourceUrl": "https://buxtoncontemporary.com/whats-on/exhibitions/a-part-hoda-afshar",
-    "lastVerified": "2026-11-18"
+    "lastVerified": "2026-11-25"
   },
   {
     "id": "gertrude-et-cetera-2026",
@@ -86,7 +86,7 @@
     "sourceName": "Gertrude",
     "sourceType": "official",
     "sourceUrl": "https://gertrude.org.au/exhibition/et-cetera/",
-    "lastVerified": "2026-11-18"
+    "lastVerified": "2026-11-25"
   },
   {
     "id": "linden-gian-manik-fantasy-chamber",
@@ -210,7 +210,7 @@
     "sourceName": "Linden New Art",
     "sourceType": "official",
     "sourceUrl": "https://www.lindenarts.org/",
-    "lastVerified": "2026-11-18"
+    "lastVerified": "2026-11-25"
   },
   {
     "id": "linden-wanda-gillespie-weight-of-being",
@@ -230,7 +230,7 @@
     "sourceName": "Linden New Art",
     "sourceType": "official",
     "sourceUrl": "https://www.lindenarts.org/",
-    "lastVerified": "2026-11-18"
+    "lastVerified": "2026-11-25"
   },
   {
     "id": "glen-eira-fabulous-70s-fashion",
@@ -262,7 +262,7 @@
     "sourceName": "Glen Eira City Council",
     "sourceType": "official",
     "sourceUrl": "https://www.gleneira.vic.gov.au/our-city/arts-and-culture/galleries-and-visual-art/exhibitions",
-    "lastVerified": "2026-11-18"
+    "lastVerified": "2026-11-25"
   },
   {
     "id": "australian-tapestry-workshop-kate-derum-irene-davies-2026",
@@ -665,5 +665,19 @@
     "sourceType": "official",
     "sourceUrl": "https://www.heide.com.au/exhibitions/100-years-100-chairs/",
     "lastVerified": "2026-11-19"
+  },
+  {
+    "id": "heide-feed-8839",
+    "venueId": "heide-museum-modern-art",
+    "title": "The Antipodeans and the Clash of ’59",
+    "artists": [],
+    "startDate": "2027-07-28",
+    "endDate": "2027-11-07",
+    "eventType": "exhibition",
+    "admission": "unknown",
+    "sourceName": "Heide Museum of Modern Art",
+    "sourceType": "official",
+    "sourceUrl": "https://www.heide.com.au/exhibitions/the-antipodeans/",
+    "lastVerified": "2026-11-25"
   }
 ]
