@@ -54,7 +54,15 @@ Down the Lane shares the bounded first-party round discovery used by Wyndham and
 
 The first extraction found 26 residency links. On the Move points to the [Emmanuel College residency programme](https://www.ecartistresidency.com/). The [college's application guidelines](https://www.ecartistresidency.com/apply) establish international eligibility, a USD 1,500 stipend, conditional travel and visa support up to USD 1,000, and supplied lodging. Artists cover materials, food, shipping and local transport. Application and participation fees are unpublished. The 2027 intake closes at 11:59 pm Boston time on 18 December 2026. The catalogue records the separate On the Move link as discovery provenance for this round.
 
-This brings the catalogue to 15 records, with 14 monitored by 11 first-party adapters. The 47-entry registry includes one monitored discovery directory. Its report is a review queue. Candidate links enter the catalogue only after first-party verification and review.
+The pilot brought the catalogue to 15 records, with 14 monitored by 11 first-party adapters. The directory report is a review queue. Candidate links enter the catalogue only after first-party verification and review.
+
+## Regional South Australian project grants
+
+[Country Arts SA](https://www.countryarts.org.au/available-grants/project-grants/) announces its next Regional Arts Fund Project Grants round for 1 February to 15 March 2027. Eligible activity can start from 1 July 2027. [Regional Arts Australia](https://regionalarts.com.au/regional-arts-fund/apply-to-the-raf) independently publishes the same dates. The round offers up to AUD 30,000 for arts activity that benefits regional or remote communities. Applicants need an eligible regional or remote South Australian base and an active ABN. Disability access, travel and materials can be eligible budget items.
+
+The adapter publishes the dates as Adelaide calendar dates. The next round is forthcoming. The funder links to the general grant portal, so the round-specific application link, cutoff time and fees remain unconfirmed. Once the opening date arrives, the date announcement alone is insufficient to mark intake open. The catalogue now holds 16 records, with 15 monitored across 12 first-party adapters and one directory supplying discovery leads.
+
+The ACT Cultural Arts Program remains under review. Both its [guidelines host](https://github.com/MusicOfScience/hangabout/actions/runs/45485045574) and the [separate ACT Government announcement host](https://github.com/MusicOfScience/hangabout/actions/runs/45485970700) returned HTTP 403 for robots.txt on GitHub Actions. See [draft PR #53](https://github.com/MusicOfScience/hangabout/pull/53) for locally verified evidence and the hosted access results.
 
 ## Source activation and changes
 

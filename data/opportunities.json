@@ -89,6 +89,93 @@
       "contentHash": "b3b8a088373b8e088d087862f058f43afa23b59bb5bbbf72ddab50ccf3af16ae"
     },
     {
+      "roundKey": "2027-round-1",
+      "title": "Regional Arts Fund Project Grants · South Australia · Round 1, 2027",
+      "officialUrl": "https://www.countryarts.org.au/available-grants/project-grants/",
+      "applicationUrl": null,
+      "categories": [
+        "artist-grant",
+        "professional-development"
+      ],
+      "funding": {
+        "minimum": null,
+        "maximum": 30000,
+        "currency": "AUD",
+        "type": "direct",
+        "applicationFee": null,
+        "participationFee": null,
+        "coContribution": null,
+        "travel": "Eligible travel costs can be included in the project budget.",
+        "accommodation": null,
+        "materials": "Eligible materials can be included in the project budget.",
+        "otherCosts": null,
+        "conditions": "There is no programme minimum. Grants support approved project costs.",
+        "fullyFunded": null
+      },
+      "eligibility": {
+        "scope": "state",
+        "geography": "Regional or remote South Australia",
+        "geographicConfidence": "confirmed",
+        "countries": [
+          "AU"
+        ],
+        "states": [
+          "SA"
+        ],
+        "municipalities": null,
+        "disciplines": [
+          "all"
+        ],
+        "careerStages": null,
+        "citizenship": null,
+        "residency": null,
+        "age": null,
+        "applicantTypes": [
+          "individual",
+          "organisation"
+        ],
+        "qualifications": null,
+        "specialistCriteria": "Applicants need an active ABN registered to their name and location and must meet Australian Government grant reporting and compliance requirements.",
+        "accessibility": "Disability access costs can be included in the project budget.",
+        "disabilitySpecific": null,
+        "criteria": "For individuals over 18, eligible incorporated not-for-profit organisations and local government bodies based in an eligible South Australian region."
+      },
+      "timing": {
+        "observedStatus": "forthcoming",
+        "openingDate": "2027-02-01",
+        "opensAt": null,
+        "closingDate": "2027-03-15",
+        "closesAt": null,
+        "deadlineTimezone": "Australia/Adelaide",
+        "commencementDate": "2027-07-01",
+        "duration": null,
+        "recurrence": null,
+        "rolling": false
+      },
+      "summary": "Project funding for creative work and professional development that benefits regional or remote arts communities.",
+      "applicationRequirements": "Read the guidelines, discuss the project with Country Arts SA and apply through its Regional Arts Fund portal.",
+      "selectionCriteria": "Applications are assessed competitively. Country Arts SA asks for realistic budgets and value for money.",
+      "restrictions": null,
+      "uncertainties": "The cutoff time, round-specific application link and fees remain unconfirmed.",
+      "evidenceHash": "1115b23bd0106b8ebf544d493a73da978c9730438f9248f520f7f7a176ae58d4",
+      "verificationStatus": "verified",
+      "id": "country-arts-sa-project-2027-round-1",
+      "sourceId": "country-arts-sa-project",
+      "organisation": "Country Arts SA",
+      "discoverySources": [
+        {
+          "sourceId": "country-arts-sa-project",
+          "url": "https://www.countryarts.org.au/available-grants/project-grants/"
+        }
+      ],
+      "verificationUrl": "https://www.countryarts.org.au/available-grants/project-grants/",
+      "firstDiscoveredAt": "2026-11-24T20:59:38+00:00",
+      "lastCheckedAt": "2026-11-24T20:59:38+00:00",
+      "lastVerifiedAt": "2026-11-24T20:59:38+00:00",
+      "staleAfterDays": 14,
+      "contentHash": "f559a68f5f0f90075cf12194512b339cde714808cd6c0175ced58f1758708d08"
+    },
+    {
       "roundKey": "2026-27",
       "title": "Createability Internship · 2026-27",
       "officialUrl": "https://www.nsw.gov.au/grants-and-funding/2026-27-createability-internship",

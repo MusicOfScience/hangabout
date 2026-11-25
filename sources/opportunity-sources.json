@@ -136,6 +136,21 @@
       "termsUrl": "https://agsa-prod.s3.amazonaws.com/media/dd/files/Web18_-_AGSA_Disclaimer_and_Terms_of_Use.7c68a13.pdf"
     },
     {
+      "id": "country-arts-sa-project",
+      "name": "Country Arts SA",
+      "url": "https://www.countryarts.org.au/available-grants/project-grants/",
+      "group": "australia",
+      "role": "funder",
+      "state": "active",
+      "intervalDays": 3,
+      "staleDays": 14,
+      "reviewedOn": "2026-11-25",
+      "mechanism": "officialHTML",
+      "adapter": "country-arts-sa-project",
+      "remit": "Regional or remote South Australian applicants in the Regional Arts Fund Project Grants stream.",
+      "reviewNote": "Public first-party page for the current announced round. Regional Arts Australia publishes the same dates. Link to the funder's page while a round-specific application link and cutoff time are unconfirmed."
+    },
+    {
       "id": "create-nsw-createability",
       "name": "Create NSW (NSW Government)",
       "url": "https://www.nsw.gov.au/arts-and-culture/engage-nsw-arts-and-culture/creative-cultures-and-communities/createability",
