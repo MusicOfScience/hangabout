@@ -69,7 +69,7 @@
       "selectionCriteria": null,
       "restrictions": "One entry per artist or collective. The work must be original, recent, unique and non-editioned.",
       "uncertainties": null,
-      "evidenceHash": "c289d2f76dd807b80796332647b7f4aa88768891e0b567e47a145ec1f9875f47",
+      "evidenceHash": "417c9f3e298cdb61d35480b3989a9f2e766d0185a251a3b1e2697749a7e68917",
       "supportingEvidenceUrl": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/ramsay-art-prize-2027-terms-and-conditions/",
       "verificationStatus": "verified",
       "id": "agsa-ramsay-2027",
@@ -83,10 +83,10 @@
       ],
       "verificationUrl": "https://www.agsa.sa.gov.au/whats-on/ramsay-art-prize/",
       "firstDiscoveredAt": "2026-11-24T14:10:26+00:00",
-      "lastCheckedAt": "2026-11-24T14:13:42+00:00",
-      "lastVerifiedAt": "2026-11-24T14:13:42+00:00",
+      "lastCheckedAt": "2026-11-28T01:40:47+00:00",
+      "lastVerifiedAt": "2026-11-28T01:40:47+00:00",
       "staleAfterDays": 14,
-      "contentHash": "b3b8a088373b8e088d087862f058f43afa23b59bb5bbbf72ddab50ccf3af16ae"
+      "contentHash": "7c9c7313672a3601d579588a9ead0d9db7947c836c3c787e2b73ee75c715103c"
     },
     {
       "roundKey": "2027-round-1",
@@ -1181,7 +1181,7 @@
         "criteria": "Applicants must live in Wyndham. A group’s applicant must be a Wyndham resident."
       },
       "timing": {
-        "observedStatus": "open",
+        "observedStatus": "closed",
         "openingDate": "2026-10-28",
         "opensAt": "2026-10-28T09:00:00+11:00",
         "closingDate": "2026-11-27",
@@ -1210,10 +1210,10 @@
       ],
       "verificationUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
       "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
-      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
-      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-28T01:40:47+00:00",
+      "lastVerifiedAt": "2026-11-28T01:40:47+00:00",
       "staleAfterDays": 10,
-      "contentHash": "8e7d7b8f38e919bcc5659a5518484b3726188f8b9b0b643b727c6534e92ab780"
+      "contentHash": "28d2001d07b25fdd0fafd02a1981169854c19cad038058358c05488c78726886"
     },
     {
       "roundKey": "2027-presentation",
@@ -1270,7 +1270,7 @@
         "criteria": "Artists may be based outside Wyndham. All funded presentation outcomes must take place in Wyndham."
       },
       "timing": {
-        "observedStatus": "open",
+        "observedStatus": "closed",
         "openingDate": "2026-10-28",
         "opensAt": "2026-10-28T09:00:00+11:00",
         "closingDate": "2026-11-27",
@@ -1299,10 +1299,10 @@
       ],
       "verificationUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
       "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
-      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
-      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-28T01:40:47+00:00",
+      "lastVerifiedAt": "2026-11-28T01:40:47+00:00",
       "staleAfterDays": 10,
-      "contentHash": "99ed303747769f0c9bed28919a01638fe5736fced20f696c5cfb72ef72095543"
+      "contentHash": "77fc9d0f85e28e78bfde9e61341360885e0cec611722ddd30f3cf332be7ae9ca"
     },
     {
       "roundKey": "2027-skills-development",
@@ -1359,7 +1359,7 @@
         "criteria": "Applicants must live in Wyndham. A group’s applicant must be a Wyndham resident."
       },
       "timing": {
-        "observedStatus": "open",
+        "observedStatus": "closed",
         "openingDate": "2026-10-28",
         "opensAt": "2026-10-28T09:00:00+11:00",
         "closingDate": "2026-11-27",
@@ -1388,10 +1388,10 @@
       ],
       "verificationUrl": "https://www.wyndham.vic.gov.au/services/arts-culture/residencies-commissions-grants/2027-wyndham-arts-grants",
       "firstDiscoveredAt": "2026-11-24T13:37:00+00:00",
-      "lastCheckedAt": "2026-11-24T13:37:00+00:00",
-      "lastVerifiedAt": "2026-11-24T13:37:00+00:00",
+      "lastCheckedAt": "2026-11-28T01:40:47+00:00",
+      "lastVerifiedAt": "2026-11-28T01:40:47+00:00",
       "staleAfterDays": 10,
-      "contentHash": "f791df769599f77a83ca8a770b4e0fb0ea074f370f664d3bacc476e248dd707f"
+      "contentHash": "15d6f1bb026f26ce19b12f97c2cb285221df79fa160886e6686e618d48146899"
     }
   ]
 }
